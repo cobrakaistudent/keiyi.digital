@@ -29,6 +29,14 @@
 *   **Estrategia:** Un curso de IA no debe ser solo teórico. La fórmula ganadora en 2026 es **Lectura + Script de Vídeo + Laboratorio**.
 *   **Avance:** El "Script de Vídeo" sirve tanto para el instructor como para el alumno avanzado que quiere entender el "paso a paso" técnico sin ver el vídeo completo.
 
-#### 10. Seguridad en Recursos Educativos
-*   **Lección:** Los activos como los "Prompt Banks" son el valor real de la academia. Nunca deben estar en la carpeta `/public`.
-*   **Técnica:** Guardar en una carpeta privada (`academy_resources/`) y servir mediante un método de controlador que verifique el rol de alumno antes de ejecutar `response()->download()`.
+#### 11. Git como Red de Seguridad en Proyectos de IA
+*   **Lección:** Confiar solo en archivos `.md` para la memoria es arriesgado cuando múltiples agentes (como Antigravity y Gemini) operan en el mismo espacio.
+*   **Solución:** Inicializar Git desde el día 1. Realizar commits frecuentes con mensajes descriptivos. Esto permite que, si un agente borra o corrompe un archivo de memoria, la recuperación sea instantánea.
+
+#### 12. Protocolo de Memoria Unificada (Multi-Agente)
+*   **Estrategia:** En entornos colaborativos, los archivos de memoria (GEMINI.md) no deben ser "sobrescritos" por un agente basándose en su pasado, sino "fusionados" respetando las inyecciones de los otros agentes.
+*   **Técnica:** Leer siempre el estado actual del archivo antes de escribir para no borrar los logs de Antigravity. Separar responsabilidades por secciones: Orquestación (Antigravity) vs. Implementación (Gemini).
+
+#### 13. Cache-Busting Visual en Safari
+*   **Problema:** Al actualizar imágenes de cursos (ej. de MySQL a Notion), Safari suele mostrar la versión vieja por su política de caché agresiva.
+*   **Solución:** Añadir parámetros de versión a las URLs de las imágenes (`?v=5`) para forzar la descarga de los nuevos activos visuales aprobados por el usuario.

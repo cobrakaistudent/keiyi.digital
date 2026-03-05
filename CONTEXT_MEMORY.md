@@ -13,6 +13,9 @@
 3.  **Sistema de Respaldo Estricto:**
     *   Se implementó la regla inquebrantable de respaldar localmente antes de cualquier despliegue.
     *   Se creó el respaldo `backup/2026-03-04_pre_deploy/` con los archivos estáticos listos para subir.
+4.  **Despliegue Fase 1 (HTML Placeholder):**
+    *   El Jefe coordinó directamente con Gemini CLI para la restauración del archivo `GEMINI.md`.
+    *   Gemini CLI asume formalmente el rol operativo para subir los archivos al servidor Hostinger en tiempo real. Antigravity permanece en monitoreo para realizar QA posterior.
 
 ---
 
@@ -45,10 +48,29 @@
 *   **Approval Flow:** Registration -> Pending View -> Admin Approval -> Dashboard Access.
 *   **Consistency:** All lessons follow the "Keiyi Method" (HITL + Theory 20% / Practice 80%).
 
-### Key Files:
-*   `AcademyController.php`, `CheckApproved.php`, `academy.html` (Static Mockup).
-*   `academy_content/` (Folders for all courses).
-*   `academy_resources/` (Downloadable master tools).
+### Accomplishments (Updated Final):
+1.  **Full Course Development (6 Workshops):**
+    *   **IA Origins:** 7 Lessons (History, Models, R-C-T-F Prompts). *Image: Universe.*
+    *   **Notion Mastery:** 7 Lessons (Wikis, Projects, AI Agents, Calendar). *Image: Official Notion Logo.*
+    *   **Marketing Elite:** 7 Lessons (Diagnosis, HITL, Automation). *Image: Digital Analysis.*
+    *   **Viral Content:** 4 Lessons (PGR Method, AI Editing). *Image: 3D Social Logos.*
+    *   **3D World:** 4 Lessons (Concept Art to 3D, Printing). *Image: 3D Printer Head/Benchy.*
+    *   **Productivity Pro:** 4 Lessons (OS Optimization, 4-Hour Day). *Image: Clean Workspace.*
+2.  **LMS Architecture (Laravel):**
+    *   Middleware `CheckApproved` active. Registration -> Admin Portal -> Course Dashboard.
+3.  **Data Security & Versioning:**
+    *   **Git Initialized:** Repository created and first commit performed (`fbb49af`).
+    *   **Unified Memory:** `GEMINI.md` reconstructed as a collaboration manifest with Antigravity.
+4.  **Static Mockups:** `index.html` and `academy.html` updated and verified in Safari.
+
+### Critical Commands Log:
+*   `git init`
+*   `git commit -m "v18.5 - Keiyi Academy Ready"`
+*   `php artisan academy:register {name} {email}` (Custom Command)
+*   `open -a Safari academy.html` (Safari Testing)
+
+### Next Session Handover (For Antigravity):
+The project is currently in a "Locked and Loaded" state. Version control is active. The next step is scaling the content or integrating the "Payment Gateway" logic if the membership moves from Manual Approval to Automatic.
 
 ---
 
