@@ -9,12 +9,25 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified', 'approved'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+// Rutas Estáticas de Keiyi Digital 
+Route::get('/academy', function () {
+    return view('academy');
+});
+
+Route::get('/3d-world', function () {
+    return view('3d-world');
+});
+
+Route::get('/blog', function () {
+    return view('blog');
 });
 
 require __DIR__.'/auth.php';

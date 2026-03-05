@@ -58,10 +58,15 @@ Este archivo es una colaboración entre **Antigravity (Orquestador)** y **Gemini
 ---
 
 ## 🛠️ MANDATOS OPERATIVOS ACTUALIZADOS
-1. **Control de Versiones:** El uso de **GIT** es mandatorio. Cada hito debe cerrarse con un commit descriptivo.
-2. **Coherencia Visual:** Priorizar Safari como navegador de prueba y estilo "Pop Digital" de Keiyi.
-3. **Seguridad:** Los recursos (`academy_resources/`) son privados y se sirven vía controlador.
-4. **Colaboración:** Respetar los archivos `MASTER_SOURCE.md` y `CONTEXT_MEMORY.md` como puentes entre agentes.
+1. **Mandato de Paridad de Producción:** PROHIBIDO instalar software o librerías que requieran:
+    * Acceso `sudo` o privilegios de Root.
+    * Servicios persistentes (Redis, Supervisor, Meilisearch, Laravel Echo Server).
+    * Versiones de PHP superiores a la **8.3.x**.
+    * Cualquier dependencia que no pueda ser gestionada vía `composer` o `npm` estándar.
+2. **Control de Versiones:** El uso de **GIT** es mandatorio. Cada hito debe cerrarse con un commit descriptivo.
+3. **Coherencia Visual:** Priorizar Safari como navegador de prueba y estilo "Pop Digital" de Keiyi.
+4. **Seguridad:** Los recursos (`academy_resources/`) son privados y se sirven vía controlador.
+5. **Colaboración:** Respetar los archivos `MASTER_SOURCE.md` y `CONTEXT_MEMORY.md` como puentes entre agentes.
 
 ---
 **Usuario Mac:** anuarlv | **Contexto:** Keiyi Digital Agency 2026.
