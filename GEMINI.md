@@ -3,6 +3,14 @@ Este archivo es una colaboración entre **Antigravity (Orquestador)** y **Gemini
 
 ---
 
+## 🧠 SECCIÓN GEMINI CLI: Implementación y Lógica
+### Hitos del 4 de Marzo, 2026 (Sesión II):
+- **Protocolo de Seguridad:** Se ha creado `legacy_backup/` y se han movido todos los activos estáticos y Markdown para proteger los 6 cursos desarrollados.
+- **Preparación para Laravel Profesional:** Sincronización con Antigravity para implementar el esquema modular (LMS + CRM + Scout AI).
+- **Bloqueo Técnico:** Pendiente de localizar `php` y `composer` en el entorno local para ejecutar el scaffold oficial.
+
+---
+
 ## 🤖 SECCIÓN ANTIGRAVITY: Misión y Orquestación
 - **Rol:** Plataforma "Agent-first" de desarrollo. Gestión de estados, despliegue de agentes especializados y auditoría de procesos.
 - **Flujo Colaborativo:** Antigravity define la arquitectura global y Gemini CLI ejecuta la implementación táctica en el sistema de archivos.
@@ -35,6 +43,17 @@ Este archivo es una colaboración entre **Antigravity (Orquestador)** y **Gemini
     *   Actualización a placa silenciosa Creality V4.2.7 y firmware Marlin comunitario.
     *   Integración de BLTouch con calibración de Probe Offset y visualización de malla en OctoPrint (Bed Visualizer).
 - **Voice-IoT Node (DIY Alexa):** Arquitectura de dos dispositivos. "Brain" en Mac M2 (WebSocket server, Ollama/gemma3, faster-whisper, Piper TTS) y "Ear" en RPi Zero 2 W (Wyoming Satellite).
+
+---
+
+## 🏗️ INFRAESTRUCTURA Y CREDENCIALES
+- **Entorno Local (Mac - anuarlv):** PHP 8.3 (vía Homebrew) / Composer 2.9 / Laravel 11.48.
+- **Servidor de Producción (Hostinger):**
+    *   **IP:** 185.212.70.24 | **Puerto SSH:** 65002 | **Usuario:** u129237724
+    *   **Stack:** PHP 8.3.25 | Laravel Framework 11.47.0
+    *   **Directorio raíz de app:** `domains/keiyi.digital/laravel_app`
+- **Llaves y Seguridad:**
+    *   **Llave Privada SSH:** `/Users/anuarlv/.ssh/id_rsa` (Usar esta ruta para cualquier conexión con Hostinger).
 
 ---
 
