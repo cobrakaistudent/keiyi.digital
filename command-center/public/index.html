@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keiyi Command Center | Base Local M2</title>
+    <!-- Tailwind CSS (CDN para ligereza local) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #f4efeb;
+            /* Color arenoso cálido */
+            color: #1a1a1a;
+        }
+
+        .funky-border {
+            border: 3px solid #000;
+            border-radius: 12px;
+            box-shadow: 4px 4px 0px #000;
+        }
+
+        .funky-button {
+            background-color: #a3e635;
+            /* Lima vibrante */
+            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .funky-button:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px #000;
+        }
+
+        .funky-button:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #000;
+        }
+
+        .terminal-box {
+            background-color: #2d3748;
+            color: #a0aec0;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: monospace;
+            font-size: 0.85rem;
+            height: 250px;
+            overflow-y: auto;
+            border: 3px solid #000;
+        }
+    </style>
+</head>
+
+<body class="p-4 md:p-10">
+    <div class="max-w-5xl mx-auto">
+        <!-- HEADER -->
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+            <div>
+                <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight mb-2 uppercase">Keiyi Command Center</h1>
+                <p class="text-lg text-gray-700 font-bold border-b-4 border-black inline-block pb-1">Búnker Táctico
+                    Local (Mac M2) 📡</p>
+            </div>
+            <div
+                class="bg-black text-white px-5 py-3 rounded-full text-sm font-bold shadow-[4px_4px_0px_#d9f99d] flex items-center gap-2">
+                <span class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></span>
+                Node.js + Ollama (Qwen): Activos
+            </div>
+        </header>
+
+        <!-- DASHBOARD GRID -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+            <!-- PANEL: Scout AI -->
+            <div class="bg-white p-6 funky-border flex flex-col justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold mb-3 flex items-center gap-3">
+                        <span class="text-3xl">🤖</span> Keiyi Scout AI (Qwen)
+                    </h2>
+                    <p class="mb-5 text-gray-700 text-sm font-medium leading-relaxed">
+                        Este módulo contacta a la API en producción (Hostinger) por la lista de URLs (Feeds), descarga
+                        el texto limpio y lo envía a tu red neuronal local M2 para extraer Megatendencias EdTech. Al
+                        acabar, empuja (Sync) el Informe JSON a la Nube.
+                    </p>
+                </div>
+
+                <div>
+                    <button id="btnRunScout"
+                        class="w-full funky-border funky-button py-4 font-black text-lg flex justify-center items-center gap-2">
+                        <span>▶ Rastreo Local e IA Generativa</span>
+                    </button>
+                    <!-- Consola Virtual -->
+                    <div id="scoutStatus" class="terminal-box mt-4 hidden shadow-inner whitespace-pre-wrap"></div>
+                </div>
+            </div>
+
+            <!-- PANEL: Operaciones Secundarias (Placeholder PDF) -->
+            <div class="bg-[#facc15] p-6 funky-border flex flex-col justify-between items-start">
+                <div class="w-full">
+                    <h2 class="text-2xl font-bold mb-3 flex items-center gap-3">
+                        <span class="text-3xl">📄</span> Factory de Reportes (PDF)
+                    </h2>
+                    <p class="mb-5 text-black text-sm font-medium font-bold leading-relaxed opacity-90">
+                        Muy pronto. Este panel tomará la bitácora inteligente de IA y construirá un exquisito reporte
+                        ejecutivo en formato PDF grabándolo en tus carpetas de iCloud. Todo offline y sin pagar
+                        servidores Lambda caros.
+                    </p>
+                </div>
+
+                <button
+                    class="w-full funky-border bg-black text-white py-4 font-black text-lg hover:bg-gray-800 transition-colors opacity-50 cursor-not-allowed">
+                    Generador PDF (En Desarrollo Fase 5.b)
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- LOGICA FRONTEND -->
+    <script>
+        document.getElementById('btnRunScout').addEventListener('click', async () => {
+            const btn = document.getElementById('btnRunScout');
+            const statusDiv = document.getElementById('scoutStatus');
+
+            // Estado Cargando
+            btn.innerHTML = '⏳ <span class="animate-pulse">Despertando Modelo IA (Puede tardar minutos)...</span>';
+            btn.classList.add('opacity-70', 'pointer-events-none');
+            statusDiv.classList.remove('hidden');
+            statusDiv.innerHTML = '<span class="text-yellow-400">>> INFO:</span> Conectando motor local. Procesando feeds a través de qwen3:8b...\n<span class="text-gray-500">>> Espere, la IA está escribiendo y razonando el mercado...</span>\n\n';
+
+            try {
+                // Llamamos a nuestro backend Node que tiene la orden "exec('python scout.py')"
+                const response = await fetch('/api/run-scout', { method: 'POST' });
+                const data = await response.json();
+
+                if (data.success) {
+                    statusDiv.innerHTML += '<span class="text-green-400">>> ÉXITO EN OPERACIÓN IA</span>\n\n' + data.logs;
+                    btn.innerHTML = '✅ Reiniciar Rastreo RSS';
+                } else {
+                    statusDiv.innerHTML += '<span class="text-red-400">>> FALLO EN PYTHON/OLLAMA</span>\n\n' + data.error + '\n\nLogs:\n' + data.logs;
+                    btn.innerHTML = '❌ Reintentar Operación';
+                }
+            } catch (error) {
+                statusDiv.innerHTML += '<span class="text-red-400">>> ERROR CRÍTICO NODE SERVER</span>\n' + error.message;
+                btn.innerHTML = '❌ Reintentar';
+            } finally {
+                // Scroll suave hasta el fin de la consola
+                statusDiv.scrollTop = statusDiv.scrollHeight;
+                btn.classList.remove('opacity-70', 'pointer-events-none');
+            }
+        });
+    </script>
+</body>
+
+</html>

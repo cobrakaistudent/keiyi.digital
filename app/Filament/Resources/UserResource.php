@@ -53,23 +53,24 @@ class UserResource extends Resource
                 Forms\Components\Section::make('Autorización y Permisos')
                     ->description('Control de acceso a la Keiyi Academy.')
                     ->schema([
-                        Forms\Components\Select::make('role')
-                            ->label('Rol del Sistema')
-                            ->options([
-                                'student' => 'Alumno (Student)',
-                                'admin' => 'Administrador (Admin)',
-                            ])
-                            ->default('student')
-                            ->required(),
                         Forms\Components\Select::make('approval_status')
-                            ->label('Estatus de Aprobación')
-                            ->options([
-                                'pending' => 'Pendiente (En Revisión)',
-                                'approved' => 'Aprobado (Acceso Total)',
-                            ])
-                            ->default('pending')
-                            ->required(),
-                    ])->columns(2),
+                        ->label('Estatus del Alumno')
+                        ->options([
+                            'pending' => 'Pendiente de Revisión',
+                            'approved' => 'Aprobado (Acceso Concedido)',
+                            'rejected' => 'Rechazado (Acceso Denegado)',
+                        ])
+                        ->default('pending')
+                        ->required(),
+                    Forms\Components\Select::make('role')
+                        ->label('Rol del Cuenta')
+                        ->options([
+                            'student' => 'Alumno (Student)',
+                            'super-admin' => 'Administrador (Super-Admin)',
+                        ])
+                        ->default('student')
+                        ->required(),
+                ])->columns(2),
             ]);
     }
 
@@ -78,29 +79,30 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Nombre')
+                    ->label('Nombre Completo')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('email')
-                    ->label('Correo')
+                    ->label('Correo Electrónico')
                     ->searchable()
                     ->copyable()
                     ->copyMessage('Correo copiado'),
-                Tables\Columns\TextColumn::make('role')
-                    ->label('Rol')
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'admin' => 'danger',
-                        'student' => 'info',
-                        default => 'gray',
-                    })
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('approval_status')
                     ->label('Estatus')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'pending' => 'warning',
                         'approved' => 'success',
+                        'rejected' => 'danger',
+                        default => 'gray',
+                    })
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('role')
+                    ->label('Rol')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'super-admin' => 'danger',
+                        'student' => 'info',
                         default => 'gray',
                     })
                     ->searchable(),
