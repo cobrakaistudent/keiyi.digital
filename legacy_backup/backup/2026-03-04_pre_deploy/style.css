@@ -1,0 +1,875 @@
+/* Base Reset & Variables - v8.5 Funky Integrated */
+:root {
+    --color-bg: #FFF5EB;
+    /* Warm Peach/Beige */
+    --color-navy: #0F172A;
+
+    --color-blue: #40E0D0;
+    /* Turquoise */
+    --color-pink: #FFC8DD;
+    /* Pastel Pink */
+    --color-yellow: #FFD700;
+    --color-orange: #FF7F50;
+
+    --font-head: 'Space Grotesk', sans-serif;
+    --font-hand: 'Gloria Hallelujah', cursive;
+
+    --border-wobbly: 255px 15px 225px 15px / 15px 225px 15px 255px;
+    --shadow-hard: 4px 4px 0px #000;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-head);
+    background-color: var(--color-bg);
+    color: var(--color-navy);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Doodle BG */
+.doodle-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.1;
+}
+
+.doodle-1 {
+    position: absolute;
+    top: 10%;
+    left: 5%;
+    width: 100px;
+    transform: rotate(-15deg);
+}
+
+.doodle-2 {
+    position: absolute;
+    bottom: 20%;
+    right: 10%;
+    width: 80px;
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4 {
+    font-weight: 700;
+    letter-spacing: -0.03em;
+}
+
+h1 {
+    font-size: 4rem;
+    line-height: 1;
+    margin-bottom: 1.5rem;
+}
+
+h2 {
+    font-size: 2.8rem;
+    margin-bottom: 1rem;
+}
+
+h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.hand-note {
+    font-family: var(--font-hand);
+    color: var(--color-orange);
+    transform: rotate(-5deg);
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    display: inline-block;
+}
+
+.highlight-scribble {
+    position: relative;
+    z-index: 1;
+}
+
+.highlight-scribble::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: -5px;
+    width: 105%;
+    height: 15px;
+    background: var(--color-yellow);
+    z-index: -1;
+    border-radius: 20px;
+    transform: rotate(-2deg);
+}
+
+.funky-text {
+    font-family: var(--font-hand);
+    color: var(--color-blue);
+}
+
+.lead {
+    font-size: 1.4rem;
+    font-weight: 500;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* Navbar */
+.navbar {
+    padding: 2rem 0;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    /* Spacing to fix "Invasive" feeling */
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--color-navy);
+}
+
+.dot {
+    color: var(--color-orange);
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--color-navy);
+    font-weight: 500;
+    position: relative;
+}
+
+.nav-links a:hover::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--color-navy);
+    border-radius: 10px;
+    /* Wobbly underline */
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+.btn-nav {
+    background: var(--color-navy);
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border: 3px solid #0F172A;
+    /* Match sketchy weight */
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+    /* Organic shape */
+    text-decoration: none;
+    font-weight: 700;
+    transition: 0.2s;
+    position: relative;
+    /* For pseudo-element */
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Sketchy effect for Nav Button */
+.btn-nav::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    width: 100%;
+    height: 100%;
+    border: 2px solid #0F172A;
+    border-radius: 260px 20px 230px 20px / 20px 230px 20px 260px;
+    /* Mismatched wobbly */
+    z-index: -1;
+    transform: rotate(2deg);
+}
+
+.btn-nav:hover {
+    transform: scale(1.05) rotate(2deg);
+}
+
+.hamburger {
+    display: none;
+}
+
+/* Hero - UPDATED for v12.5 Dense CDMX No-Text */
+.hero {
+    padding: 8rem 0;
+    /* More padding for focus */
+    min-height: 90vh;
+    /* Taller hero */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Hero Background Image - CDMX Dense No-Text (v12.5) */
+    background-image: url('v12_5_hero_bg.png');
+    background-size: cover;
+    background-position: center;
+    perspective: 1000px;
+    /* For 3D feel */
+}
+
+/* New v9/v10 - The Information Balloon */
+.hero-bubble {
+    background: rgba(255, 255, 255, 0.95);
+    /* Slight transparency for atmosphere */
+    padding: 4rem;
+    /* Larger padding */
+    max-width: 850px;
+    border-radius: 60px 40px 60px 40px;
+    /* Organic blob shape */
+    box-shadow:
+        0 25px 50px rgba(15, 23, 42, 0.2),
+        /* Deeper shadow for chaos separation */
+        0 10px 15px rgba(15, 23, 42, 0.05),
+        0 0 0 4px rgba(255, 255, 255, 0.5),
+        /* Outer glow ring */
+        inset 0 -10px 20px rgba(0, 0, 0, 0.02);
+    animation: float-bubble 6s ease-in-out infinite;
+    /* v13 - Sketchy Border Effect */
+    border: 4px solid #0F172A;
+    /* Thick ink line */
+    box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.1);
+    /* Soft shadow */
+    position: relative;
+    z-index: 10;
+}
+
+/* Pseudo-element for the "Double Stroke" messy ink effect */
+.hero-bubble::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border: 3px solid #0F172A;
+    border-radius: 65px 45px 55px 35px;
+    /* Slightly different blob */
+    transform: rotate(-1deg);
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Subtle levitation animation */
+@keyframes float-bubble {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-15px) rotate(1deg);
+    }
+}
+
+.hero-container {
+    width: 100%;
+    /* No grid, single column */
+    display: flex;
+    justify-content: center;
+}
+
+.hero-content {
+    /* Styles moved to bubble wrapper mainly, reset padding here if needed */
+    text-align: center;
+}
+
+.hero-img-asset {
+    display: none;
+}
+
+.btn-group.centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.btn-primary {
+    display: inline-block;
+    background: var(--color-orange);
+    color: white;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    font-size: 1.1rem;
+    border: 3px solid #0F172A;
+    /* Thick border */
+    box-shadow: 4px 4px 0 #0F172A;
+    transition: 0.2s;
+    position: relative;
+}
+
+/* Sketchy button extra line */
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    width: 100%;
+    height: 100%;
+    border: 2px solid #0F172A;
+    border-radius: 55px;
+    z-index: -1;
+    transform: rotate(2deg);
+}
+
+.btn-primary:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--color-navy);
+}
+
+.btn-text {
+    margin-left: 1.5rem;
+    color: var(--color-navy);
+    font-weight: 700;
+    text-decoration: none;
+    border-bottom: 2px dashed var(--color-navy);
+}
+
+/* Cards */
+.container {
+    width: 90%;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.section {
+    padding: 6rem 0;
+}
+
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 4rem;
+}
+
+.funky-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: var(--border-wobbly);
+    border: 3px solid var(--color-navy);
+    /* Thicker */
+    transition: 0.2s;
+    position: relative;
+}
+
+/* Sketchy card effect */
+.funky-card::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    border: 2px solid var(--color-navy);
+    border-radius: 260px 20px 230px 20px / 20px 230px 20px 260px;
+    /* Mismatched shape */
+    transform: rotate(1deg);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.funky-card:hover {
+    transform: rotate(1deg) translateY(-5px);
+    box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.1);
+}
+
+.card-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid var(--color-navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.bg-yellow {
+    background: var(--color-yellow);
+}
+
+.bg-blue {
+    background: var(--color-blue);
+}
+
+.bg-pink {
+    background: var(--color-pink);
+}
+
+/* Pricing */
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 4rem;
+}
+
+.price-box {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 30px;
+    border: 3px solid var(--color-navy);
+    position: relative;
+    text-align: center;
+}
+
+.price-box::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border: 2px solid var(--color-navy);
+    border-radius: 35px;
+    transform: rotate(-1deg);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.price-box.featured {
+    background: var(--color-pink);
+    transform: scale(1.05);
+}
+
+.pop-tag {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-3deg);
+    background: var(--color-yellow);
+    border: 2px solid var(--color-navy);
+    padding: 5px 15px;
+    font-weight: 700;
+    border-radius: 20px;
+}
+
+.check-list {
+    list-style: none;
+    margin: 2rem 0;
+    text-align: left;
+}
+
+.check-list li {
+    padding-left: 20px;
+    position: relative;
+    margin-bottom: 0.5rem;
+}
+
+.check-list li::before {
+    content: '★';
+    position: absolute;
+    left: 0;
+    color: var(--color-navy);
+    font-size: 0.8rem;
+}
+
+.btn-outline {
+    display: block;
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid var(--color-navy);
+    color: var(--color-navy);
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+.btn-outline:hover {
+    background: var(--color-navy);
+    color: white;
+}
+
+.full {
+    display: block;
+    width: 100%;
+    border-radius: 50px;
+}
+
+/* About */
+.big-text {
+    font-size: 2.5rem;
+    font-weight: 700;
+    max-width: 800px;
+    margin: 0 auto 2rem auto;
+}
+
+.mission-statement {
+    font-family: var(--font-hand);
+    font-size: 1.5rem;
+    color: var(--color-orange);
+    transform: rotate(-2deg);
+}
+
+/* Footer */
+.footer {
+    padding: 4rem 0;
+    border-top: 2px dashed var(--color-navy);
+    margin-top: 4rem;
+}
+
+.footer-grid {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.footer-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    border: 3px solid var(--color-navy);
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+    /* Organic */
+    color: var(--color-navy);
+    transition: 0.2s;
+    background: white;
+    /* Default fallback */
+    position: relative;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Specific colors per icon */
+.icon-insta {
+    background: var(--color-yellow);
+}
+
+.icon-telegram {
+    background: var(--color-blue);
+}
+
+.icon-email {
+    background: var(--color-pink);
+}
+
+.icon-whatsapp {
+    background: #00E676;
+    /* Vibrant Green */
+}
+
+/* Double stroke effect */
+.footer-icon::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    width: 100%;
+    height: 100%;
+    border: 2px solid var(--color-navy);
+    border-radius: 260px 20px 230px 20px / 20px 230px 20px 260px;
+    /* Mismatched */
+    z-index: -1;
+    transform: rotate(-2deg);
+}
+
+.footer-icon:hover {
+    transform: rotate(5deg) scale(1.1);
+    box-shadow: 6px 6px 0 var(--color-navy);
+}
+
+.footer-icon svg {
+    width: 24px;
+    height: 24px;
+    stroke-width: 2.5;
+}
+
+@media (max-width: 768px) {
+    .hamburger {
+        display: block;
+        cursor: pointer;
+    }
+
+    .bar {
+        width: 30px;
+        height: 3px;
+        background: var(--color-navy);
+        margin: 6px 0;
+    }
+
+    .hero-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .nav-right {
+        display: none;
+    }
+
+    .price-box.featured {
+        transform: scale(1);
+    }
+
+    .big-text {
+        font-size: 1.8rem;
+    }
+}
+
+/* --- New Sections: 3D World & Blog (v14.2) --- */
+
+/* Video Responsive Wrapper */
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    padding-top: 25px;
+    height: 0;
+    margin-bottom: 1.5rem;
+    border: 3px solid var(--color-navy);
+    border-radius: 15px;
+    background: #000;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px; /* Inner radius slightly less */
+}
+
+/* Blog Styles */
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 3rem;
+    margin-top: 3rem;
+}
+
+.blog-card {
+    background: white;
+    border: 3px solid var(--color-navy);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: 0.3s;
+    box-shadow: 6px 6px 0 var(--color-navy);
+}
+
+.blog-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 10px 10px 0 var(--color-orange);
+}
+
+.blog-content {
+    padding: 2rem;
+}
+
+.blog-date {
+    font-family: var(--font-hand);
+    color: var(--color-blue);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.blog-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+.read-more {
+    display: inline-block;
+    margin-top: 1rem;
+    font-weight: 700;
+    color: var(--color-navy);
+    text-decoration: underline;
+    text-decoration-style: wavy;
+    text-decoration-color: var(--color-orange);
+}
+
+/* 3D World Specifics */
+.step-number {
+    font-size: 3rem;
+    font-weight: 900;
+    color: rgba(15, 23, 42, 0.1); /* Subtle Navy */
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-family: var(--font-head);
+}
+
+/* --- Academy Specific Styles (v18.0) --- */
+.bg-gray-50 {
+    background-color: #f9fafb;
+}
+
+.border-indigo-100 {
+    border-color: #e0e7ff;
+}
+
+.academy-card {
+    border-top: 8px solid #6366f1; /* Indigo accent */
+    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.academy-card:hover {
+    transform: translateY(-12px) rotate(1deg);
+    box-shadow: 15px 15px 0px rgba(99, 102, 241, 0.1);
+}
+
+.academy-card h3 {
+    color: #4338ca; /* Indigo 700 */
+}
+
+.academy-membership-box {
+    background: #ffffff;
+    border: 4px solid #4338ca;
+    border-radius: 50px 30px 50px 30px;
+    max-width: 900px;
+    margin: 60px auto;
+    overflow: hidden;
+    box-shadow: 20px 20px 0px rgba(99, 102, 241, 0.1);
+    position: relative;
+}
+
+.academy-membership-box::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    border: 2px solid #6366f1;
+    border-radius: 55px 35px 55px 35px;
+    z-index: -1;
+    transform: rotate(-0.5deg);
+    pointer-events: none;
+}
+
+.membership-header {
+    background: #4338ca;
+    color: white;
+    padding: 40px;
+    text-align: center;
+    border-bottom: 4px solid #3730a3;
+}
+
+.membership-header h3 {
+    margin: 0 0 15px 0;
+    font-size: 2.2rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+}
+
+.membership-header .price {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 8px;
+}
+
+.membership-header .currency {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.membership-header .amount {
+    font-size: 5rem;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.membership-header .period {
+    font-size: 1.2rem;
+    opacity: 0.8;
+    font-weight: 500;
+}
+
+.membership-body {
+    padding: 50px;
+}
+
+.check-list-grid {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.check-list-grid li {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #1e1b4b;
+    display: flex;
+    align-items: flex-start;
+}
+
+.check-list-grid .check {
+    color: #6366f1;
+    font-weight: 900;
+    margin-right: 12px;
+    font-size: 1.2rem;
+}
+
+.membership-footer {
+    padding: 40px 50px;
+    background: #f8fafc;
+    text-align: center;
+    border-top: 1px solid #e2e8f0;
+}
+
+.tag {
+    background: #6366f1;
+    color: white;
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 8px;
+    display: inline-block;
+    margin-bottom: 12px;
+    box-shadow: 2px 2px 0 #3730a3;
+}
+
+.text-indigo-600 {
+    color: #4f46e5;
+}
+
+.border-indigo { border-color: #6366f1; }
+.border-pink { border-color: #f472b6; }
+.border-yellow { border-color: #facc15; }

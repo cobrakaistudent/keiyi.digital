@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keiyi 3D World | Imagina, Diseña, Imprime</title>
+    <meta name="description" content="Servicios de impresión y diseño 3D. Materializamos tus ideas.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('style.css') }}">
+</head>
+
+<body>
+
+    <!-- Doodle Background Elements -->
+    <div class="doodle-bg">
+        <svg class="doodle-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+            <rect x="10" y="10" width="80" height="80" fill="none" stroke="black" stroke-width="2" rx="10" />
+        </svg>
+        <svg class="doodle-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+            <path d="M50,10 L90,90 L10,90 Z" fill="none" stroke="black" stroke-width="2" stroke-dasharray="5,5" />
+        </svg>
+    </div>
+
+    <!-- Navegación Dinámica -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="{{ url('/') }}" class="logo">keiyi<span class="dot">.</span></a>
+            <div class="nav-right">
+                <ul class="nav-links">
+                    <li><a href="{{ url('/#value-prop') }}">Filosofía</a></li>
+                    <li><a href="{{ url('/#pricing') }}">Servicios</a></li>
+                    <li><a href="{{ url('/academy') }}">Academy</a></li>
+                    <li><a href="{{ url('/3d-world') }}" style="text-decoration: underline; text-decoration-color: var(--color-orange);">3D-World</a></li>
+                    <li><a href="{{ url('/blog') }}">Blog</a></li>
+                    <li><a href="#contact">Contacto</a></li>
+                </ul>
+                <a href="#contact" class="btn-nav">Cotizar 3D</a>
+            </div>
+            <div class="hamburger">
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header 3D -->
+    <header class="hero" style="min-height: 60vh;">
+        <div class="container hero-container">
+            <div class="hero-bubble">
+                <div class="hero-content text-center">
+                    <div class="hand-note">Keiyi Lab 🧪</div>
+                    <h1 class="hero-title">Tu Realidad, <span class="highlight-scribble">Impresa.</span></h1>
+                    <p class="hero-desc">Bienvenido a 3D World. Donde los pixeles se convierten en átomos.</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sección de Pasos -->
+    <section class="section">
+        <div class="container">
+            <div class="section-intro text-center">
+                <h2>El Proceso</h2>
+                <p class="lead">De la nada al todo en 3 pasos.</p>
+            </div>
+
+            <div class="grid-3">
+                <div class="card funky-card">
+                    <div class="step-number">01</div>
+                    <div class="card-icon bg-yellow" style="width: 70px; height: 70px; font-size: 2rem;">🧠</div>
+                    <h3>Imagina</h3>
+                    <p>Todo empieza con una idea. Puede ser un dibujo en una servilleta, una foto de referencia o simplemente un "Oye, ¿se puede hacer esto?".</p>
+                    <ul class="check-list" style="margin-top: 1rem;">
+                        <li>Bocetos rápidos</li>
+                        <li>Brainstorming creativo</li>
+                        <li>Análisis de viabilidad</li>
+                    </ul>
+                </div>
+
+                <div class="card funky-card">
+                    <div class="step-number">02</div>
+                    <div class="card-icon bg-blue" style="width: 70px; height: 70px; font-size: 2rem;">📐</div>
+                    <h3>Diseña</h3>
+                    <p>Nuestros expertos en CAD toman el control. Esculpimos, modelamos y optimizamos tu objeto en el espacio digital.</p>
+                    <ul class="check-list" style="margin-top: 1rem;">
+                        <li>Modelado 3D (STL/OBJ)</li>
+                        <li>Optimización para impresión</li>
+                        <li>Renders previos</li>
+                    </ul>
+                </div>
+
+                <div class="card funky-card">
+                    <div class="step-number">03</div>
+                    <div class="card-icon bg-pink" style="width: 70px; height: 70px; font-size: 2rem;">🖨️</div>
+                    <h3>Imprime</h3>
+                    <p>Las máquinas despiertan. Usamos filamentos de alta calidad (PLA, PETG, TPU) o Resina para traer tu objeto al mundo físico.</p>
+                    <ul class="check-list" style="margin-top: 1rem;">
+                        <li>Impresión FDM o Resina</li>
+                        <li>Post-procesado y limpiezas</li>
+                        <li>Envío a domicilio</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="text-center" style="margin-top: 4rem;">
+                <p class="big-text">¿Listo para crear algo único?</p>
+                <a href="#contact" class="btn-primary">Iniciar Proyecto 3D</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <h3>keiyi 3D.</h3>
+            </div>
+            <div class="footer-links">
+                <a href="#" class="footer-icon icon-insta" aria-label="Instagram">
+                    <!-- Instagram SVG -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                    </svg>
+                </a>
+                <a href="#" class="footer-icon icon-email" aria-label="Email">
+                    <!-- Mail SVG -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                </a>
+                <a href="#" class="footer-icon icon-telegram" aria-label="Telegram">
+                    <!-- Telegram SVG -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </a>
+                <a href="#" class="footer-icon icon-whatsapp" aria-label="WhatsApp">
+                    <!-- WhatsApp SVG -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z">
+                        </path>
+                    </svg>
+                </a>
+            </div>
+            <div class="footer-copy">
+                <p>© 2026 Keiyi Agency & Academy</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ asset('script.js') }}"></script>
+</body>
+</html>

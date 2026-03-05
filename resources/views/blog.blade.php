@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Keiyi | Ideas, Tutoriales y Cultura Pop</title>
+    <meta name="description" content="Artículos sobre marketing, diseño 3D y tendencias digitales.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- CSS Estático -->
+    <link rel="stylesheet" href="{{ asset('style.css') }}">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="{{ url('/') }}" class="logo">keiyi<span class="dot">.</span></a>
+            <div class="nav-right">
+                <ul class="nav-links">
+                    <li><a href="{{ url('/#value-prop') }}">Filosofía</a></li>
+                    <li><a href="{{ url('/#pricing') }}">Servicios</a></li>
+                    <li><a href="{{ url('/academy') }}">Academy</a></li>
+                    <li><a href="{{ url('/3d-world') }}">3D-World</a></li>
+                    <li><a href="{{ url('/blog') }}" style="text-decoration: underline; text-decoration-color: var(--color-orange);">Blog</a></li>
+                    <li><a href="#contact">Contacto</a></li>
+                </ul>
+                <a href="#contact" class="btn-nav">Hablemos</a>
+            </div>
+            <div class="hamburger">
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero" style="min-height: 50vh;">
+        <div class="container hero-container">
+            <div class="hero-bubble">
+                <div class="hero-content text-center">
+                    <div class="hand-note">Read me! 📖</div>
+                    <h1 class="hero-title">Keiyi <span class="highlight-scribble">Blog</span></h1>
+                    <p class="hero-desc">Un espacio para compartir lo que aprendemos, lo que creamos y lo que nos inspira.</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="container">
+            <div class="blog-grid">
+                
+                <!-- Artículo 1: Con Video -->
+                <article class="blog-card funky-card">
+                    <div class="video-container">
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/8_VlXhF3A8A?si=Generic3DPlaceholder" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                    <div class="blog-content">
+                        <span class="blog-date">28 Diciembre, 2026</span>
+                        <h3 class="blog-title">La Magia del Timelapse en 3D</h3>
+                        <p>¿Alguna vez te has preguntado cómo se ve una impresión de 10 horas en 10 segundos? En este video te mostramos el proceso hipnótico de crear una pieza compleja capa por capa.</p>
+                        <a href="#" class="read-more">Ver Video Completo →</a>
+                    </div>
+                </article>
+
+                <!-- Artículo 2 -->
+                <article class="blog-card funky-card">
+                    <div style="height: 250px; background: var(--color-blue); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.5rem;">
+                        Imagen del Post 📸
+                    </div>
+                    <div class="blog-content">
+                        <span class="blog-date">20 Diciembre, 2026</span>
+                        <h3 class="blog-title">5 Tendencias de Marketing para este Año</h3>
+                        <p>El minimalismo está muriendo. El "Pop" está volviendo. Analizamos por qué las marcas están perdiendo el miedo a los colores saturados y las formas irregulares.</p>
+                        <a href="#" class="read-more">Leer Artículo →</a>
+                    </div>
+                </article>
+
+                 <!-- Artículo 3 -->
+                 <article class="blog-card funky-card">
+                    <div style="height: 250px; background: var(--color-pink); display: flex; align-items: center; justify-content: center; color: var(--color-navy); font-weight: bold; font-size: 1.5rem;">
+                        Design Tips 🎨
+                    </div>
+                    <div class="blog-content">
+                        <span class="blog-date">15 Diciembre, 2026</span>
+                        <h3 class="blog-title">Por qué tu Logo necesita movimiento</h3>
+                        <p>En un mundo de pantallas, un logo estático es un logo aburrido. Descubre cómo pequeñas animaciones pueden aumentar la retención de marca.</p>
+                        <a href="#" class="read-more">Leer Artículo →</a>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <h3>keiyi.</h3>
+            </div>
+            <div class="footer-links">
+                <a href="#" class="footer-icon icon-insta" aria-label="Instagram">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                    </svg>
+                </a>
+                <a href="#" class="footer-icon icon-email" aria-label="Email">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                </a>
+                <a href="#" class="footer-icon icon-telegram" aria-label="Telegram">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </a>
+                <a href="#" class="footer-icon icon-whatsapp" aria-label="WhatsApp">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z">
+                        </path>
+                    </svg>
+                </a>
+            </div>
+            <div class="footer-copy">
+                <p>© 2026 Keiyi Agency</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ asset('script.js') }}"></script>
+</body>
+</html>
