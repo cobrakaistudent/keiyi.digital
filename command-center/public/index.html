@@ -724,9 +724,12 @@
                     };
 
                     renderList('intelTools', data.tools, t => `
-                        <li class="flex justify-between items-center bg-gray-800 px-3 py-2 rounded border border-gray-700">
-                            <span class="font-bold text-sm truncate">${t.display || t.name}</span>
-                            <span class="bg-[#a3e635] text-black text-xs font-black px-2 py-0.5 rounded ml-2 whitespace-nowrap">${t.count}x</span>
+                        <li class="bg-gray-800 px-3 py-2 rounded border border-gray-700">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-sm truncate">${t.display || t.name}</span>
+                                <span class="bg-[#a3e635] text-black text-xs font-black px-2 py-0.5 rounded ml-2 whitespace-nowrap">${t.count}x</span>
+                            </div>
+                            ${t.dominant_source ? `<div class="text-xs text-gray-400 mt-1">Domina en: <span class="text-[#a3e635] font-semibold">${t.dominant_source}</span></div>` : ''}
                         </li>`);
 
                     renderList('intelQuestions', data.questions, q => `

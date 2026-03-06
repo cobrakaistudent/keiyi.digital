@@ -114,11 +114,15 @@ def update_counter(db_dict, key, source):
         return
     key_lower = key.lower()
     if key_lower not in db_dict:
-        db_dict[key_lower] = {'display': key, 'count': 0, 'sources': [], 'last_seen': ''}
+        db_dict[key_lower] = {'display': key, 'count': 0, 'sources': [], 'sources_count': {}, 'last_seen': ''}
     db_dict[key_lower]['count'] += 1
     db_dict[key_lower]['last_seen'] = datetime.now().strftime('%Y-%m-%d')
     if source not in db_dict[key_lower]['sources']:
         db_dict[key_lower]['sources'].append(source)
+    # Conteo por subreddit para determinar dónde domina cada entrada
+    if 'sources_count' not in db_dict[key_lower]:
+        db_dict[key_lower]['sources_count'] = {}
+    db_dict[key_lower]['sources_count'][source] = db_dict[key_lower]['sources_count'].get(source, 0) + 1
 
 # ──────────────────────────────────────────────────────────────────────────────
 # TÉCNICA ACTIVA: T2 — Batch x5

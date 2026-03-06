@@ -385,15 +385,25 @@ app.post('/api/run-deep-scout', (req, res) => {
 app.get('/api/research-intel', async (req, res) => {
     try {
         const db = JSON.parse(await fs.promises.readFile(RESEARCH_DB_PATH, 'utf8'));
-        const top = (obj, n = 20) => Object.values(obj || {})
+
+        const dominantSource = (item) => {
+            const sc = item.sources_count || {};
+            const entries = Object.entries(sc);
+            if (!entries.length) return item.sources?.[0] || null;
+            return entries.sort((a, b) => b[1] - a[1])[0][0];
+        };
+
+        const top = (obj, n = 20, withDominant = false) => Object.values(obj || {})
             .sort((a, b) => b.count - a.count)
-            .slice(0, n);
+            .slice(0, n)
+            .map(item => withDominant ? { ...item, dominant_source: dominantSource(item) } : item);
+
         res.json({
             success: true,
             last_updated: db.last_updated || null,
-            tools:      top(db.tools),
-            questions:  top(db.questions),
-            references: top(db.references),
+            tools:      top(db.tools,      20, true),
+            questions:  top(db.questions,  20),
+            references: top(db.references, 20),
         });
     } catch {
         res.json({ success: true, last_updated: null, tools: [], questions: [], references: [] });
