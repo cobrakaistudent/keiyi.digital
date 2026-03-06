@@ -40,13 +40,11 @@
                     <li><a href="#contact">Contacto</a></li>
                 </ul>
                 <!-- Lógica de Autenticación de Laravel -->
-                @if (Route::has('login'))
-                    @auth
-                        <a href="{{ url('/dashboard') }}" class="btn-nav">Ir al Panel</a>
-                    @else
-                        <a href="{{ route('login') }}" class="btn-nav">Identificarse</a>
-                    @endauth
-                @endif
+                @auth
+                    <a href="{{ route('academia.dashboard') }}" class="btn-nav">Mi Academia</a>
+                @else
+                    <a href="{{ route('login') }}" class="btn-nav">Identificarse</a>
+                @endauth
             </div>
             <div class="hamburger">
                 <div class="bar"></div>
@@ -264,15 +262,68 @@
         </div>
     </section>
 
+    <!-- Sección Contacto / Cotización -->
+    <section id="contact" class="section" style="background: #1a1a1a; color: #fff;">
+        <div class="container">
+            <div class="section-intro text-center">
+                <h2 style="color: #fff;">¿Hablamos? <span class="highlight-scribble">Escríbenos.</span></h2>
+                <p class="lead" style="color: #aaa;">Cuéntanos tu proyecto. Respondemos en menos de 24 horas.</p>
+            </div>
+
+            @if (session('contact_sent'))
+                <div style="background: #a3e635; color: #1a1a1a; border: 3px solid #000; box-shadow: 4px 4px 0 #000; padding: 20px 24px; font-weight: 700; font-size: 15px; max-width: 600px; margin: 0 auto 32px; text-align: center;">
+                    ¡Mensaje recibido! Te contactaremos pronto.
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('contacto.store') }}" style="max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px;">
+                @csrf
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div>
+                        <input type="text" name="name" placeholder="Tu nombre *" required
+                            value="{{ old('name') }}"
+                            style="width: 100%; padding: 14px 16px; border: 3px solid #fff; background: transparent; color: #fff; font-family: inherit; font-size: 14px; font-weight: 600; outline: none;">
+                        @error('name')<p style="color: #f87171; font-size: 12px; margin-top: 4px;">{{ $message }}</p>@enderror
+                    </div>
+                    <div>
+                        <input type="email" name="email" placeholder="Tu correo *" required
+                            value="{{ old('email') }}"
+                            style="width: 100%; padding: 14px 16px; border: 3px solid #fff; background: transparent; color: #fff; font-family: inherit; font-size: 14px; font-weight: 600; outline: none;">
+                        @error('email')<p style="color: #f87171; font-size: 12px; margin-top: 4px;">{{ $message }}</p>@enderror
+                    </div>
+                </div>
+
+                <select name="service"
+                    style="width: 100%; padding: 14px 16px; border: 3px solid #fff; background: #1a1a1a; color: #fff; font-family: inherit; font-size: 14px; font-weight: 600; outline: none; appearance: none;">
+                    <option value="">¿Qué necesitas? (opcional)</option>
+                    <option value="marketing" {{ old('service') === 'marketing' ? 'selected' : '' }}>Marketing Digital</option>
+                    <option value="branding"  {{ old('service') === 'branding'  ? 'selected' : '' }}>Identidad de Marca</option>
+                    <option value="academia"  {{ old('service') === 'academia'  ? 'selected' : '' }}>Academia / Cursos</option>
+                    <option value="3d"        {{ old('service') === '3d'        ? 'selected' : '' }}>Impresión 3D</option>
+                    <option value="otro"      {{ old('service') === 'otro'      ? 'selected' : '' }}>Otro</option>
+                </select>
+
+                <textarea name="message" placeholder="Cuéntanos tu proyecto *" required rows="5"
+                    style="width: 100%; padding: 14px 16px; border: 3px solid #fff; background: transparent; color: #fff; font-family: inherit; font-size: 14px; font-weight: 600; outline: none; resize: vertical;">{{ old('message') }}</textarea>
+                @error('message')<p style="color: #f87171; font-size: 12px; margin-top: -12px;">{{ $message }}</p>@enderror
+
+                <button type="submit"
+                    style="background: #a3e635; color: #1a1a1a; border: 3px solid #a3e635; padding: 16px; font-family: inherit; font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; box-shadow: 4px 4px 0 #000; transition: all 0.15s;">
+                    Enviar Mensaje
+                </button>
+            </form>
+        </div>
+    </section>
+
     <!-- Footer -->
-    <footer id="contact" class="footer">
+    <footer class="footer">
         <div class="container footer-grid">
             <div class="footer-brand">
                 <h3>keiyi.</h3>
             </div>
             <div class="footer-links">
                 <a href="#" class="footer-icon icon-insta" aria-label="Instagram">
-                    <!-- Instagram SVG -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
@@ -281,28 +332,16 @@
                     </svg>
                 </a>
                 <a href="#" class="footer-icon icon-email" aria-label="Email">
-                    <!-- Mail SVG -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                         <polyline points="22,6 12,13 2,6"></polyline>
                     </svg>
                 </a>
-                <a href="#" class="footer-icon icon-telegram" aria-label="Telegram">
-                    <!-- Telegram SVG -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="22" y1="2" x2="11" y2="13"></line>
-                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                    </svg>
-                </a>
                 <a href="#" class="footer-icon icon-whatsapp" aria-label="WhatsApp">
-                    <!-- WhatsApp SVG -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path
-                            d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z">
-                        </path>
+                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
                     </svg>
                 </a>
             </div>

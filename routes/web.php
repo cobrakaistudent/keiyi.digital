@@ -32,7 +32,11 @@ Route::get('/blog', function () {
 
 // Portal de Alumnos — protegido por auth + approved
 Route::prefix('academia')->name('academia.')->middleware(['auth', 'approved'])->group(function () {
-    Route::get('/', [App\Http\Controllers\AcademiaController::class, 'dashboard'])->name('dashboard');
+    Route::get('/',                   [App\Http\Controllers\AcademiaController::class, 'dashboard'])->name('dashboard');
+    Route::post('/enroll/{courseId}', [App\Http\Controllers\AcademiaController::class, 'enroll'])->name('enroll');
 });
+
+// Formulario de contacto / cotizacion (publico)
+Route::post('/contacto', [App\Http\Controllers\ContactController::class, 'store'])->name('contacto.store');
 
 require __DIR__.'/auth.php';

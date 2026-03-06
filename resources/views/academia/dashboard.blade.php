@@ -60,6 +60,18 @@
         /* ── LAYOUT ── */
         .wrap { max-width: 1100px; margin: 0 auto; padding: 48px 24px; }
 
+        /* ── ALERTAS ── */
+        .alert {
+            padding: 16px 24px;
+            border: 3px solid #000;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+        .alert-success { background: #a3e635; box-shadow: 3px 3px 0 #000; }
+        .alert-info    { background: #facc15; box-shadow: 3px 3px 0 #000; }
+        .alert-error   { background: #f87171; color: #fff; box-shadow: 3px 3px 0 #000; }
+
         /* ── HERO BIENVENIDA ── */
         .hero {
             background: #1a1a1a;
@@ -116,90 +128,10 @@
             margin-bottom: 20px;
         }
 
-        /* ── GRID CURSOS ── */
-        .courses-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 48px;
-        }
-
-        .course-card {
-            background: #fff;
-            border: 3px solid #000;
-            box-shadow: 4px 4px 0 #000;
-            padding: 28px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            transition: transform 0.15s, box-shadow 0.15s;
-        }
-        .course-card:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0 #000;
-        }
-        .course-tag {
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            padding: 3px 10px;
-            border: 2px solid #000;
-            display: inline-block;
-            width: fit-content;
-        }
-        .tag-proximamente { background: #facc15; }
-        .tag-nuevo { background: #a3e635; }
-        .tag-progreso { background: #60a5fa; color: #fff; }
-
-        .course-emoji { font-size: 40px; line-height: 1; }
-        .course-title { font-size: 18px; font-weight: 800; text-transform: uppercase; line-height: 1.2; }
-        .course-desc { font-size: 13px; color: #555; line-height: 1.6; }
-
-        .progress-bar-wrap {
-            background: #e5e7eb;
-            border: 2px solid #000;
-            height: 10px;
-        }
-        .progress-bar-fill {
-            background: #a3e635;
-            height: 100%;
-            transition: width 0.5s;
-        }
-        .progress-label { font-size: 11px; font-weight: 700; color: #555; }
-
-        .btn-curso {
-            margin-top: auto;
-            background: #1a1a1a;
-            color: #fff;
-            border: 2px solid #000;
-            box-shadow: 3px 3px 0 #000;
-            padding: 10px 20px;
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 13px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-            display: block;
-            transition: all 0.15s;
-        }
-        .btn-curso:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 #000; }
-        .btn-curso.disabled {
-            background: #e5e7eb;
-            color: #aaa;
-            cursor: not-allowed;
-            box-shadow: 2px 2px 0 #ccc;
-            border-color: #ccc;
-        }
-        .btn-curso.disabled:hover { transform: none; box-shadow: 2px 2px 0 #ccc; }
-
-        /* ── TARJETA INFO ── */
+        /* ── STATS ── */
         .info-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 16px;
             margin-bottom: 48px;
         }
@@ -217,6 +149,99 @@
             margin-bottom: 6px;
         }
         .info-card-value { font-size: 22px; font-weight: 800; }
+
+        /* ── GRID CURSOS ── */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 48px;
+        }
+        .course-card {
+            background: #fff;
+            border: 3px solid #000;
+            box-shadow: 4px 4px 0 #000;
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .course-card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 #000;
+        }
+        .course-card.enrolled {
+            border-color: #a3e635;
+            box-shadow: 4px 4px 0 #a3e635;
+        }
+        .course-tag {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border: 2px solid #000;
+            display: inline-block;
+            width: fit-content;
+        }
+        .tag-prereq     { background: #a3e635; }
+        .tag-proximo    { background: #facc15; }
+        .tag-inscrito   { background: #60a5fa; color: #fff; }
+
+        .course-emoji { font-size: 40px; line-height: 1; }
+        .course-title { font-size: 18px; font-weight: 800; text-transform: uppercase; line-height: 1.2; }
+        .course-desc  { font-size: 13px; color: #555; line-height: 1.6; }
+
+        .progress-bar-wrap {
+            background: #e5e7eb;
+            border: 2px solid #000;
+            height: 10px;
+        }
+        .progress-bar-fill {
+            background: #a3e635;
+            height: 100%;
+        }
+        .progress-label { font-size: 11px; font-weight: 700; color: #555; }
+
+        /* ── BOTONES ── */
+        .btn-curso {
+            margin-top: auto;
+            border: 2px solid #000;
+            box-shadow: 3px 3px 0 #000;
+            padding: 10px 20px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            transition: all 0.15s;
+            width: 100%;
+        }
+        .btn-dark  { background: #1a1a1a; color: #fff; }
+        .btn-green { background: #a3e635; color: #1a1a1a; }
+        .btn-curso:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 #000; }
+        .btn-disabled {
+            background: #e5e7eb;
+            color: #aaa;
+            cursor: not-allowed;
+            box-shadow: 2px 2px 0 #ccc;
+            border-color: #ccc;
+        }
+        .btn-disabled:hover { transform: none; box-shadow: 2px 2px 0 #ccc; }
+
+        /* ── AVISO ── */
+        .aviso {
+            background: #facc15;
+            border: 3px solid #000;
+            box-shadow: 4px 4px 0 #000;
+            padding: 24px 28px;
+        }
+        .aviso p { font-size: 13px; font-weight: 700; line-height: 1.7; }
 
         /* ── LOGOUT ── */
         .logout-form { display: inline; }
@@ -251,6 +276,21 @@
 
     <div class="wrap">
 
+        {{-- ALERTAS DE SESION --}}
+        @if (session('enrolled'))
+            <div class="alert alert-success">
+                Inscripcion exitosa en <strong>{{ session('enrolled') }}</strong>. Te enviamos un correo de confirmacion.
+            </div>
+        @endif
+        @if (session('already_enrolled'))
+            <div class="alert alert-info">
+                Ya estas inscrito en <strong>{{ session('already_enrolled') }}</strong>.
+            </div>
+        @endif
+        @if (session('error'))
+            <div class="alert alert-error">{{ session('error') }}</div>
+        @endif
+
         {{-- HERO --}}
         <div class="hero">
             <div>
@@ -258,10 +298,10 @@
                 <h1 class="hero-title">Hola, <span>{{ explode(' ', Auth::user()->name)[0] }}</span>.</h1>
                 <p class="hero-sub">Bienvenido a tu espacio de aprendizaje en Keiyi Digital.</p>
             </div>
-            <div class="badge-activo">✓ Acceso Activo</div>
+            <div class="badge-activo">Acceso Activo</div>
         </div>
 
-        {{-- STATS RÁPIDOS --}}
+        {{-- STATS --}}
         <span class="section-label">Tu Progreso</span>
         <div class="info-grid" style="margin-top: 16px;">
             <div class="info-card" style="background: #a3e635;">
@@ -270,11 +310,11 @@
             </div>
             <div class="info-card" style="background: #facc15;">
                 <div class="info-card-label">En Progreso</div>
-                <div class="info-card-value">{{ $enrollments->where('progress_percent', '>', 0)->where('progress_percent', '<', 100)->count() }}</div>
+                <div class="info-card-value">{{ $enrollments->filter(fn($e) => $e->progress_percent > 0 && $e->progress_percent < 100)->count() }}</div>
             </div>
             <div class="info-card" style="background: #fff;">
                 <div class="info-card-label">Completados</div>
-                <div class="info-card-value">{{ $enrollments->where('progress_percent', 100)->count() }}</div>
+                <div class="info-card-value">{{ $enrollments->filter(fn($e) => $e->progress_percent >= 100)->count() }}</div>
             </div>
             <div class="info-card" style="background: #1a1a1a; color: #fff; border-color: #a3e635; box-shadow: 3px 3px 0 #a3e635;">
                 <div class="info-card-label" style="color: #a3e635;">Miembro desde</div>
@@ -286,54 +326,52 @@
         <span class="section-label">Talleres Disponibles</span>
         <div class="courses-grid" style="margin-top: 16px;">
 
-            {{-- Taller 0 --}}
-            <div class="course-card">
-                <span class="course-tag tag-nuevo">Pre-requisito</span>
-                <span class="course-emoji">🤖</span>
-                <div class="course-title">Taller 0: IA Origins & Motor Agéntico</div>
-                <div class="course-desc">Desmitifica la IA: Tokens, Modelos de Razonamiento, MCP y Arquitectura Agéntica. 3 días intensivos.</div>
-                <div>
-                    <div class="progress-label" style="margin-bottom: 4px;">0% completado</div>
-                    <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width: 0%"></div></div>
+            @foreach ($courses as $courseId => $course)
+                @php $enrolled = $enrollments->has($courseId); @endphp
+                <div class="course-card {{ $enrolled ? 'enrolled' : '' }}">
+
+                    @if ($enrolled)
+                        <span class="course-tag tag-inscrito">Inscrito</span>
+                    @elseif ($courseId === 'taller-0')
+                        <span class="course-tag tag-prereq">Pre-requisito</span>
+                    @else
+                        <span class="course-tag tag-proximo">Proximamente</span>
+                    @endif
+
+                    <span class="course-emoji">{{ $course['emoji'] }}</span>
+                    <div class="course-title">{{ $course['title'] }}</div>
+                    <div class="course-desc">{{ $course['desc'] }}</div>
+
+                    @if ($enrolled)
+                        <div>
+                            <div class="progress-label" style="margin-bottom: 4px;">
+                                {{ $enrollments[$courseId]->progress_percent }}% completado
+                            </div>
+                            <div class="progress-bar-wrap">
+                                <div class="progress-bar-fill" style="width: {{ $enrollments[$courseId]->progress_percent }}%"></div>
+                            </div>
+                        </div>
+                        <span class="btn-curso btn-disabled">Contenido en preparacion</span>
+                    @else
+                        <form method="POST" action="{{ route('academia.enroll', $courseId) }}">
+                            @csrf
+                            <button type="submit" class="btn-curso btn-dark">
+                                Inscribirme
+                            </button>
+                        </form>
+                    @endif
+
                 </div>
-                <a href="#" class="btn-curso disabled">Próximamente</a>
-            </div>
-
-            {{-- Taller 1 --}}
-            <div class="course-card">
-                <span class="course-tag tag-proximamente">Próximamente</span>
-                <span class="course-emoji">🗺️</span>
-                <div class="course-title">Taller 1: El Mapa de la IA (Ecosistema)</div>
-                <div class="course-desc">Navega el ecosistema completo de herramientas de IA para marketing y agencias digitales en 2026.</div>
-                <a href="#" class="btn-curso disabled">Próximamente</a>
-            </div>
-
-            {{-- Taller 2 --}}
-            <div class="course-card">
-                <span class="course-tag tag-proximamente">Próximamente</span>
-                <span class="course-emoji">⚡</span>
-                <div class="course-title">Taller 2: Prompt Engineering Masterclass</div>
-                <div class="course-desc">De prompts básicos a ingeniería de contexto avanzada. Técnicas de Chain-of-Thought, RAG y control de salida.</div>
-                <a href="#" class="btn-curso disabled">Próximamente</a>
-            </div>
-
-            {{-- Taller Marketing Elite --}}
-            <div class="course-card">
-                <span class="course-tag tag-proximamente">Próximamente</span>
-                <span class="course-emoji">🚀</span>
-                <div class="course-title">Marketing Elite 2026</div>
-                <div class="course-desc">GEO, Performance, LTV/CAC, automatización con IA y casos reales Latam. El curso que Harvard no tiene.</div>
-                <a href="#" class="btn-curso disabled">Próximamente</a>
-            </div>
+            @endforeach
 
         </div>
 
         {{-- AVISO --}}
-        <div style="background: #facc15; border: 3px solid #000; box-shadow: 4px 4px 0 #000; padding: 24px 28px;">
-            <p style="font-size: 13px; font-weight: 700; line-height: 1.7;">
-                <strong>🔔 Estamos construyendo el contenido.</strong>
-                Te notificaremos por correo en cuanto el primer taller esté disponible.
-                Mientras tanto, tu acceso está activo y listo.
+        <div class="aviso">
+            <p>
+                <strong>Estamos construyendo el contenido.</strong>
+                Al inscribirte registras tu interes y seras el primero en recibir acceso cuando el taller este listo.
+                Revisamos tu correo electronico periodicamente para notificaciones.
             </p>
         </div>
 
