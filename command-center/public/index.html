@@ -723,14 +723,37 @@
                         ul.innerHTML = items.map(renderFn).join('');
                     };
 
-                    renderList('intelTools', data.tools, t => `
+                    renderList('intelTools', data.tools, t => {
+                        const toolName   = t.display || t.name;
+                        const sub        = t.dominant_source || null;
+                        const subSlug    = sub ? sub.replace(/^r\//, '') : null;
+                        const searchUrl  = subSlug
+                            ? `https://www.reddit.com/r/${subSlug}/search/?q=${encodeURIComponent(toolName)}&restrict_sr=1&sort=top`
+                            : null;
+                        const allSources = (t.sources || []).map(s => {
+                            const slug = s.replace(/^r\//, '');
+                            const url  = `https://www.reddit.com/r/${slug}/search/?q=${encodeURIComponent(toolName)}&restrict_sr=1&sort=top`;
+                            return `<a href="${url}" target="_blank" class="text-gray-500 hover:text-[#a3e635] underline">${s}</a>`;
+                        }).join(' · ');
+                        return `
                         <li class="bg-gray-800 px-3 py-2 rounded border border-gray-700">
                             <div class="flex justify-between items-center">
-                                <span class="font-bold text-sm truncate">${t.display || t.name}</span>
+                                <span class="font-bold text-sm truncate">${toolName}</span>
                                 <span class="bg-[#a3e635] text-black text-xs font-black px-2 py-0.5 rounded ml-2 whitespace-nowrap">${t.count}x</span>
                             </div>
-                            ${t.dominant_source ? `<div class="text-xs text-gray-400 mt-1">Domina en: <span class="text-[#a3e635] font-semibold">${t.dominant_source}</span></div>` : ''}
-                        </li>`);
+                            ${sub ? `
+                            <div class="text-xs text-gray-400 mt-1">
+                                Domina en:
+                                <a href="${searchUrl}" target="_blank"
+                                   class="text-[#a3e635] font-semibold hover:underline"
+                                   title="Ver posts de '${toolName}' en ${sub} — verificar menciones">
+                                    ${sub} ↗
+                                </a>
+                            </div>` : ''}
+                            ${t.sources && t.sources.length > 1 ? `
+                            <div class="text-xs text-gray-600 mt-0.5">También en: ${allSources}</div>` : ''}
+                        </li>`;
+                    });
 
                     renderList('intelQuestions', data.questions, q => `
                         <li class="bg-gray-800 px-3 py-2 rounded border border-gray-700">
