@@ -40,3 +40,35 @@
 #### 13. Cache-Busting Visual en Safari
 *   **Problema:** Al actualizar imágenes de cursos (ej. de MySQL a Notion), Safari suele mostrar la versión vieja por su política de caché agresiva.
 *   **Solución:** Añadir parámetros de versión a las URLs de las imágenes (`?v=5`) para forzar la descarga de los nuevos activos visuales aprobados por el usuario.
+
+### Lecciones de Ingeniería de Precisión - Fase 4: Scout AI (5 de Marzo, 2026)
+
+#### 14. Paridad de Entorno: SQLite vs. MySQL (Strictness)
+*   **Problema:** SQLite es permisivo con los campos `ENUM`, aceptando cualquier string que se le envíe. MySQL (Hostinger/Producción) es estricto y lanza errores de integridad si el valor no coincide exactamente con la definición de la migración.
+*   **Lección:** Al diseñar recursos de Filament o formularios, el valor enviado a la base de datos debe ser validado contra la migración original, no solo contra el label visual de la interfaz.
+
+#### 15. Integridad de Modelos Eloquent y Mass-Assignment
+*   **Problema:** Campos críticos (como `role` o `approval_status`) pueden ser editados en la interfaz pero fallar silenciosamente al guardarse si no están declarados en el array `$fillable` del modelo.
+*   **Lección:** La implementación de un nuevo campo es un proceso de tres pasos ineludibles: 1) Migración de BD, 2) Inclusión en `$fillable` del Modelo, y 3) Mapeo en el Recurso (Filament/Controller). Omitir el paso 2 es un "bug invisible" que solo se manifiesta bajo carga real.
+
+#### 16. Arquitectura Híbrida (Local-First AI Integration)
+*   **Estrategia:** Para maximizar recursos en hosting compartido (Hostinger), la mejor arquitectura es delegar el procesamiento pesado (Scraping, Inferencia IA con Ollama, Generación de PDFs) a un "Brain Hub" local (Mac M2).
+*   **Técnica:** El servidor de producción actúa solo como una "Capa de Exhibición y Aprobaciones". La comunicación debe estar blindada con **Laravel Sanctum (Tokens de Larga Duración)** y restricciones de **CORS** específicas para el Command Center local.
+
+#### 17. Higiene de Infraestructura en Micro-servicios Locales
+*   **Lección:** Al integrar sub-proyectos como el `command-center` (Node.js) dentro de un repo Laravel, es vital actualizar el `.gitignore` raíz de forma recursiva.
+*   **Riesgo:** Olvidar excluir `node_modules/` o archivos `.env` locales puede comprometer la seguridad del repositorio y saturar el historial de Git con miles de archivos innecesarios.
+
+#### 18. Compatibilidad Estricta de Versiones (Filament v3)
+*   **Problema:** Al intentar proteger un recurso directamente desde su `PanelProvider` empleando métodos como `->authorize()`, Laravel Colapsa (BadMethodCallException). Esto se debe a la descontinuación o alteración de *Macros* directos de interfaces en versiones nuevas de Filament.
+*   **Lección:** Nunca emular o inyectar código ciegamente que dependa de versiones antiguas de paquetería (Laravel / Filament). El daño no es local, tira el Service Container, inhabilitando incluso los comandos para migrar la base de datos o servir la página web entera. Revisar siempre la sintaxis de Filament v3.
+
+#### 19. El Paradigma "API-Less" (Seguridad Extrema en Infraestructura Dividida)
+*   **Decisión Pivotante:** Para el Búnker Local (Command Center Node.js/Python), la premisa original dictaba establecer endpoints API en Laravel (Sanctum Tokens). Sin embargo, esto abre innecesariamente la superficie de ataque del servidor público.
+*   **Lección:** Si la máquina cliente (Mac M2) es propiedad del Director y tiene llaves SSH configuradas, **elimina los endpoints HTTP**. 
+*   **Técnica Impenetrable:** Construir un túnel SSH y correr código PHP Raw (`php -r "echo json_encode(...)"`) para "ordeñar" la base de datos de Hostinger usando la stdout. Y para transferencia de carga pesada (JSON de Scraping), usar **SCP** nativo y luego un trigger SSH. Totalmente hermético, ultra seguro, y bypass a los límites de CORS/Apache.
+
+#### 20. Preservación Crítica de la Memoria de IAs (Regla de Oro)
+*   **Problema Histórico:** Durante rutinas de refactorización o limpieza, agentes IA asumieron el control total del árbol de directorios local, procediendo a sobrescribir o destruir por completo archivos vitales de configuración u orquestación (como el GEMINI.md o notas de contexto del usuario).
+*   **Lección Irrevocable:** Antes de que cualquier IA empiece a crear, mover o reescribir un archivo, **DEBE** obligatoriamente verificar su existencia usando `view_file` o herramientas de lectura. 
+*   **Técnica:** Nunca usar comandos de reemplazo total (`cat >` / `write_to_file` con overwrite=true) sobre archivos estructurales sin primero consultar el contexto, cruzarlo con el usuario, o utilizar exclusiones explícitas de edición (`multi_replace_file_content` puntual en lugar de borrado masivo). Otras IAs operando en el mismo Búnker **NO DEBEN REPETIR ESTE ERROR O EL CONTEXTO SE PERDERÁ.**

@@ -30,4 +30,9 @@ Route::get('/blog', function () {
     return view('blog');
 });
 
+// Portal de Alumnos — protegido por auth + approved
+Route::prefix('academia')->name('academia.')->middleware(['auth', 'approved'])->group(function () {
+    Route::get('/', [App\Http\Controllers\AcademiaController::class, 'dashboard'])->name('dashboard');
+});
+
 require __DIR__.'/auth.php';

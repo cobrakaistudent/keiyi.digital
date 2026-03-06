@@ -61,10 +61,24 @@
                 <p class="text-lg text-gray-700 font-bold border-b-4 border-black inline-block pb-1">Búnker Táctico
                     Local (Mac M2) 📡</p>
             </div>
-            <div
-                class="bg-black text-white px-5 py-3 rounded-full text-sm font-bold shadow-[4px_4px_0px_#d9f99d] flex items-center gap-2">
-                <span class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></span>
-                Node.js + Ollama (Qwen): Activos
+            <div class="flex flex-col items-end gap-2">
+                <div
+                    class="bg-black text-white px-5 py-3 rounded-full text-sm font-bold shadow-[4px_4px_0px_#d9f99d] flex items-center gap-2">
+                    <span class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></span>
+                    Node.js + Ollama (Qwen): Activos
+                </div>
+                <div id="hostingerStatus" 
+                    class="bg-white border-2 border-black px-4 py-2 rounded-lg text-[10px] font-black uppercase shadow-[2px_2px_0px_#000] flex flex-col items-end gap-1 min-w-[200px]">
+                    <div class="flex items-center gap-2">
+                        <span id="sshDot" class="w-2 h-2 bg-gray-400 rounded-full"></span> SSH: <span id="sshText" class="text-gray-500">OFFLINE</span>
+                        <span class="mx-1 text-gray-300">|</span>
+                        <span id="scpDot" class="w-2 h-2 bg-gray-400 rounded-full"></span> SCP: <span id="scpText" class="text-gray-500">OFFLINE</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span id="lastCheck" class="text-[9px] text-gray-400 italic">Nunca revisado</span>
+                        <button id="btnCheckHostinger" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition-colors">⚡ Test</button>
+                    </div>
+                </div>
             </div>
         </header>
 
@@ -86,69 +100,663 @@
 
                 <div>
                     <button id="btnRunScout"
-                        class="w-full funky-border funky-button py-4 font-black text-lg flex justify-center items-center gap-2">
+                        class="w-full funky-border funky-button py-4 font-black text-lg flex justify-center items-center gap-2 mb-3">
                         <span>▶ Rastreo Local e IA Generativa</span>
+                    </button>
+                    <!-- NUEVO: Botón para Editar el Prompt -->
+                    <button id="btnOpenPromptModal"
+                        class="w-full bg-black text-white py-2 font-bold text-sm border-2 border-black hover:bg-gray-800 transition-colors uppercase tracking-wider rounded-lg">
+                        ⚙️ Configurar Búsqueda (Prompt)
                     </button>
                     <!-- Consola Virtual -->
                     <div id="scoutStatus" class="terminal-box mt-4 hidden shadow-inner whitespace-pre-wrap"></div>
                 </div>
             </div>
 
-            <!-- PANEL: Operaciones Secundarias (Placeholder PDF) -->
+            <!-- PANEL: Fábrica de Reportes (Operativo) -->
             <div class="bg-[#facc15] p-6 funky-border flex flex-col justify-between items-start">
                 <div class="w-full">
                     <h2 class="text-2xl font-bold mb-3 flex items-center gap-3">
                         <span class="text-3xl">📄</span> Factory de Reportes (PDF)
                     </h2>
-                    <p class="mb-5 text-black text-sm font-medium font-bold leading-relaxed opacity-90">
-                        Muy pronto. Este panel tomará la bitácora inteligente de IA y construirá un exquisito reporte
-                        ejecutivo en formato PDF grabándolo en tus carpetas de iCloud. Todo offline y sin pagar
-                        servidores Lambda caros.
+                    <p class="mb-5 text-black text-sm font-medium leading-relaxed opacity-90">
+                        Extrae el último análisis de Ollama y genera un reporte ejecutivo visual listo para imprimir
+                        como PDF.
                     </p>
                 </div>
 
-                <button
-                    class="w-full funky-border bg-black text-white py-4 font-black text-lg hover:bg-gray-800 transition-colors opacity-50 cursor-not-allowed">
-                    Generador PDF (En Desarrollo Fase 5.b)
+                <div id="reportStatus" class="terminal-box w-full mb-4 hidden whitespace-pre-wrap text-xs"></div>
+
+                <button id="btnGenerateReport"
+                    class="w-full funky-border bg-black text-white py-4 font-black text-lg hover:bg-gray-800 transition-colors">
+                    Generar Reporte Ejecutivo PDF
                 </button>
             </div>
 
+            <!-- PANEL: Aprobación Remota de Alumnos (Sincronización Bilateral) -->
+            <div
+                class="bg-gray-800 text-white p-6 funky-border flex flex-col justify-between items-start shadow-[6px_6px_0px_#a0aec0] col-span-1 lg:col-span-2">
+                <div class="w-full flex justify-between items-center mb-4 border-b pb-2 border-gray-600">
+                    <h2 class="text-2xl font-bold flex items-center gap-3">
+                        <span class="text-3xl">🎓</span> Control de Acceso (Academia Keiyi)
+                    </h2>
+                    <button id="btnRefreshUsers"
+                        class="text-sm bg-gray-600 hover:bg-gray-500 font-bold py-1 px-3 rounded border border-gray-500">↻
+                        Refrescar Solicitudes</button>
+                </div>
+
+                <p class="text-gray-300 text-sm mb-4">
+                    Sincronización bilateral con Hostinger. Las aprobaciones aquí emitidas impactan directamente los
+                    accesos al Dashboard Premium del alumno en la web.
+                </p>
+
+                <div class="w-full bg-gray-900 rounded-lg border border-gray-700 overflow-hidden">
+                    <ul id="usersPendingList" class="divide-y divide-gray-700 max-h-60 overflow-y-auto">
+                        <!-- Iterado via JS -->
+                    </ul>
+                    <div id="usersLoading" class="text-center py-6 text-gray-500 text-sm animate-pulse">
+                        Comprobando base de datos Hostinger por nuevos alumnos...
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- RADAR DE FUENTES -->
+        <div class="mt-8 bg-white p-6 funky-border">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold flex items-center gap-3">
+                        <span class="text-3xl">📡</span> Radar de Fuentes Activas
+                    </h2>
+                    <p class="text-sm font-medium text-gray-700 mt-1">
+                        Las URLs, foros y comunidades que tu Búnker vigila (Aprobadas en Hostinger).
+                    </p>
+                </div>
+                <button id="btnRefreshRadar"
+                    class="funky-button border-2 border-black font-bold px-4 py-2 rounded-lg text-sm bg-blue-400 hover:bg-blue-300">
+                    ↻ Refrescar Radar
+                </button>
+            </div>
+
+            <!-- NUEVO: Formulario para añadir fuente manual -->
+            <div
+                class="mb-6 flex flex-col md:flex-row gap-2 bg-[#f4efeb] p-4 rounded-xl border-4 border-black shadow-[4px_4px_0px_#000]">
+                <input type="text" id="newSourceName" placeholder="Nombre (Ej. MIT Sloan)"
+                    class="px-3 py-2 border-2 border-black w-full md:w-1/4 rounded font-bold focus:outline-none focus:ring-2 focus:ring-black">
+                <select id="newSourceType"
+                    class="px-3 py-2 border-2 border-black font-bold rounded md:w-1/4 focus:outline-none focus:ring-2 focus:ring-black">
+                    <option value="web">WEB (Scraping HTML)</option>
+                    <option value="rss">RSS (Titulares/News)</option>
+                </select>
+                <input type="url" id="newSourceUrl" placeholder="https://..."
+                    class="px-3 py-2 border-2 border-black w-full flex-grow rounded font-mono focus:outline-none focus:ring-2 focus:ring-black">
+                <button id="btnAddSource"
+                    class="bg-black text-white font-black px-6 py-2 border-2 border-black hover:bg-gray-800 transition-colors uppercase tracking-wider rounded whitespace-nowrap">➕
+                    Agregar URL</button>
+            </div>
+
+            <div class="overflow-x-auto border-2 border-black rounded-lg">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-gray-100 border-b-2 border-black">
+                        <tr>
+                            <th class="p-3 text-sm uppercase tracking-wider font-extrabold border-r-2 border-black">
+                                Nombre de Fuente / Comunidad</th>
+                            <th
+                                class="p-3 text-sm uppercase tracking-wider font-extrabold border-r-2 border-black w-24">
+                                Protocolo</th>
+                            <th
+                                class="p-3 text-sm uppercase tracking-wider font-extrabold border-r-2 border-black w-32">
+                                Utilidad</th>
+                            <th class="p-3 text-sm uppercase tracking-wider font-extrabold border-r-2 border-black">
+                                Endpoint (URL)</th>
+                            <th class="p-3 text-sm uppercase tracking-wider font-extrabold w-36">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="radarTbody" class="text-sm font-medium divide-y-2 divide-black">
+                        <!-- Vía JS -->
+                    </tbody>
+                </table>
+                <div id="radarLoading" class="text-center py-8 text-gray-500 font-bold animate-pulse">Cargando antenas
+                    desde tu servidor Hostinger...</div>
+            </div>
         </div>
     </div>
 
+        <!-- DEEP SCOUT — Fuentes Profundas (Reddit) -->
+        <div class="mt-8 bg-white p-6 funky-border">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold flex items-center gap-3">
+                        <span class="text-3xl">🕳️</span> Fuentes Profundas (Reddit)
+                    </h2>
+                    <p class="text-sm font-medium text-gray-700 mt-1">
+                        Escarba posts nuevos, top y controversiales + comentarios. Extrae herramientas, preguntas y referencias.
+                    </p>
+                </div>
+                <button id="btnRunDeepScout"
+                    class="funky-button border-2 border-black font-black px-6 py-3 rounded-lg text-sm uppercase tracking-wider whitespace-nowrap">
+                    ▶ Análisis Profundo
+                </button>
+            </div>
+
+            <!-- Agregar subreddit -->
+            <div class="mb-5 flex flex-col md:flex-row gap-2 bg-[#f4efeb] p-4 rounded-xl border-4 border-black shadow-[4px_4px_0px_#000]">
+                <input type="text" id="newSubreddit" placeholder="Nombre del subreddit (ej: digital_marketing)"
+                    class="px-3 py-2 border-2 border-black flex-grow rounded font-mono focus:outline-none focus:ring-2 focus:ring-black">
+                <button id="btnAddSubreddit"
+                    class="bg-black text-white font-black px-6 py-2 border-2 border-black hover:bg-gray-800 transition-colors uppercase tracking-wider rounded whitespace-nowrap">
+                    ➕ Agregar r/
+                </button>
+            </div>
+
+            <!-- Tabla de subreddits configurados -->
+            <div class="overflow-x-auto border-2 border-black rounded-lg mb-5">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-gray-100 border-b-2 border-black">
+                        <tr>
+                            <th class="p-3 text-sm uppercase tracking-wider font-extrabold border-r-2 border-black">Subreddit</th>
+                            <th class="p-3 text-sm uppercase tracking-wider font-extrabold border-r-2 border-black w-36">Agregado</th>
+                            <th class="p-3 text-sm uppercase tracking-wider font-extrabold w-24">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="deepSourcesTbody" class="text-sm font-medium divide-y-2 divide-black"></tbody>
+                </table>
+                <div id="deepSourcesLoading" class="text-center py-6 text-gray-500 font-bold animate-pulse">Cargando subreddits...</div>
+            </div>
+
+            <!-- Consola de Deep Scout -->
+            <div id="deepScoutStatus" class="terminal-box hidden whitespace-pre-wrap mt-2"></div>
+        </div>
+
+        <!-- INTELIGENCIA DE ACADEMIA -->
+        <div class="mt-8 bg-[#1a1a1a] text-white p-6 funky-border">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold flex items-center gap-3">
+                        <span class="text-3xl">🧠</span> Inteligencia de Academia
+                    </h2>
+                    <p class="text-sm text-gray-400 mt-1" id="intelLastUpdated">Cargando registro acumulativo...</p>
+                </div>
+                <button id="btnRefreshIntel"
+                    class="text-sm bg-gray-700 hover:bg-gray-600 font-bold py-2 px-4 rounded border border-gray-500 uppercase tracking-wider">
+                    ↻ Refrescar
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Herramientas -->
+                <div>
+                    <div class="bg-[#a3e635] text-black px-3 py-1 font-extrabold text-xs uppercase tracking-wider border-2 border-black inline-block mb-3">🛠️ Top Herramientas</div>
+                    <ul id="intelTools" class="space-y-2">
+                        <li class="text-gray-500 text-sm animate-pulse">Cargando...</li>
+                    </ul>
+                </div>
+                <!-- Preguntas -->
+                <div>
+                    <div class="bg-[#facc15] text-black px-3 py-1 font-extrabold text-xs uppercase tracking-wider border-2 border-black inline-block mb-3">❓ Preguntas Frecuentes</div>
+                    <ul id="intelQuestions" class="space-y-2">
+                        <li class="text-gray-500 text-sm animate-pulse">Cargando...</li>
+                    </ul>
+                </div>
+                <!-- Referencias -->
+                <div>
+                    <div class="bg-white text-black px-3 py-1 font-extrabold text-xs uppercase tracking-wider border-2 border-black inline-block mb-3">🔗 Referencias Top</div>
+                    <ul id="intelReferences" class="space-y-2">
+                        <li class="text-gray-500 text-sm animate-pulse">Cargando...</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    <!-- PROMPT EDITOR: ahora es página dedicada en /prompt-editor (nueva pestaña) -->
+    <!-- <div id="promptModal" ...> ELIMINADO — reemplazado por /prompt-editor </div> -->
+
+    <!-- LOGICA FRONTEND (placeholder temporal para evitar error de búsqueda) -->
     <!-- LOGICA FRONTEND -->
     <script>
-        document.getElementById('btnRunScout').addEventListener('click', async () => {
-            const btn = document.getElementById('btnRunScout');
-            const statusDiv = document.getElementById('scoutStatus');
+        document.addEventListener('DOMContentLoaded', () => {
 
-            // Estado Cargando
-            btn.innerHTML = '⏳ <span class="animate-pulse">Despertando Modelo IA (Puede tardar minutos)...</span>';
-            btn.classList.add('opacity-70', 'pointer-events-none');
-            statusDiv.classList.remove('hidden');
-            statusDiv.innerHTML = '<span class="text-yellow-400">>> INFO:</span> Conectando motor local. Procesando feeds a través de qwen3:8b...\n<span class="text-gray-500">>> Espere, la IA está escribiendo y razonando el mercado...</span>\n\n';
-
-            try {
-                // Llamamos a nuestro backend Node que tiene la orden "exec('python scout.py')"
-                const response = await fetch('/api/run-scout', { method: 'POST' });
-                const data = await response.json();
-
-                if (data.success) {
-                    statusDiv.innerHTML += '<span class="text-green-400">>> ÉXITO EN OPERACIÓN IA</span>\n\n' + data.logs;
-                    btn.innerHTML = '✅ Reiniciar Rastreo RSS';
-                } else {
-                    statusDiv.innerHTML += '<span class="text-red-400">>> FALLO EN PYTHON/OLLAMA</span>\n\n' + data.error + '\n\nLogs:\n' + data.logs;
-                    btn.innerHTML = '❌ Reintentar Operación';
-                }
-            } catch (error) {
-                statusDiv.innerHTML += '<span class="text-red-400">>> ERROR CRÍTICO NODE SERVER</span>\n' + error.message;
-                btn.innerHTML = '❌ Reintentar';
-            } finally {
-                // Scroll suave hasta el fin de la consola
-                statusDiv.scrollTop = statusDiv.scrollHeight;
-                btn.classList.remove('opacity-70', 'pointer-events-none');
+            // ── Scout AI ──────────────────────────────────────────────────
+            const btnRunScout = document.getElementById('btnRunScout');
+            if (btnRunScout) {
+                btnRunScout.addEventListener('click', async () => {
+                    const statusDiv = document.getElementById('scoutStatus');
+                    btnRunScout.innerHTML = '⏳ <span class="animate-pulse">Despertando Modelo IA (Puede tardar minutos)...</span>';
+                    btnRunScout.classList.add('opacity-70', 'pointer-events-none');
+                    statusDiv.classList.remove('hidden');
+                    statusDiv.innerHTML = '<span class="text-yellow-400">>> INFO:</span> Conectando motor local. Procesando feeds a través de qwen3:8b...\n<span class="text-gray-500">>> Espere, la IA está escribiendo y razonando el mercado...</span>\n\n';
+                    try {
+                        const response = await fetch('/api/run-scout', { method: 'POST' });
+                        const data = await response.json();
+                        if (data.success) {
+                            statusDiv.innerHTML += '<span class="text-green-400">>> ÉXITO EN OPERACIÓN IA</span>\n\n' + data.logs;
+                            btnRunScout.innerHTML = '✅ Reiniciar Rastreo';
+                        } else {
+                            statusDiv.innerHTML += '<span class="text-red-400">>> FALLO EN PYTHON/OLLAMA</span>\n\n' + data.error + '\n\nLogs:\n' + data.logs;
+                            btnRunScout.innerHTML = '❌ Reintentar Operación';
+                        }
+                    } catch (error) {
+                        statusDiv.innerHTML += '<span class="text-red-400">>> ERROR CRÍTICO NODE SERVER</span>\n' + error.message;
+                        btnRunScout.innerHTML = '❌ Reintentar';
+                    } finally {
+                        statusDiv.scrollTop = statusDiv.scrollHeight;
+                        btnRunScout.classList.remove('opacity-70', 'pointer-events-none');
+                    }
+                });
             }
-        });
+
+            // ── Configurar Búsqueda — abre nueva pestaña dedicada ────────
+            const btnOpenPrompt = document.getElementById('btnOpenPromptModal');
+            if (btnOpenPrompt) {
+                btnOpenPrompt.addEventListener('click', () => window.open('/prompt-editor', '_blank'));
+            }
+
+            // ── Radar de Fuentes ──────────────────────────────────────────
+            async function fetchRadar() {
+                const tbody = document.getElementById('radarTbody');
+                const loading = document.getElementById('radarLoading');
+                const btnRefresh = document.getElementById('btnRefreshRadar');
+                if (btnRefresh) btnRefresh.classList.add('opacity-50', 'pointer-events-none');
+                tbody.innerHTML = '';
+                try {
+                    const response = await fetch('/api/scout-sources');
+                    const result = await response.json();
+                    loading.classList.add('hidden');
+                    if (result.data && result.data.length > 0) {
+                        result.data.forEach(source => {
+                            let colorScore = 'bg-yellow-300';
+                            if (source.relevance_score >= 80) colorScore = 'bg-[#a3e635]';
+                            if (source.relevance_score < 50) colorScore = 'bg-red-400 text-white';
+                            const badgeType = source.type === 'web' ? 'bg-[#facc15] text-black' : 'bg-black text-white';
+                            const tr = document.createElement('tr');
+                            tr.className = 'hover:bg-gray-50 transition-colors';
+                            const healthIcon = source.relevance_score < 50 ? ' <span title="Fuente de bajo rendimiento — considera eliminarla">⚠️</span>' : '';
+                            tr.innerHTML = `
+                                <td class="p-3 border-r-2 border-black font-bold text-base">📌 ${source.name}${healthIcon}</td>
+                                <td class="p-3 border-r-2 border-black"><span class="px-2 py-1 rounded text-xs font-bold uppercase border-2 border-black ${badgeType}">${source.type}</span></td>
+                                <td class="p-3 border-r-2 border-black"><span class="px-3 py-1 rounded-full text-sm font-bold border-2 border-black shadow-[2px_2px_0px_#000] ${colorScore}">${source.relevance_score}%</span></td>
+                                <td class="p-3 border-r-2 border-black text-xs font-mono text-gray-600 truncate max-w-xs" title="${source.url}">${source.url}</td>
+                                <td class="p-3">
+                                    <div class="flex gap-1">
+                                        <button onclick="window.deleteSource(${source.id}, this)" class="bg-red-500 hover:bg-red-400 text-white font-bold px-2 py-1 rounded border border-red-700 text-xs whitespace-nowrap">✕ Eliminar</button>
+                                        <button onclick="window.banSource(${source.id}, this)" class="bg-gray-700 hover:bg-gray-600 text-white font-bold px-2 py-1 rounded border border-gray-900 text-xs whitespace-nowrap">⊘ Banear</button>
+                                    </div>
+                                </td>`;
+                            tbody.appendChild(tr);
+                        });
+                    } else {
+                        tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center border-t-2 border-black">
+                            <p class="text-gray-700 font-bold mb-1">Sin fuentes configuradas en Hostinger.</p>
+                            <p class="text-gray-500 text-xs">El Scout usará antenas predeterminadas: Reddit EdTech + Universidades Top USA.</p>
+                        </td></tr>`;
+                    }
+                } catch (error) {
+                    loading.classList.add('hidden');
+                    tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-red-500 font-bold border-t-2 border-black">Error Proxy: ${error.message}</td></tr>`;
+                } finally {
+                    if (btnRefresh) btnRefresh.classList.remove('opacity-50', 'pointer-events-none');
+                }
+            }
+
+            const btnRefreshRadar = document.getElementById('btnRefreshRadar');
+            if (btnRefreshRadar) btnRefreshRadar.addEventListener('click', fetchRadar);
+            fetchRadar();
+
+            // ── Agregar Fuente Manual ─────────────────────────────────────
+            const btnAddSource = document.getElementById('btnAddSource');
+            if (btnAddSource) {
+                btnAddSource.addEventListener('click', async () => {
+                    const name = document.getElementById('newSourceName').value.trim();
+                    const type = document.getElementById('newSourceType').value;
+                    const url = document.getElementById('newSourceUrl').value.trim();
+                    if (!url) { alert('Por favor escribe al menos la URL.'); return; }
+                    btnAddSource.disabled = true;
+                    const originalText = btnAddSource.innerHTML;
+                    btnAddSource.innerHTML = '⏳ Guardando...';
+                    try {
+                        const response = await fetch('/api/scout-sources', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ name, type, url })
+                        });
+                        const result = await response.json();
+                        if (result.success !== false) {
+                            document.getElementById('newSourceName').value = '';
+                            document.getElementById('newSourceUrl').value = '';
+                            fetchRadar();
+                        } else {
+                            alert('Error al guardar: ' + result.error);
+                        }
+                    } catch (error) {
+                        alert('Error de red al añadir fuente.');
+                    } finally {
+                        btnAddSource.disabled = false;
+                        btnAddSource.innerHTML = originalText;
+                    }
+                });
+            }
+
+            // ── Acciones del Radar (Eliminar / Banear) ────────────────────
+            window.deleteSource = async function(id, btn) {
+                if (!confirm('¿Eliminar esta fuente permanentemente?')) return;
+                btn.disabled = true; btn.innerHTML = '...';
+                try {
+                    await fetch(`/api/scout-sources/${id}`, { method: 'DELETE' });
+                    fetchRadar();
+                } catch (e) {
+                    alert('Error al eliminar.'); btn.disabled = false; btn.innerHTML = '✕ Eliminar';
+                }
+            };
+
+            window.banSource = async function(id, btn) {
+                if (!confirm('¿Banear esta fuente? Quedará inactiva permanentemente.')) return;
+                btn.disabled = true; btn.innerHTML = '...';
+                try {
+                    await fetch(`/api/scout-sources/${id}/ban`, { method: 'POST' });
+                    fetchRadar();
+                } catch (e) {
+                    alert('Error al banear.'); btn.disabled = false; btn.innerHTML = '⊘ Banear';
+                }
+            };
+
+            // ── Fábrica de Reportes ───────────────────────────────────────
+            const btnGenerateReport = document.getElementById('btnGenerateReport');
+            if (btnGenerateReport) {
+                btnGenerateReport.addEventListener('click', async () => {
+                    const statusDiv = document.getElementById('reportStatus');
+                    btnGenerateReport.innerHTML = '⏳ <span class="animate-pulse">Descargando inteligencia...</span>';
+                    btnGenerateReport.classList.add('opacity-70', 'pointer-events-none');
+                    statusDiv.classList.remove('hidden');
+                    statusDiv.innerHTML = '<span class="text-yellow-400">>> INFO:</span> Extrayendo último análisis de Ollama...\n';
+                    try {
+                        const response = await fetch('/api/generate-report');
+                        if (!response.ok) {
+                            const err = await response.json();
+                            throw new Error(err.error || `HTTP ${response.status}`);
+                        }
+                        const html = await response.text();
+                        const reportTab = window.open('', '_blank');
+                        reportTab.document.write(html);
+                        reportTab.document.close();
+                        statusDiv.innerHTML += '<span class="text-green-400">>> REPORTE GENERADO</span> — Abierto en nueva pestaña.\n<span class="text-gray-400">>> Imprimir → Guardar como PDF.</span>';
+                        btnGenerateReport.innerHTML = '✅ Generar Otro Reporte';
+                    } catch (error) {
+                        statusDiv.innerHTML += `<span class="text-red-400">>> ERROR</span>\n${error.message}`;
+                        btnGenerateReport.innerHTML = '❌ Reintentar';
+                    } finally {
+                        btnGenerateReport.classList.remove('opacity-70', 'pointer-events-none');
+                        statusDiv.scrollTop = statusDiv.scrollHeight;
+                    }
+                });
+            }
+
+            // ── Control de Acceso (Alumnos) ───────────────────────────────
+            async function fetchUsers() {
+                const list = document.getElementById('usersPendingList');
+                const loading = document.getElementById('usersLoading');
+                const btnRefresh = document.getElementById('btnRefreshUsers');
+                list.innerHTML = '';
+                loading.classList.remove('hidden');
+                if (btnRefresh) btnRefresh.classList.add('opacity-50', 'pointer-events-none');
+                try {
+                    const response = await fetch('/api/proxy/users/pending');
+                    const result = await response.json();
+                    loading.classList.add('hidden');
+                    if (result.data && result.data.length > 0) {
+                        result.data.forEach(user => {
+                            const li = document.createElement('li');
+                            li.className = 'p-4 flex items-center justify-between hover:bg-gray-800 transition-colors';
+                            li.innerHTML = `
+                                <div>
+                                    <h3 class="font-bold text-gray-100 flex items-center gap-2">👤 ${user.name}</h3>
+                                    <p class="text-sm text-gray-400 mt-1">📧 ${user.email} | Registrado: ${new Date(user.created_at).toLocaleDateString()}</p>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button onclick="window.updateUserStatus(${user.id}, 'approved')" class="bg-green-500 hover:bg-green-400 text-black font-bold px-4 py-2 rounded shadow text-sm">✓ Aprobar</button>
+                                    <button onclick="window.updateUserStatus(${user.id}, 'rejected')" class="border border-red-500 text-red-400 hover:bg-red-500 hover:text-white font-bold px-4 py-2 rounded text-sm transition-colors">✕ Rechazar</button>
+                                </div>`;
+                            list.appendChild(li);
+                        });
+                    } else {
+                        list.innerHTML = '<li class="p-6 text-center text-gray-400 font-bold">Sin solicitudes pendientes.</li>';
+                    }
+                } catch (error) {
+                    loading.classList.add('hidden');
+                    list.innerHTML = `<li class="p-6 text-center text-red-500 font-bold">Error de sincronización: ${error.message}</li>`;
+                } finally {
+                    if (btnRefresh) btnRefresh.classList.remove('opacity-50', 'pointer-events-none');
+                }
+            }
+
+            window.updateUserStatus = async function(userId, statusText) {
+                const confirmMsg = statusText === 'approved' ? '¿Aprobar y dar acceso premium?' : '¿Rechazar solicitud y denegar acceso?';
+                if (!confirm(confirmMsg)) return;
+                try {
+                    const response = await fetch(`/api/proxy/users/${userId}/status`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ status: statusText })
+                    });
+                    const result = await response.json();
+                    if (result.success !== false) { fetchUsers(); }
+                    else { alert('Error en Laravel: ' + result.error); }
+                } catch (error) {
+                    alert('No se pudo comunicar con el servidor Local de Node.js');
+                }
+            };
+
+            const btnRefreshUsers = document.getElementById('btnRefreshUsers');
+            if (btnRefreshUsers) btnRefreshUsers.addEventListener('click', fetchUsers);
+            fetchUsers();
+
+            // ── Prueba de Conexión Hostinger (SSH + SCP) ──────────────────
+            const btnCheckHostinger = document.getElementById('btnCheckHostinger');
+            const sshDot = document.getElementById('sshDot');
+            const sshText = document.getElementById('sshText');
+            const scpDot = document.getElementById('scpDot');
+            const scpText = document.getElementById('scpText');
+            const lastCheck = document.getElementById('lastCheck');
+
+            function applyHostingerStatus(data) {
+                if (data.ssh) {
+                    sshDot.className = 'w-2 h-2 bg-green-400 rounded-full';
+                    sshText.textContent = 'ONLINE';
+                    sshText.className = 'text-green-600';
+                } else {
+                    sshDot.className = 'w-2 h-2 bg-red-400 rounded-full';
+                    sshText.textContent = 'OFFLINE';
+                    sshText.className = 'text-red-600';
+                }
+                if (data.scp) {
+                    scpDot.className = 'w-2 h-2 bg-green-400 rounded-full';
+                    scpText.textContent = 'ONLINE';
+                    scpText.className = 'text-green-600';
+                } else {
+                    scpDot.className = 'w-2 h-2 bg-red-400 rounded-full';
+                    scpText.textContent = 'OFFLINE';
+                    scpText.className = 'text-red-600';
+                }
+                lastCheck.textContent = `Última revisión: ${data.timestamp} (${data.latency})`;
+            }
+
+            // Restaurar último estado conocido desde localStorage al cargar la página
+            const savedStatus = localStorage.getItem('hostingerStatus');
+            if (savedStatus) {
+                try { applyHostingerStatus(JSON.parse(savedStatus)); } catch(e) {}
+            }
+
+            if (btnCheckHostinger) {
+                btnCheckHostinger.addEventListener('click', async () => {
+                    btnCheckHostinger.disabled = true;
+                    btnCheckHostinger.innerHTML = '...';
+                    sshText.textContent = 'PROBANDO...';
+                    scpText.textContent = 'PROBANDO...';
+                    sshDot.className = 'w-2 h-2 bg-yellow-400 rounded-full animate-ping';
+                    scpDot.className = 'w-2 h-2 bg-yellow-400 rounded-full animate-ping';
+
+                    try {
+                        const response = await fetch('/api/check-hostinger');
+                        const data = await response.json();
+                        applyHostingerStatus(data);
+                        // Guardar resultado en localStorage para persistir entre recargas
+                        localStorage.setItem('hostingerStatus', JSON.stringify(data));
+                    } catch (error) {
+                        sshDot.className = 'w-2 h-2 bg-red-400 rounded-full';
+                        scpDot.className = 'w-2 h-2 bg-red-400 rounded-full';
+                        sshText.textContent = 'ERROR';
+                        scpText.textContent = 'ERROR';
+                        lastCheck.textContent = 'Error de red';
+                    } finally {
+                        btnCheckHostinger.disabled = false;
+                        btnCheckHostinger.innerHTML = '⚡ Test';
+                    }
+                });
+            }
+
+            // ── Fuentes Profundas (Reddit) ────────────────────────────────
+            async function fetchDeepSources() {
+                const tbody = document.getElementById('deepSourcesTbody');
+                const loading = document.getElementById('deepSourcesLoading');
+                tbody.innerHTML = '';
+                try {
+                    const res = await fetch('/api/deep-sources');
+                    const data = await res.json();
+                    loading.classList.add('hidden');
+                    if (data.sources && data.sources.length > 0) {
+                        data.sources.forEach(s => {
+                            const tr = document.createElement('tr');
+                            tr.className = 'hover:bg-gray-50 transition-colors';
+                            tr.innerHTML = `
+                                <td class="p-3 border-r-2 border-black font-bold">🤖 r/${s.subreddit}</td>
+                                <td class="p-3 border-r-2 border-black text-gray-500 text-xs">${s.added_at}</td>
+                                <td class="p-3">
+                                    <button onclick="window.removeSubreddit('${s.subreddit}', this)" class="bg-red-500 hover:bg-red-400 text-white font-bold px-2 py-1 rounded border border-red-700 text-xs">✕ Quitar</button>
+                                </td>`;
+                            tbody.appendChild(tr);
+                        });
+                    } else {
+                        tbody.innerHTML = `<tr><td colspan="3" class="p-6 text-center text-gray-500 font-bold border-t-2 border-black">Sin subreddits configurados. Agrega uno arriba.</td></tr>`;
+                    }
+                } catch (e) {
+                    loading.classList.add('hidden');
+                    tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-red-500 font-bold">Error cargando fuentes.</td></tr>`;
+                }
+            }
+
+            const btnAddSubreddit = document.getElementById('btnAddSubreddit');
+            if (btnAddSubreddit) {
+                btnAddSubreddit.addEventListener('click', async () => {
+                    const input = document.getElementById('newSubreddit');
+                    const subreddit = input.value.trim();
+                    if (!subreddit) { alert('Escribe el nombre del subreddit.'); return; }
+                    btnAddSubreddit.disabled = true;
+                    btnAddSubreddit.innerHTML = '⏳ Guardando...';
+                    try {
+                        const res = await fetch('/api/deep-sources', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ subreddit })
+                        });
+                        const data = await res.json();
+                        if (data.success) { input.value = ''; fetchDeepSources(); }
+                        else { alert('Error: ' + data.error); }
+                    } catch (e) { alert('Error de conexión.'); }
+                    finally { btnAddSubreddit.disabled = false; btnAddSubreddit.innerHTML = '➕ Agregar r/'; }
+                });
+            }
+
+            window.removeSubreddit = async function(subreddit, btn) {
+                if (!confirm(`¿Quitar r/${subreddit} de las fuentes profundas?`)) return;
+                btn.disabled = true; btn.innerHTML = '...';
+                try {
+                    await fetch(`/api/deep-sources/${subreddit}`, { method: 'DELETE' });
+                    fetchDeepSources();
+                } catch (e) { alert('Error al quitar.'); btn.disabled = false; btn.innerHTML = '✕ Quitar'; }
+            };
+
+            const btnRunDeepScout = document.getElementById('btnRunDeepScout');
+            if (btnRunDeepScout) {
+                btnRunDeepScout.addEventListener('click', async () => {
+                    const statusDiv = document.getElementById('deepScoutStatus');
+                    btnRunDeepScout.innerHTML = '⏳ <span class="animate-pulse">Escarbando Reddit (puede tardar varios minutos)...</span>';
+                    btnRunDeepScout.classList.add('opacity-70', 'pointer-events-none');
+                    statusDiv.classList.remove('hidden');
+                    statusDiv.innerHTML = '<span class="text-yellow-400">>> DEEP SCOUT:</span> Conectando a Reddit API...\n<span class="text-gray-500">>> Analizando posts top + nuevos + controversiales + comentarios...</span>\n\n';
+                    try {
+                        const res = await fetch('/api/run-deep-scout', { method: 'POST' });
+                        const data = await res.json();
+                        if (data.success) {
+                            statusDiv.innerHTML += '<span class="text-green-400">>> ANÁLISIS COMPLETADO</span>\n\n' + data.logs;
+                            fetchIntel();
+                        } else {
+                            statusDiv.innerHTML += '<span class="text-red-400">>> FALLO</span>\n\n' + (data.error || '') + '\n' + (data.logs || '');
+                            btnRunDeepScout.innerHTML = '❌ Reintentar';
+                        }
+                    } catch (e) {
+                        statusDiv.innerHTML += '<span class="text-red-400">>> ERROR</span>\n' + e.message;
+                        btnRunDeepScout.innerHTML = '❌ Reintentar';
+                    } finally {
+                        statusDiv.scrollTop = statusDiv.scrollHeight;
+                        btnRunDeepScout.classList.remove('opacity-70', 'pointer-events-none');
+                        if (!btnRunDeepScout.innerHTML.includes('❌')) btnRunDeepScout.innerHTML = '✅ Nuevo Análisis';
+                    }
+                });
+            }
+
+            fetchDeepSources();
+
+            // ── Inteligencia de Academia ───────────────────────────────────
+            async function fetchIntel() {
+                try {
+                    const res = await fetch('/api/research-intel');
+                    const data = await res.json();
+
+                    document.getElementById('intelLastUpdated').textContent =
+                        data.last_updated ? `Último análisis: ${data.last_updated}` : 'Sin datos aún — ejecuta el Análisis Profundo primero.';
+
+                    const renderList = (ulId, items, renderFn) => {
+                        const ul = document.getElementById(ulId);
+                        if (!items || items.length === 0) {
+                            ul.innerHTML = '<li class="text-gray-500 text-sm">Sin datos aún.</li>';
+                            return;
+                        }
+                        ul.innerHTML = items.map(renderFn).join('');
+                    };
+
+                    renderList('intelTools', data.tools, t => `
+                        <li class="flex justify-between items-center bg-gray-800 px-3 py-2 rounded border border-gray-700">
+                            <span class="font-bold text-sm truncate">${t.display || t.name}</span>
+                            <span class="bg-[#a3e635] text-black text-xs font-black px-2 py-0.5 rounded ml-2 whitespace-nowrap">${t.count}x</span>
+                        </li>`);
+
+                    renderList('intelQuestions', data.questions, q => `
+                        <li class="bg-gray-800 px-3 py-2 rounded border border-gray-700">
+                            <div class="flex justify-between items-start gap-2">
+                                <span class="text-xs text-gray-300 leading-snug">${(q.display || q.name).slice(0, 120)}</span>
+                                <span class="bg-[#facc15] text-black text-xs font-black px-2 py-0.5 rounded whitespace-nowrap">${q.count}x</span>
+                            </div>
+                        </li>`);
+
+                    renderList('intelReferences', data.references, r => {
+                        const url = r.display || r.name;
+                        const short = url.replace(/^https?:\/\/(www\.)?/, '').slice(0, 50);
+                        return `
+                        <li class="flex justify-between items-center bg-gray-800 px-3 py-2 rounded border border-gray-700">
+                            <a href="${url}" target="_blank" class="text-xs text-blue-400 hover:underline truncate">${short}</a>
+                            <span class="bg-white text-black text-xs font-black px-2 py-0.5 rounded ml-2 whitespace-nowrap">${r.count}x</span>
+                        </li>`;
+                    });
+
+                } catch (e) {
+                    document.getElementById('intelLastUpdated').textContent = 'Error al cargar inteligencia.';
+                }
+            }
+
+            const btnRefreshIntel = document.getElementById('btnRefreshIntel');
+            if (btnRefreshIntel) btnRefreshIntel.addEventListener('click', fetchIntel);
+            fetchIntel();
+
+        }); // End of DOMContentLoaded
     </script>
 </body>
 

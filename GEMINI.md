@@ -28,6 +28,7 @@ Este archivo es una colaboración entre **Antigravity (Orquestador)** y **Gemini
     5. **3D World:** Prototipado e Impresión 3D (Icono Benchy).
     6. **Productividad Pro:** OS Aumentado y Día de 4 Horas.
 - **Arquitectura LMS:** Implementación de Middleware de aprobación (`CheckApproved`) y Portal de Gestión de Alumnos en Laravel 11.
+- **Arquitectura Local-First (API-Less):** El "Command Center" (Node.js) y la Inteligencia Artificial (Scout) corren exclusivamente en la Mac M2. Se HAN CERRADO las APIs públicas en Hostinger. Toda comunicación (Rastreo, Aprobación de Usuarios, Exportación de Reportes) ocurre mediante túneles SSH ejecutando PHP Raw y transferencias SCP directamente a la Base de Datos, garantizando latencia cero y máxima seguridad perimetral.
 - **Diseño Visual:** DNA Keiyi integrado (Bordes Pop, Sombras duras, Hand-notes).
 
 ---

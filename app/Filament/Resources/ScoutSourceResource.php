@@ -50,16 +50,26 @@ class ScoutSourceResource extends Resource
                             ->label('Tipo de Conexión')
                             ->options([
                                 'rss' => 'RSS Feed Estándar',
+                                'web' => 'Deep Web Scrape (Escarbar URL Profunda)',
                                 'sitemap' => 'Sitemap XML',
                                 'api' => 'API REST',
                             ])
-                            ->default('rss')
+                            ->default('web')
+                            ->required(),
+                        Forms\Components\TextInput::make('relevance_score')
+                            ->label('Utilidad de la Fuente (%)')
+                            ->helperText('Agrega un porcentaje (0-100) para medir qué tan valiosa es la información de este link.')
+                            ->numeric()
+                            ->default(50)
+                            ->minValue(0)
+                            ->maxValue(100)
+                            ->suffix('%')
                             ->required(),
                         Forms\Components\Toggle::make('is_active')
                             ->label('Vigilancia Activa')
                             ->default(true)
                             ->required(),
-                    ])->columns(2),
+                    ])->columns(3),
             ]);
     }
 
@@ -77,10 +87,17 @@ class ScoutSourceResource extends Resource
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'rss' => 'warning',
+                        'web' => 'primary',
                         'sitemap' => 'info',
                         'api' => 'danger',
                         default => 'gray',
                     }),
+                Tables\Columns\TextColumn::make('relevance_score')
+                    ->label('Ranking (%)')
+                    ->badge()
+                    ->color(fn ($state): string => $state >= 80 ? 'success' : ($state >= 50 ? 'warning' : 'danger'))
+                    ->suffix('%')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('url')
                     ->label('URL')
                     ->limit(40)

@@ -75,11 +75,31 @@ The AI intelligence pipeline is a client-server bridge:
 - **Config changes:** Only via `.htaccess`, no Apache/Nginx direct access
 - **The Python scout agent runs locally on Mac M2**, not on the server
 
-## Key Files
+## Agent Ecosystem
+
+This project is built by a swarm of AI agents. Each has a defined role:
+
+| Agent | Role |
+|---|---|
+| **Antigravity** | Orchestrator — defines architecture, writes controllers and configs |
+| **Gemini CLI** | Engineer — executes scaffolding, models, Filament resources |
+| **Claude Code** | Code auditor — precision fixes, maintains `ENGINEERING_LOG.md` |
+
+## Project Documents
 
 | File | Purpose |
 |------|---------|
-| `AGENT_COMMUNICATION.md` | Inter-agent communication log between Antigravity (orchestrator) and Gemini CLI (engineer) |
-| `agent/scout.py` | Local Python AI agent - configure `SANCTUM_TOKEN` and `LARAVEL_API_BASE` before running |
+| `AGENT_COMMUNICATION.md` | Active inter-agent mailbox (read before making changes) |
+| `ENGINEERING_LOG.md` | Technical audit log: bugs, fixes, diffs, agent attribution — maintained by Claude Code |
+| `legacy_backup/LESSONS_LEARNED.md` | Strategic lessons: design patterns, process decisions, multi-agent protocols |
+| `agent/scout.py` | Local Python AI agent — configure `SANCTUM_TOKEN` before running |
+| `command-center/server.js` | Node.js dashboard (port 4000) that triggers `scout.py` via HTTP |
 | `app/Http/Middleware/CheckApproved.php` | Blocks unapproved users from protected routes |
 | `bootstrap/app.php` | Middleware alias registration (`approved`) |
+
+## Critical Rules (learned from bugs — see ENGINEERING_LOG.md)
+
+- **ENUM values in Filament forms must match the migration exactly.** SQLite accepts any string; MySQL enforces ENUM constraints. Always cross-check `->options([])` values against the migration definition.
+- **Never use `/node_modules` in `.gitignore` for nested packages.** The leading slash restricts the pattern to the root only. Use `module-name/node_modules/` for subdirectory packages.
+- **Every new `$fillable` field in a Filament form must also be added to the model's `$fillable` array.** Eloquent silently drops non-fillable fields on mass-assignment with no error.
+- **Filament's `->authorize()` is required to restrict `/admin` by role.** The panel's own login does not filter by user role automatically.

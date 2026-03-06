@@ -21,3 +21,21 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+
+# Command Center (Node.js local)
+command-center/node_modules/
+command-center/.env
+
+# Scout Agent — local data files (no versionar)
+agent/research_db.json
+agent/scraped_ids.json
+agent/deep_sources.json
+agent/*.json.bak
+
+# Scout Agent — credentials (NUNCA versionar)
+agent/keiyi_scout_service_account.json
+agent/service_account.json
+
+# macOS
+.DS_Store
+**/.DS_Store
