@@ -3,5 +3,10 @@
 
 requests>=2.31.0
 beautifulsoup4>=4.12.0
+feedparser>=6.0.0
 google-api-python-client>=2.100.0
 google-auth>=2.23.0
+
+# Keiyi Idle Agent (menu bar)
+rumps>=0.4.0
+psutil>=5.9.0

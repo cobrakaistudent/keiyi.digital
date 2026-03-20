@@ -54,23 +54,42 @@ class UserResource extends Resource
                     ->description('Control de acceso a la Keiyi Academy.')
                     ->schema([
                         Forms\Components\Select::make('approval_status')
-                        ->label('Estatus del Alumno')
-                        ->options([
-                            'pending' => 'Pendiente de Revisión',
-                            'approved' => 'Aprobado (Acceso Concedido)',
-                            'rejected' => 'Rechazado (Acceso Denegado)',
-                        ])
-                        ->default('pending')
-                        ->required(),
-                    Forms\Components\Select::make('role')
-                        ->label('Rol del Cuenta')
-                        ->options([
-                            'student' => 'Alumno (Student)',
-                            'super-admin' => 'Administrador (Super-Admin)',
-                        ])
-                        ->default('student')
-                        ->required(),
-                ])->columns(2),
+                            ->label('Estatus del Alumno')
+                            ->options([
+                                'pending'  => 'Pendiente de Revisión',
+                                'approved' => 'Aprobado (Acceso Concedido)',
+                                'rejected' => 'Rechazado (Acceso Denegado)',
+                            ])
+                            ->default('pending')
+                            ->required(),
+                        Forms\Components\Select::make('role')
+                            ->label('Rol de Cuenta')
+                            ->options([
+                                'student'     => 'Alumno (Student)',
+                                'super-admin' => 'Administrador (Super-Admin)',
+                            ])
+                            ->default('student')
+                            ->required(),
+                    ])->columns(2),
+
+                Forms\Components\Section::make('Cliente 3D World')
+                    ->description('Acceso al Taller de impresión 3D.')
+                    ->schema([
+                        Forms\Components\Toggle::make('is_3d_client')
+                            ->label('Es cliente 3D')
+                            ->live()
+                            ->afterStateUpdated(function ($state, Forms\Set $set) {
+                                if ($state) {
+                                    $set('3d_client_approved_at', now()->toDateTimeString());
+                                } else {
+                                    $set('3d_client_approved_at', null);
+                                }
+                            }),
+                        Forms\Components\DateTimePicker::make('3d_client_approved_at')
+                            ->label('Aprobado como cliente 3D el')
+                            ->disabled()
+                            ->visible(fn (Forms\Get $get) => $get('is_3d_client')),
+                    ])->columns(2),
             ]);
     }
 
@@ -106,6 +125,11 @@ class UserResource extends Resource
                         default => 'gray',
                     })
                     ->searchable(),
+                Tables\Columns\IconColumn::make('is_3d_client')
+                    ->label('3D')
+                    ->boolean()
+                    ->trueColor('success')
+                    ->falseColor('gray'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Registrado El')
                     ->dateTime('d/m/Y')
@@ -122,12 +146,23 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\Action::make('Aprobar Estudiante')
+                Tables\Actions\Action::make('aprobar_estudiante')
+                    ->label('Aprobar Alumno')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
                     ->requiresConfirmation()
                     ->action(fn (User $record) => $record->update(['approval_status' => 'approved']))
                     ->hidden(fn (User $record) => $record->approval_status === 'approved'),
+                Tables\Actions\Action::make('aprobar_3d')
+                    ->label('Aprobar 3D')
+                    ->icon('heroicon-o-cube')
+                    ->color('info')
+                    ->requiresConfirmation()
+                    ->action(fn (User $record) => $record->update([
+                        'is_3d_client'          => true,
+                        '3d_client_approved_at' => now(),
+                    ]))
+                    ->hidden(fn (User $record) => $record->is_3d_client),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

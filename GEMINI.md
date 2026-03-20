@@ -9,6 +9,11 @@ Este archivo es una colaboración entre **Antigravity (Orquestador)** y **Gemini
 - **Preparación para Laravel Profesional:** Sincronización con Antigravity para implementar el esquema modular (LMS + CRM + Scout AI).
 - **Bloqueo Técnico:** Pendiente de localizar `php` y `composer` en el entorno local para ejecutar el scaffold oficial.
 
+### Hitos del 7 de Marzo, 2026 (Transición a UI Nativa):
+- **Dashboard UI (HTML):** Prototipo (`demo_sidebar.html`) finalizado con paneles de Límites Hardware (16GB RAM M2, Hostinger EP limits).
+- **Iniciativa Swift Scaffold:** Debido a que Claude Code agotó sus tokens, Gemini/Antigravity asume la creación del esqueleto inicial de la App Nativa (`native-agent/KeiyiAgentApp.swift` y vistas principales) basado en el layout aprobado del Sidebar. Claude retomará para la integración del módulo `Foundation/Process`.
+
+
 ---
 
 ## 🤖 SECCIÓN ANTIGRAVITY: Misión y Orquestación
@@ -30,6 +35,13 @@ Este archivo es una colaboración entre **Antigravity (Orquestador)** y **Gemini
 - **Arquitectura LMS:** Implementación de Middleware de aprobación (`CheckApproved`) y Portal de Gestión de Alumnos en Laravel 11.
 - **Arquitectura Local-First (API-Less):** El "Command Center" (Node.js) y la Inteligencia Artificial (Scout) corren exclusivamente en la Mac M2. Se HAN CERRADO las APIs públicas en Hostinger. Toda comunicación (Rastreo, Aprobación de Usuarios, Exportación de Reportes) ocurre mediante túneles SSH ejecutando PHP Raw y transferencias SCP directamente a la Base de Datos, garantizando latencia cero y máxima seguridad perimetral.
 - **Diseño Visual:** DNA Keiyi integrado (Bordes Pop, Sombras duras, Hand-notes).
+
+### Hitos del 8 de Marzo, 2026 (La Trifuerza Cognitiva):
+- **Arquitectura Operativa de Agentes:** Se separaron oficialmente las labores de inteligencia para evitar "Fatiga de Contexto" y cuidar la RAM del M2.
+  - **Perry (Radar - A lo ancho):** Busca *nuevas señales* de vida en internet y categoriza sitios por dinamismo. Genera el mapa para los de abajo.
+  - **Dipper (Analista - A lo profundo):** Únicamente lee lo que Perry le señala. Se enfoca en threads calientes e hilos largos, usando hashing MD5 para no repetir. Genera puros Insights/JSON.
+  - **William (Redactor - Ejecución):** No busca nada. Toma la materia prima de Dipper y redacta borradores para aprobación humana.
+- **Reparación Analítica:** Modificado el código en `perry.py` para utilizar Regex y extraer limpiamente los JSON provenientes de `claude` CLI y `gemini` CLI.
 
 ---
 
@@ -68,6 +80,13 @@ Este archivo es una colaboración entre **Antigravity (Orquestador)** y **Gemini
 3. **Coherencia Visual:** Priorizar Safari como navegador de prueba y estilo "Pop Digital" de Keiyi.
 4. **Seguridad:** Los recursos (`academy_resources/`) son privados y se sirven vía controlador.
 5. **Colaboración:** Respetar los archivos `MASTER_SOURCE.md` y `CONTEXT_MEMORY.md` como puentes entre agentes.
+
+### 📡 CANALES OFICIALES DE COMUNICACIÓN INTER-AGENCIAS
+Todos los agentes (Antigravity, Claude Code, Gemini CLI) DEBEN respetar estrictamente el propósito de los siguientes archivos:
+*   **`AGENT_COMMUNICATION.md`**: Bandeja de entrada/salida para mandatos directos y órdenes de ejecución técnica entre los miembros del enjambre.
+*   **`KEIYI_RESEARCH_LAB.md`**: El laboratorio para debatir arquitectura, discutir ideas largas o planificar refactorizaciones antes de tocar código fuente.
+*   **`PROTOCOL_AGENTS.md`**: Establece el reglamento y flujo de datos de los agentes (Dipper y William) del Búnker Táctico.
+*   **`GEMINI.md`**: El cerebro e historial duro compartido (System Prompt Injected). ÚNICAMENTE para asentar hitos terminados y lineamientos operacionales clave, no ideas al aire.
 
 ---
 **Usuario Mac:** anuarlv | **Contexto:** Keiyi Digital Agency 2026.

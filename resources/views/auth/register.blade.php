@@ -2,11 +2,25 @@
     <form method="POST" action="{{ route('register') }}">
         @csrf
 
-        <!-- Name -->
+        <!-- Nombres -->
         <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
+            <x-input-label for="name" value="Nombre(s)" />
+            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="given-name" />
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
+        </div>
+
+        <!-- Apellido Paterno -->
+        <div class="mt-4">
+            <x-input-label for="apellido_paterno" value="Apellido Paterno" />
+            <x-text-input id="apellido_paterno" class="block mt-1 w-full" type="text" name="apellido_paterno" :value="old('apellido_paterno')" required autocomplete="family-name" />
+            <x-input-error :messages="$errors->get('apellido_paterno')" class="mt-2" />
+        </div>
+
+        <!-- Apellido Materno -->
+        <div class="mt-4">
+            <x-input-label for="apellido_materno" value="Apellido Materno (Opcional)" />
+            <x-text-input id="apellido_materno" class="block mt-1 w-full" type="text" name="apellido_materno" :value="old('apellido_materno')" autocomplete="family-name" />
+            <x-input-error :messages="$errors->get('apellido_materno')" class="mt-2" />
         </div>
 
         <!-- Email Address -->

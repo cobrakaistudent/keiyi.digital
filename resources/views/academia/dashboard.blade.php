@@ -115,7 +115,7 @@
             white-space: nowrap;
         }
 
-        /* ── SECCIÓN TÍTULO ── */
+        /* ── SECCION TITULO ── */
         .section-label {
             font-size: 11px;
             font-weight: 800;
@@ -322,42 +322,41 @@
             </div>
         </div>
 
-        {{-- CURSOS --}}
+        {{-- CURSOS PUBLICADOS --}}
         <span class="section-label">Talleres Disponibles</span>
         <div class="courses-grid" style="margin-top: 16px;">
 
-            @foreach ($courses as $courseId => $course)
-                @php $enrolled = $enrollments->has($courseId); @endphp
+            @foreach ($courses as $course)
+                @php
+                    $enrollment = $enrollments->get($course->slug);
+                    $enrolled = !is_null($enrollment);
+                @endphp
                 <div class="course-card {{ $enrolled ? 'enrolled' : '' }}">
 
                     @if ($enrolled)
                         <span class="course-tag tag-inscrito">Inscrito</span>
-                    @elseif ($courseId === 'taller-0')
-                        <span class="course-tag tag-prereq">Pre-requisito</span>
                     @else
-                        <span class="course-tag tag-proximo">Proximamente</span>
+                        <span class="course-tag tag-prereq">{{ $course->tag ?? 'Disponible' }}</span>
                     @endif
 
-                    <span class="course-emoji">{{ $course['emoji'] }}</span>
-                    <div class="course-title">{{ $course['title'] }}</div>
-                    <div class="course-desc">{{ $course['desc'] }}</div>
+                    <span class="course-emoji">{{ $course->emoji ?? '📚' }}</span>
+                    <div class="course-title">{{ $course->title }}</div>
+                    <div class="course-desc">{{ $course->description }}</div>
 
                     @if ($enrolled)
                         <div>
                             <div class="progress-label" style="margin-bottom: 4px;">
-                                {{ $enrollments[$courseId]->progress_percent }}% completado
+                                {{ $enrollment->progress_percent }}% completado
                             </div>
                             <div class="progress-bar-wrap">
-                                <div class="progress-bar-fill" style="width: {{ $enrollments[$courseId]->progress_percent }}%"></div>
+                                <div class="progress-bar-fill" style="width: {{ $enrollment->progress_percent }}%"></div>
                             </div>
                         </div>
-                        <span class="btn-curso btn-disabled">Contenido en preparacion</span>
+                        <a href="{{ route('academia.curso', $course->slug) }}" class="btn-curso btn-green">Ver Curso</a>
                     @else
-                        <form method="POST" action="{{ route('academia.enroll', $courseId) }}">
+                        <form method="POST" action="{{ route('academia.enroll', $course->slug) }}">
                             @csrf
-                            <button type="submit" class="btn-curso btn-dark">
-                                Inscribirme
-                            </button>
+                            <button type="submit" class="btn-curso btn-dark">Inscribirme</button>
                         </form>
                     @endif
 
@@ -365,6 +364,24 @@
             @endforeach
 
         </div>
+
+        {{-- CURSOS LEGACY / PROXIMAMENTE --}}
+        @if ($legacyCourses->count() > 0)
+            <span class="section-label">Proximamente</span>
+            <div class="courses-grid" style="margin-top: 16px;">
+
+                @foreach ($legacyCourses as $course)
+                    <div class="course-card">
+                        <span class="course-tag tag-proximo">Proximamente</span>
+                        <span class="course-emoji">{{ $course->emoji ?? '🔒' }}</span>
+                        <div class="course-title">{{ $course->title }}</div>
+                        <div class="course-desc">{{ $course->description }}</div>
+                        <span class="btn-curso btn-disabled">Contenido en preparacion</span>
+                    </div>
+                @endforeach
+
+            </div>
+        @endif
 
         {{-- AVISO --}}
         <div class="aviso">

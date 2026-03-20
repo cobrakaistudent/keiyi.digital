@@ -37,5 +37,36 @@ agent/keiyi_scout_service_account.json
 agent/service_account.json
 
 # macOS
+# Inteligencia y Datos Locales
+agent/deep_sources.json
+agent/research_db.json
+agent/scraped_ids.json
+agent/william_drafts/
+agent/DEEP_SCOUT_TECHNIQUES.md
+
+# Credenciales Críticas
+agent/keiyi_scout_service_account.json
+agent/service_account.json
+
 .DS_Store
 **/.DS_Store
+
+# Agent runtime data (generated, not source code)
+agent/agent_tasks.json
+agent/perry_status.json
+agent/resource_log.json
+agent/william_feedback.json
+agent/__pycache__/
+agent/KeiyiAgent.app/
+agent/KeiyiAgent
+
+# Downloaded binaries / incomplete downloads
+agent/*.dmg
+agent/*.crdownload
+agent/Unconfirmed*
+
+# Papers (research PDFs, not code)
+papers/
+
+# Claude Code local config
+.claude/

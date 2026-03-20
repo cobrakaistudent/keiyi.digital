@@ -1,17 +1,19 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { exec } = require('child_process');
+const { exec, spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-app.use(cors({ origin: ['http://localhost:4000', 'http://127.0.0.1:4000'] }));
+app.use(cors({ origin: ['http://localhost:4000', 'http://127.0.0.1:4000', 'http://192.168.50.100:4000'] }));
 app.use(express.json());
 // Servimos el dashboard estático
 app.use(express.static(path.join(__dirname, 'public')));
+// Servimos los drafts de William para el preview del blog
+app.use('/drafts', express.static(path.join(__dirname, '..', 'agent', 'william_drafts')));
 
 // ============================================================================
 // CONEXIÓN SEGURA "API-LESS" (SSH / Local Exec directo a Laravel)
@@ -148,9 +150,34 @@ app.post('/api/run-scout', (req, res) => {
             console.error(`[Keiyi CC] Fallo: ${error.message}`);
             return res.status(500).json({ success: false, error: error.message, logs: stderr });
         }
-        res.json({ success: true, logs: stdout });
+        res.json({ success: true, output: stdout });
     });
 });
+
+// === PERRY THE DEEP SCOUT — INDAGACIÓN PROFUNDA ===
+app.post('/api/deep-dive/:subreddit', (req, res) => {
+    const sub = req.params.subreddit;
+    const scriptPath = path.resolve(__dirname, '../agent/deep_scout.py');
+    console.log(`🕵️‍♂️ Perry iniciando Deep Dive en r/${sub}...`);
+
+    exec(`python3 ${scriptPath} ${sub}`, (error, stdout, stderr) => {
+        if (error) return res.status(500).json({ success: false, error: stderr });
+        res.json({ success: true, output: stdout });
+    });
+});
+
+// Obtener los "Tesoros" de Perry (Base de Datos de Investigación)
+app.get('/api/research-db', (req, res) => {
+    const dbPath = path.join(__dirname, '../agent/research_db.json');
+    if (!fs.existsSync(dbPath)) return res.json({});
+    try {
+        const db = JSON.parse(fs.readFileSync(dbPath, 'utf8'));
+        res.json(db);
+    } catch (e) {
+        res.status(500).json({ error: "Error leyendo research_db.json" });
+    }
+});
+
 
 // 5. Fábrica de Reportes Ejecutivos (Extracción SSH de Insights)
 app.get('/api/generate-report', async (req, res) => {
@@ -329,7 +356,12 @@ app.post('/api/prompt/restore/:filename', async (req, res) => {
 // ============================================================================
 
 const DEEP_SOURCES_PATH = path.resolve(__dirname, '../agent/deep_sources.json');
-const RESEARCH_DB_PATH  = path.resolve(__dirname, '../agent/research_db.json');
+const GDRIVE_INTEL      = path.join(process.env.HOME, 'Library/CloudStorage/GoogleDrive-anuarlezama@gmail.com/My Drive/gemini/keiyi_scout_intelligence');
+const RESEARCH_DB_PATH  = path.join(GDRIVE_INTEL, 'research_db.json');
+const PERRY_SCRIPT      = path.resolve(__dirname, '../agent/perry.py');
+const PERRY_STATUS_PATH = path.resolve(__dirname, '../agent/perry_status.json');
+const PERRY_DIRECTIVES  = path.resolve(__dirname, '../agent/ceo_directives.json');
+const PERRY_CONFIG_PATH = path.resolve(__dirname, '../agent/perry_config.json');
 
 async function loadDeepSources() {
     try { return JSON.parse(await fs.promises.readFile(DEEP_SOURCES_PATH, 'utf8')); }
@@ -382,30 +414,84 @@ app.post('/api/run-deep-scout', (req, res) => {
 });
 
 // 14. Inteligencia acumulada (top herramientas, preguntas, referencias)
+// research_db.json is organized by subreddit: { "SubName": { tools: [...], questions: [...], references: [...] } }
+// This endpoint consolidates across all subreddits into ranked lists.
 app.get('/api/research-intel', async (req, res) => {
     try {
         const db = JSON.parse(await fs.promises.readFile(RESEARCH_DB_PATH, 'utf8'));
 
-        const dominantSource = (item) => {
-            const sc = item.sources_count || {};
-            const entries = Object.entries(sc);
-            if (!entries.length) return item.sources?.[0] || null;
-            return entries.sort((a, b) => b[1] - a[1])[0][0];
-        };
+        // Consolidate tools, questions, references across all subreddits
+        const toolsMap = {};      // name -> { name, count, sources: Set, sources_count: { sub: n } }
+        const questionsMap = {};   // text -> { name, count }
+        const referencesMap = {};  // url -> { name, count }
+        let latestUpdate = null;
 
-        const top = (obj, n = 20, withDominant = false) => Object.values(obj || {})
-            .sort((a, b) => b.count - a.count)
-            .slice(0, n)
-            .map(item => withDominant ? { ...item, dominant_source: dominantSource(item) } : item);
+        for (const [subName, subData] of Object.entries(db)) {
+            // Track latest update
+            if (subData.last_update && (!latestUpdate || subData.last_update > latestUpdate)) {
+                latestUpdate = subData.last_update;
+            }
+
+            // Consolidate tools
+            for (const t of (subData.tools || [])) {
+                const key = t.name.toLowerCase();
+                if (!toolsMap[key]) {
+                    toolsMap[key] = { name: t.name, display: t.name, count: 0, sources: new Set(), sources_count: {} };
+                }
+                toolsMap[key].count += (t.count || 1);
+                toolsMap[key].sources.add(subName);
+                toolsMap[key].sources_count[subName] = (toolsMap[key].sources_count[subName] || 0) + (t.count || 1);
+            }
+
+            // Consolidate questions
+            for (const q of (subData.questions || [])) {
+                const text = q.text || q.name || '';
+                const key = text.toLowerCase().slice(0, 100);
+                if (!key) continue;
+                if (!questionsMap[key]) {
+                    questionsMap[key] = { name: text, display: text, count: 0 };
+                }
+                questionsMap[key].count += (q.count || 1);
+            }
+
+            // Consolidate references
+            for (const r of (subData.references || [])) {
+                const url = r.url || r.name || '';
+                if (!url) continue;
+                const key = url.toLowerCase();
+                if (!referencesMap[key]) {
+                    referencesMap[key] = { name: url, display: url, count: 0 };
+                }
+                referencesMap[key].count += (r.count || 1);
+            }
+        }
+
+        // Convert Sets to arrays and find dominant source
+        const toolsList = Object.values(toolsMap).map(t => {
+            const sources = [...t.sources];
+            const sc = t.sources_count;
+            const dominant = Object.entries(sc).sort((a, b) => b[1] - a[1])[0];
+            return {
+                name: t.name,
+                display: t.display,
+                count: t.count,
+                sources,
+                sources_count: sc,
+                dominant_source: dominant ? dominant[0] : null,
+            };
+        });
+
+        const topN = (arr, n = 20) => arr.sort((a, b) => b.count - a.count).slice(0, n);
 
         res.json({
             success: true,
-            last_updated: db.last_updated || null,
-            tools:      top(db.tools,      20, true),
-            questions:  top(db.questions,  20),
-            references: top(db.references, 20),
+            last_updated: latestUpdate,
+            tools:      topN(toolsList, 20),
+            questions:  topN(Object.values(questionsMap), 20),
+            references: topN(Object.values(referencesMap), 20),
         });
-    } catch {
+    } catch (e) {
+        console.error('[research-intel] Error:', e.message);
         res.json({ success: true, last_updated: null, tools: [], questions: [], references: [] });
     }
 });
@@ -651,6 +737,242 @@ app.get('/prompt-editor', async (req, res) => {
 </script>
 </body>
 </html>`);
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PERRY EL ORNITORRINCO — Streaming SSE + Control Panel
+// ─────────────────────────────────────────────────────────────────────────────
+
+// SSE helper: ejecuta perry.py con streaming línea a línea al browser
+function perryStream(args, req, res) {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.flushHeaders();
+
+    const send = (type, text) =>
+        res.write(`data: ${JSON.stringify({ type, text })}\n\n`);
+
+    const env = { ...process.env, CLAUDECODE: '', PYTHONUNBUFFERED: '1' };
+    const child = spawn('python3', [PERRY_SCRIPT, ...args], { env });
+
+    child.stdout.on('data', d => send('out', d.toString()));
+    child.stderr.on('data', d => send('err', d.toString()));
+    child.on('close', code => {
+        send('done', code === 0 ? '✅ Operación completada.' : `❌ Terminó con código ${code}`);
+        res.end();
+    });
+    req.on('close', () => child.kill()); // Si el browser cierra la conexión, matamos el proceso
+}
+
+// GET /api/perry/run?action=scrape|analyze|discover  (&backend=auto|perry|claude|gemini|all)
+app.get('/api/perry/run', (req, res) => {
+    const { action, backend = 'auto' } = req.query;
+    const allowed = ['scrape', 'analyze', 'discover'];
+    if (!allowed.includes(action))
+        return res.status(400).json({ error: `action inválido: ${action}` });
+    const args = action === 'analyze' ? ['analyze', '--backend', backend] : [action];
+    perryStream(args, req, res);
+});
+
+// GET /api/perry/status
+app.get('/api/perry/status', (req, res) => {
+    try {
+        if (!fs.existsSync(PERRY_STATUS_PATH)) return res.json({ running: false });
+        res.json(JSON.parse(fs.readFileSync(PERRY_STATUS_PATH, 'utf8')));
+    } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// GET/POST /api/perry/directives — Instrucciones del CEO que Perry lee antes de cada análisis
+app.get('/api/perry/directives', (req, res) => {
+    try {
+        if (!fs.existsSync(PERRY_DIRECTIVES)) return res.json({ directives: '' });
+        const d = JSON.parse(fs.readFileSync(PERRY_DIRECTIVES, 'utf8'));
+        res.json(d);
+    } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/perry/directives', (req, res) => {
+    try {
+        const { directives } = req.body;
+        if (directives === undefined) return res.status(400).json({ error: 'Campo "directives" requerido.' });
+        const payload = { directives, updated_at: new Date().toISOString() };
+        fs.writeFileSync(PERRY_DIRECTIVES, JSON.stringify(payload, null, 2), 'utf8');
+        res.json({ success: true });
+    } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// GET /api/perry/sources — fuentes aprobadas/pendientes/rechazadas
+app.get('/api/perry/sources', (req, res) => {
+    try {
+        const p = path.join(GDRIVE_INTEL, 'sources_radar.json');
+        if (!fs.existsSync(p)) return res.json({ approved: [], pending: [], rejected: [] });
+        res.json(JSON.parse(fs.readFileSync(p, 'utf8')));
+    } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// POST /api/perry/sources/:id/approve|reject
+app.post('/api/perry/sources/:id/:action', (req, res) => {
+    const { id, action } = req.params;
+    if (!['approve', 'reject'].includes(action))
+        return res.status(400).json({ error: 'Acción inválida.' });
+    const status = action === 'approve' ? 'approved' : 'rejected';
+    try {
+        const p = path.join(GDRIVE_INTEL, 'sources_radar.json');
+        if (!fs.existsSync(p)) return res.status(404).json({ error: 'sources_radar.json no encontrado.' });
+        const db = JSON.parse(fs.readFileSync(p, 'utf8'));
+        const idx = (db.pending || []).findIndex(s => s.id === id || s.url === id);
+        if (idx === -1) return res.status(404).json({ error: 'Fuente no encontrada en cola de pendientes.' });
+        const [source] = db.pending.splice(idx, 1);
+        source.status = status;
+        source.updated_at = new Date().toISOString().slice(0, 10);
+        db[status] = db[status] || [];
+        db[status].push(source);
+        fs.writeFileSync(p, JSON.stringify(db, null, 2), 'utf8');
+        res.json({ success: true, status });
+    } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// GET /api/perry/consensus — Último reporte consolidado
+app.get('/api/perry/consensus', (req, res) => {
+    try {
+        const p = path.join(GDRIVE_INTEL, 'perry_consensus.json');
+        if (!fs.existsSync(p)) return res.json({ exists: false });
+        res.json({ exists: true, data: JSON.parse(fs.readFileSync(p, 'utf8')) });
+    } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// GET /api/perry/storage — Tamaños de archivos en Google Drive
+app.get('/api/perry/storage', async (req, res) => {
+    const files = [
+        { key: 'sources_radar',    path: path.join(GDRIVE_INTEL, 'sources_radar.json') },
+        { key: 'perry_results',    path: path.join(GDRIVE_INTEL, 'perry_results.json') },
+        { key: 'perry_consensus',  path: path.join(GDRIVE_INTEL, 'perry_consensus.json') },
+        { key: 'research_db',      path: RESEARCH_DB_PATH },
+        { key: 'seen_comments',    path: path.join(GDRIVE_INTEL, 'seen_comments.json') },
+        { key: 'ceo_directives',   path: PERRY_DIRECTIVES },
+    ];
+    const result = {};
+    for (const f of files) {
+        try {
+            const stat = await fs.promises.stat(f.path);
+            result[f.key] = { size_kb: +(stat.size / 1024).toFixed(1), modified: stat.mtime.toISOString().slice(0, 16).replace('T', ' '), exists: true };
+        } catch {
+            result[f.key] = { size_kb: 0, modified: null, exists: false };
+        }
+    }
+    res.json({ success: true, base_path: GDRIVE_INTEL, files: result });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// WILLIAM — Proxy hacia Laravel local (api/posts)
+// ─────────────────────────────────────────────────────────────────────────────
+const LARAVEL_URL   = process.env.LARAVEL_URL   || 'http://localhost:8000';
+const SANCTUM_TOKEN = process.env.SANCTUM_TOKEN || '';
+
+const laravelPost = async (path, body = null) => {
+    const opts = {
+        method: body ? 'POST' : 'GET',
+        headers: {
+            'Authorization': `Bearer ${SANCTUM_TOKEN}`,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+    };
+    if (body) opts.body = JSON.stringify(body);
+    const r = await fetch(`${LARAVEL_URL}/api${path}`, opts);
+    return r.json();
+};
+
+app.get('/api/william/pending', async (req, res) => {
+    try { res.json(await laravelPost('/posts/pending')); }
+    catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/william/:id/approve', async (req, res) => {
+    try { res.json(await laravelPost(`/posts/${req.params.id}/approve`)); }
+    catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/william/:id/publish', async (req, res) => {
+    try { res.json(await laravelPost(`/posts/${req.params.id}/publish`)); }
+    catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/william/:id/reject', async (req, res) => {
+    try { res.json(await laravelPost(`/posts/${req.params.id}/reject`, { reason: req.body?.reason })); }
+    catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// WILLIAM — Feedback / Comments del editor sobre drafts
+// ─────────────────────────────────────────────────────────────────────────────
+
+const FEEDBACK_FILE = path.join(__dirname, '..', 'agent', 'william_feedback.json');
+
+function loadFeedback() {
+    try { return JSON.parse(fs.readFileSync(FEEDBACK_FILE, 'utf8')); }
+    catch { return {}; }
+}
+
+function saveFeedback(data) {
+    fs.writeFileSync(FEEDBACK_FILE, JSON.stringify(data, null, 2), 'utf8');
+}
+
+// Get all feedback
+app.get('/api/william/feedback', (req, res) => {
+    res.json(loadFeedback());
+});
+
+// Get feedback for a specific draft
+app.get('/api/william/feedback/:draftFile', (req, res) => {
+    const all = loadFeedback();
+    res.json(all[req.params.draftFile] || { comments: [], status: 'pending' });
+});
+
+// Add comment to a draft
+app.post('/api/william/feedback/:draftFile/comment', (req, res) => {
+    const { text, type } = req.body; // type: "correction" | "suggestion" | "approval"
+    if (!text) return res.status(400).json({ error: 'text is required' });
+
+    const all = loadFeedback();
+    if (!all[req.params.draftFile]) {
+        all[req.params.draftFile] = { comments: [], status: 'pending' };
+    }
+    all[req.params.draftFile].comments.push({
+        id: Date.now().toString(36),
+        text,
+        type: type || 'correction',
+        created_at: new Date().toISOString()
+    });
+    saveFeedback(all);
+    res.json({ success: true, data: all[req.params.draftFile] });
+});
+
+// Delete a comment
+app.delete('/api/william/feedback/:draftFile/comment/:commentId', (req, res) => {
+    const all = loadFeedback();
+    const entry = all[req.params.draftFile];
+    if (!entry) return res.status(404).json({ error: 'draft not found' });
+    entry.comments = entry.comments.filter(c => c.id !== req.params.commentId);
+    saveFeedback(all);
+    res.json({ success: true, data: entry });
+});
+
+// Set draft status (approved / needs_revision / rejected)
+app.post('/api/william/feedback/:draftFile/status', (req, res) => {
+    const { status } = req.body;
+    if (!['approved', 'needs_revision', 'rejected', 'pending'].includes(status)) {
+        return res.status(400).json({ error: 'invalid status' });
+    }
+    const all = loadFeedback();
+    if (!all[req.params.draftFile]) {
+        all[req.params.draftFile] = { comments: [], status: 'pending' };
+    }
+    all[req.params.draftFile].status = status;
+    all[req.params.draftFile].status_changed_at = new Date().toISOString();
+    saveFeedback(all);
+    res.json({ success: true, data: all[req.params.draftFile] });
 });
 
 // ─────────────────────────────────────────────────────────────────────────────

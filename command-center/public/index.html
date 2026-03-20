@@ -49,6 +49,16 @@
             overflow-y: auto;
             border: 3px solid #000;
         }
+
+        /* Perry retro button hover states */
+        #btnPerryScrape:hover   { background:#0a1a0a !important; }
+        #btnPerryAnalyze:hover  { background:#1a1500 !important; }
+        #btnPerryDiscover:hover { background:#0a0f1a !important; }
+        #btnPerryScrape:disabled, #btnPerryAnalyze:disabled, #btnPerryDiscover:disabled {
+            opacity: 0.35; cursor: not-allowed;
+        }
+        #perryRunning { animation: perry-blink 1s step-end infinite; }
+        @keyframes perry-blink { 50% { opacity: 0; } }
     </style>
 </head>
 
@@ -67,16 +77,20 @@
                     <span class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></span>
                     Node.js + Ollama (Qwen): Activos
                 </div>
-                <div id="hostingerStatus" 
+                <div id="hostingerStatus"
                     class="bg-white border-2 border-black px-4 py-2 rounded-lg text-[10px] font-black uppercase shadow-[2px_2px_0px_#000] flex flex-col items-end gap-1 min-w-[200px]">
                     <div class="flex items-center gap-2">
-                        <span id="sshDot" class="w-2 h-2 bg-gray-400 rounded-full"></span> SSH: <span id="sshText" class="text-gray-500">OFFLINE</span>
+                        <span id="sshDot" class="w-2 h-2 bg-gray-400 rounded-full"></span> SSH: <span id="sshText"
+                            class="text-gray-500">OFFLINE</span>
                         <span class="mx-1 text-gray-300">|</span>
-                        <span id="scpDot" class="w-2 h-2 bg-gray-400 rounded-full"></span> SCP: <span id="scpText" class="text-gray-500">OFFLINE</span>
+                        <span id="scpDot" class="w-2 h-2 bg-gray-400 rounded-full"></span> SCP: <span id="scpText"
+                            class="text-gray-500">OFFLINE</span>
                     </div>
                     <div class="flex items-center gap-2">
                         <span id="lastCheck" class="text-[9px] text-gray-400 italic">Nunca revisado</span>
-                        <button id="btnCheckHostinger" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition-colors">⚡ Test</button>
+                        <button id="btnCheckHostinger"
+                            class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition-colors">⚡
+                            Test</button>
                     </div>
                 </div>
             </div>
@@ -85,31 +99,125 @@
         <!-- DASHBOARD GRID -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-            <!-- PANEL: Scout AI -->
-            <div class="bg-white p-6 funky-border flex flex-col justify-between">
+            <!-- PANEL: Roster de Agentes IA -->
+            <div class="bg-white p-6 funky-border flex flex-col justify-between hover:border-black transition-colors">
                 <div>
-                    <h2 class="text-2xl font-bold mb-3 flex items-center gap-3">
-                        <span class="text-3xl">🤖</span> Keiyi Scout AI (Qwen)
+                    <h2 class="text-2xl font-bold mb-4 flex items-center gap-3">
+                        <span class="text-3xl">👥</span> Roster de Agentes
                     </h2>
                     <p class="mb-5 text-gray-700 text-sm font-medium leading-relaxed">
-                        Este módulo contacta a la API en producción (Hostinger) por la lista de URLs (Feeds), descarga
-                        el texto limpio y lo envía a tu red neuronal local M2 para extraer Megatendencias EdTech. Al
-                        acabar, empuja (Sync) el Informe JSON a la Nube.
+                        Personalidades instanciadas locales manejando operaciones críticas.
                     </p>
                 </div>
 
-                <div>
-                    <button id="btnRunScout"
-                        class="w-full funky-border funky-button py-4 font-black text-lg flex justify-center items-center gap-2 mb-3">
-                        <span>▶ Rastreo Local e IA Generativa</span>
-                    </button>
-                    <!-- NUEVO: Botón para Editar el Prompt -->
+                <div class="flex-1 w-full flex flex-col justify-between gap-4">
+                    <!-- Lista de Agentes -->
+                    <div class="space-y-3">
+                        <!-- Agente 0: Perry -->
+                        <div
+                            class="flex flex-col gap-2 bg-gray-900 border-2 p-3 rounded-lg hover:bg-gray-800 transition-colors" style="border-color:#39ff14;box-shadow:0 0 8px #39ff1433;">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-10 h-10 text-white rounded-full flex items-center justify-center font-black text-xl" style="background:#0d0d0d;border:2px solid #39ff14;box-shadow:0 0 10px #39ff1466;color:#39ff14;">P</div>
+                                    <div>
+                                        <h3 class="font-bold text-sm leading-tight flex items-center gap-2" style="color:#39ff14;">
+                                            Perry <span
+                                                class="text-[9px] font-black px-1.5 py-0.5 rounded border uppercase tracking-wider" style="background:#39ff14;color:#000;border-color:#39ff14;">Activo</span>
+                                        </h3>
+                                        <p class="text-[10px] font-mono uppercase mt-0.5" style="color:#555;">Misión: Reconocimiento Global</p>
+                                    </div>
+                                </div>
+                                <button onclick="document.getElementById('perryPanel').scrollIntoView({behavior:'smooth'})"
+                                    class="w-8 h-8 rounded border-2 flex items-center justify-center transition-all" style="background:#0d0d0d;border-color:#39ff14;color:#39ff14;"
+                                    title="Ir al panel de Perry">
+                                    <span class="text-sm">↓</span>
+                                </button>
+                            </div>
+                            <div class="flex items-center justify-between mt-1 pt-2 border-t" style="border-color:#1a1a1a;">
+                                <span class="text-[10px] font-mono" style="color:#555;">Ollama + Claude CLI + Gemini CLI</span>
+                                <span class="text-[10px] font-mono px-1.5 py-0.5 rounded" style="background:#111;color:#39ff14;">⏱️ 01:00 AM</span>
+                            </div>
+                        </div>
+
+                        <!-- Agente 1: Dipper -->
+                        <div
+                            class="flex flex-col gap-2 bg-gray-50 border-2 border-black p-3 rounded-lg hover:bg-gray-100 transition-colors">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center font-black text-xl shadow-[2px_2px_0px_#a3e635]">
+                                        D</div>
+                                    <div>
+                                        <h3 class="font-bold text-sm leading-tight text-black flex items-center gap-2">
+                                            Dipper <span
+                                                class="bg-[#a3e635] text-black text-[9px] font-black px-1.5 py-0.5 rounded border border-black uppercase tracking-wider">Activo</span>
+                                        </h3>
+                                        <p class="text-[10px] text-gray-500 font-mono uppercase mt-0.5">Misión: Radar
+                                            OPs</p>
+                                    </div>
+                                </div>
+                                <button
+                                    class="bg-black hover:bg-gray-800 text-white w-8 h-8 rounded border-2 border-black flex items-center justify-center shadow-[2px_2px_0px_#a3e635] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition-all"
+                                    title="Ejecutar Manualmente Dipper">
+                                    <span class="ml-1 text-sm block leading-none">▶️</span>
+                                </button>
+                            </div>
+                            <!-- Asignación de Recursos Dipper -->
+                            <div class="flex items-center justify-between mt-1 pt-2 border-t border-gray-200">
+                                <select
+                                    class="text-[10px] bg-white border border-gray-300 rounded px-1.5 py-1 outline-none font-bold text-gray-700 cursor-pointer hover:border-black">
+                                    <option value="eco">🌱 Eco (Qwen3:8b Local)</option>
+                                    <option value="pro">🚀 Pro (Claude-Code CLI)</option>
+                                    <option value="max">🔥 Max (Enjambre 100% Local)</option>
+                                </select>
+                                <span class="text-[10px] text-gray-500 font-mono bg-gray-200 px-1.5 py-0.5 rounded"
+                                    title="Próxima ejecución automática">⏱️ 02:00 AM</span>
+                            </div>
+                        </div>
+
+                        <!-- Agente 2: William -->
+                        <div
+                            class="flex flex-col gap-2 bg-gray-50 border-2 border-black p-3 rounded-lg hover:bg-gray-100 transition-colors">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-black text-xl shadow-[2px_2px_0px_#facc15]">
+                                        W</div>
+                                    <div>
+                                        <h3 class="font-bold text-sm leading-tight text-black flex items-center gap-2">
+                                            William <span
+                                                class="bg-[#a3e635] text-black text-[9px] font-black px-1.5 py-0.5 rounded border border-black uppercase tracking-wider">Activo</span>
+                                        </h3>
+                                        <p class="text-[10px] text-gray-500 font-mono uppercase mt-0.5">Misión:
+                                            Copywriter</p>
+                                    </div>
+                                </div>
+                                <button
+                                    class="bg-black hover:bg-gray-800 text-white w-8 h-8 rounded border-2 border-black flex items-center justify-center shadow-[2px_2px_0px_#facc15] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition-all"
+                                    title="Ejecutar Manualmente William">
+                                    <span class="ml-1 text-sm block leading-none">▶️</span>
+                                </button>
+                            </div>
+                            <!-- Asignación de Recursos William -->
+                            <div class="flex items-center justify-between mt-1 pt-2 border-t border-gray-200">
+                                <select
+                                    class="text-[10px] bg-white border border-gray-300 rounded px-1.5 py-1 outline-none font-bold text-gray-700 cursor-pointer hover:border-black">
+                                    <option value="eco" selected>🌱 Eco (Gemma3:4b Local)</option>
+                                    <option value="pro">🚀 Pro (Gemini CLI)</option>
+                                    <option value="max">🔥 Max (Enjambre Redacción Local)</option>
+                                </select>
+                                <span class="text-[10px] text-gray-500 font-mono bg-gray-200 px-1.5 py-0.5 rounded"
+                                    title="Próxima ejecución automática">⏱️ 04:00 AM</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botón de Configuración Unificado -->
                     <button id="btnOpenPromptModal"
-                        class="w-full bg-black text-white py-2 font-bold text-sm border-2 border-black hover:bg-gray-800 transition-colors uppercase tracking-wider rounded-lg">
-                        ⚙️ Configurar Búsqueda (Prompt)
+                        class="w-full bg-black text-white py-3 font-bold text-sm border-2 border-black hover:bg-gray-800 transition-colors uppercase tracking-wider rounded-lg shadow-[4px_4px_0px_#facc15] flex items-center justify-center gap-2 mt-2 group">
+                        <span class="group-hover:rotate-45 transition-transform">⚙️</span> Editar Base Genética
                     </button>
-                    <!-- Consola Virtual -->
-                    <div id="scoutStatus" class="terminal-box mt-4 hidden shadow-inner whitespace-pre-wrap"></div>
                 </div>
             </div>
 
@@ -117,19 +225,20 @@
             <div class="bg-[#facc15] p-6 funky-border flex flex-col justify-between items-start">
                 <div class="w-full">
                     <h2 class="text-2xl font-bold mb-3 flex items-center gap-3">
-                        <span class="text-3xl">📄</span> Factory de Reportes (PDF)
+                        <span class="text-3xl">📄</span> Factory de Consultoría
                     </h2>
                     <p class="mb-5 text-black text-sm font-medium leading-relaxed opacity-90">
-                        Extrae el último análisis de Ollama y genera un reporte ejecutivo visual listo para imprimir
-                        como PDF.
+                        Extrae el último análisis de las bases de conocimiento de Dipper y presenta un dashboard visual
+                        en HD listo para imprimir como evidencia corporativa.
                     </p>
                 </div>
 
-                <div id="reportStatus" class="terminal-box w-full mb-4 hidden whitespace-pre-wrap text-xs"></div>
+                <div id="reportStatus"
+                    class="terminal-box w-full mb-4 hidden whitespace-pre-wrap text-xs bg-black text-green-400"></div>
 
                 <button id="btnGenerateReport"
                     class="w-full funky-border bg-black text-white py-4 font-black text-lg hover:bg-gray-800 transition-colors">
-                    Generar Reporte Ejecutivo PDF
+                    🖨️ Generar Reporte Ejecutivo PDF
                 </button>
             </div>
 
@@ -163,20 +272,57 @@
         </div>
         <!-- RADAR DE FUENTES -->
         <div class="mt-8 bg-white p-6 funky-border">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+            <div
+                class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4 border-b-2 border-black pb-4">
                 <div>
                     <h2 class="text-2xl font-bold flex items-center gap-3">
                         <span class="text-3xl">📡</span> Radar de Fuentes Activas
                     </h2>
                     <p class="text-sm font-medium text-gray-700 mt-1">
-                        Las URLs, foros y comunidades que tu Búnker vigila (Aprobadas en Hostinger).
+                        Monitoreo horizontal de <strong>Coursera, TechCrunch, Blogs, LinkedIn, etc.</strong> (Búsqueda
+                        de tendencias superficiales).
                     </p>
                 </div>
-                <button id="btnRefreshRadar"
-                    class="funky-button border-2 border-black font-bold px-4 py-2 rounded-lg text-sm bg-blue-400 hover:bg-blue-300">
-                    ↻ Refrescar Radar
-                </button>
+                <div class="flex flex-col items-end gap-2 text-right">
+                    <!-- INTERRUPTOR AUTO-PILOT -->
+                    <div
+                        class="flex items-center justify-end bg-black text-white p-2 px-3 rounded-lg border-2 border-black w-full min-w-[200px]">
+                        <span class="font-black uppercase text-[10px] tracking-widest mr-3">Auto (Diario)</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="checkAutoRadar" class="sr-only peer">
+                            <div
+                                class="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#a3e635]">
+                            </div>
+                        </label>
+                        <span
+                            class="font-black uppercase text-[10px] tracking-widest ml-3 text-gray-400 peer-checked:text-white">Manual</span>
+                    </div>
+                </div>
             </div>
+
+            <!-- BOTONES MAESTROS RADAR -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <button id="btnRunRadarScout"
+                    class="w-full funky-border funky-button py-4 font-black text-lg flex justify-center items-center gap-2 relative overflow-hidden group">
+                    <span class="relative z-10 transition-transform group-hover:scale-105">▶ Escanear Fuentes Activas
+                        (Dipper)</span>
+                </button>
+                <div
+                    class="flex items-center justify-between bg-gray-100 p-4 funky-border text-sm font-bold shadow-inner">
+                    <div class="flex flex-col">
+                        <span class="text-gray-500 uppercase text-[10px] mb-1">Último Barrido</span>
+                        <span id="radarLastCheck" class="text-black">Esperando análisis...</span>
+                    </div>
+                    <button id="btnRefreshRadar"
+                        class="bg-white border-2 border-black font-bold px-3 py-2 rounded shadow hover:bg-gray-50 text-xs uppercase tracking-wider transition-colors">
+                        ↻ Recargar DB
+                    </button>
+                </div>
+            </div>
+
+            <!-- CONSOLA DEL RADAR -->
+            <div id="radarScoutStatus"
+                class="terminal-box hidden shadow-inner whitespace-pre-wrap mb-6 border-blue-500 border-x-4"></div>
 
             <!-- NUEVO: Formulario para añadir fuente manual -->
             <div
@@ -222,91 +368,361 @@
         </div>
     </div>
 
-        <!-- DEEP SCOUT — Fuentes Profundas (Reddit) -->
-        <div class="mt-8 bg-white p-6 funky-border">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
-                <div>
-                    <h2 class="text-2xl font-bold flex items-center gap-3">
-                        <span class="text-3xl">🕳️</span> Fuentes Profundas (Reddit)
-                    </h2>
-                    <p class="text-sm font-medium text-gray-700 mt-1">
-                        Escarba posts nuevos, top y controversiales + comentarios. Extrae herramientas, preguntas y referencias.
-                    </p>
-                </div>
+    <!-- DEEP SCOUT — Fuentes Profundas (Reddit) -->
+    <div class="mt-8 bg-black text-white p-6 funky-border">
+        <div
+            class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 border-b-2 border-gray-700 pb-4">
+            <div>
+                <h2 class="text-2xl font-bold flex items-center gap-3">
+                    <span class="text-3xl">🕳️</span> Fuentes Profundas (Reddit)
+                </h2>
+                <p class="text-sm font-medium text-gray-400 mt-1">
+                    Excavación ultra-profunda de herramientas y preguntas de la comunidad. <strong>Operado por
+                        Dipper.</strong>
+                </p>
+            </div>
+            <!-- INTERRUPTOR AUTO-PILOT DEEP -->
+            <div
+                class="flex items-center justify-end bg-gray-900 border-2 border-[#a3e635] p-2 px-3 rounded-lg min-w-[200px]">
+                <span class="font-black uppercase text-[10px] tracking-widest mr-3">Auto (Diario)</span>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="checkAutoDeep" class="sr-only peer">
+                    <div
+                        class="w-9 h-5 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#a3e635]">
+                    </div>
+                </label>
+                <span
+                    class="font-black uppercase text-[10px] tracking-widest ml-3 text-gray-500 peer-checked:text-white">Manual</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- CONTROLES Y LOGS -->
+            <div class="flex flex-col gap-4">
                 <button id="btnRunDeepScout"
-                    class="funky-button border-2 border-black font-black px-6 py-3 rounded-lg text-sm uppercase tracking-wider whitespace-nowrap">
-                    ▶ Análisis Profundo
+                    class="w-full funky-button text-black border-4 border-black font-black py-4 rounded-xl text-lg uppercase tracking-wider relative overflow-hidden group shadow-[4px_4px_0px_#fff]">
+                    <span class="relative z-10 transition-transform group-hover:scale-105">⛏️ Excavar Reddit
+                        Ahora</span>
                 </button>
+                <!-- Consola de Deep Scout -->
+                <div id="deepScoutStatus"
+                    class="terminal-box hidden whitespace-pre-wrap border-green-500 border-x-4 h-[220px]"></div>
             </div>
 
-            <!-- Agregar subreddit -->
-            <div class="mb-5 flex flex-col md:flex-row gap-2 bg-[#f4efeb] p-4 rounded-xl border-4 border-black shadow-[4px_4px_0px_#000]">
-                <input type="text" id="newSubreddit" placeholder="Nombre del subreddit (ej: digital_marketing)"
-                    class="px-3 py-2 border-2 border-black flex-grow rounded font-mono focus:outline-none focus:ring-2 focus:ring-black">
-                <button id="btnAddSubreddit"
-                    class="bg-black text-white font-black px-6 py-2 border-2 border-black hover:bg-gray-800 transition-colors uppercase tracking-wider rounded whitespace-nowrap">
-                    ➕ Agregar r/
-                </button>
-            </div>
-
-            <!-- Tabla de subreddits configurados -->
-            <div class="overflow-x-auto border-2 border-black rounded-lg mb-5">
-                <table class="w-full text-left border-collapse">
-                    <thead class="bg-gray-100 border-b-2 border-black">
-                        <tr>
-                            <th class="p-3 text-sm uppercase tracking-wider font-extrabold border-r-2 border-black">Subreddit</th>
-                            <th class="p-3 text-sm uppercase tracking-wider font-extrabold border-r-2 border-black w-36">Agregado</th>
-                            <th class="p-3 text-sm uppercase tracking-wider font-extrabold w-24">Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody id="deepSourcesTbody" class="text-sm font-medium divide-y-2 divide-black"></tbody>
-                </table>
-                <div id="deepSourcesLoading" class="text-center py-6 text-gray-500 font-bold animate-pulse">Cargando subreddits...</div>
-            </div>
-
-            <!-- Consola de Deep Scout -->
-            <div id="deepScoutStatus" class="terminal-box hidden whitespace-pre-wrap mt-2"></div>
-        </div>
-
-        <!-- INTELIGENCIA DE ACADEMIA -->
-        <div class="mt-8 bg-[#1a1a1a] text-white p-6 funky-border">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+            <!-- SUGERENCIAS DE DIPPER -->
+            <div
+                class="bg-gray-900 border-2 border-dashed border-gray-600 rounded-xl p-4 flex flex-col justify-between">
                 <div>
-                    <h2 class="text-2xl font-bold flex items-center gap-3">
-                        <span class="text-3xl">🧠</span> Inteligencia de Academia
-                    </h2>
-                    <p class="text-sm text-gray-400 mt-1" id="intelLastUpdated">Cargando registro acumulativo...</p>
-                </div>
-                <button id="btnRefreshIntel"
-                    class="text-sm bg-gray-700 hover:bg-gray-600 font-bold py-2 px-4 rounded border border-gray-500 uppercase tracking-wider">
-                    ↻ Refrescar
-                </button>
-            </div>
+                    <h3 class="text-[#facc15] font-black uppercase text-xs mb-2 flex items-center gap-2">
+                        <span>💡</span> Sugerencias de Dipper
+                    </h3>
+                    <p class="text-xs text-gray-400 mb-3">Basado en tendencias del Radar Activo, el Agente sugiere
+                        agregar los siguientes subreddits a la cola de excavación.</p>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Herramientas -->
-                <div>
-                    <div class="bg-[#a3e635] text-black px-3 py-1 font-extrabold text-xs uppercase tracking-wider border-2 border-black inline-block mb-3">🛠️ Top Herramientas</div>
-                    <ul id="intelTools" class="space-y-2">
-                        <li class="text-gray-500 text-sm animate-pulse">Cargando...</li>
-                    </ul>
-                </div>
-                <!-- Preguntas -->
-                <div>
-                    <div class="bg-[#facc15] text-black px-3 py-1 font-extrabold text-xs uppercase tracking-wider border-2 border-black inline-block mb-3">❓ Preguntas Frecuentes</div>
-                    <ul id="intelQuestions" class="space-y-2">
-                        <li class="text-gray-500 text-sm animate-pulse">Cargando...</li>
-                    </ul>
-                </div>
-                <!-- Referencias -->
-                <div>
-                    <div class="bg-white text-black px-3 py-1 font-extrabold text-xs uppercase tracking-wider border-2 border-black inline-block mb-3">🔗 Referencias Top</div>
-                    <ul id="intelReferences" class="space-y-2">
-                        <li class="text-gray-500 text-sm animate-pulse">Cargando...</li>
+                    <!-- Lista iterada JS -->
+                    <ul id="dipperSuggestionsList"
+                        class="space-y-2 max-h-[140px] overflow-y-auto pr-1 custom-scrollbar">
+                        <li class="text-center text-gray-600 text-xs italic py-4">Sin menciones relevantes recientes en
+                            la superficie.</li>
                     </ul>
                 </div>
             </div>
         </div>
+
+        <!-- Agregar subreddit -->
+        <div
+            class="mb-5 flex flex-col md:flex-row gap-2 bg-[#f4efeb] p-4 rounded-xl border-4 border-black shadow-[4px_4px_0px_#000]">
+            <input type="text" id="newSubreddit" placeholder="Nombre del subreddit (ej: digital_marketing)"
+                class="px-3 py-2 border-2 border-black flex-grow rounded font-mono text-black focus:outline-none focus:ring-2 focus:ring-black">
+            <button id="btnAddSubreddit"
+                class="bg-black text-white font-black px-6 py-2 border-2 border-black hover:bg-gray-800 transition-colors uppercase tracking-wider rounded whitespace-nowrap">
+                ➕ Agregar r/
+            </button>
+        </div>
+
+        <!-- Tabla de subreddits configurados -->
+        <div class="overflow-x-auto border-2 border-black rounded-lg mb-5">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-gray-100 text-black border-b-2 border-black">
+                    <tr>
+                        <th class="p-3 text-sm uppercase tracking-wider font-extrabold border-r-2 border-black">
+                            Subreddit</th>
+                        <th class="p-3 text-sm uppercase tracking-wider font-extrabold border-r-2 border-black w-36">
+                            Agregado</th>
+                        <th class="p-3 text-sm uppercase tracking-wider font-extrabold w-24">Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="deepSourcesTbody" class="text-sm font-medium divide-y-2 divide-black"></tbody>
+            </table>
+            <div id="deepSourcesLoading" class="text-center py-6 text-gray-500 font-bold animate-pulse">Cargando
+                subreddits...</div>
+        </div>
+
+        <!-- Consola de Deep Scout -->
+        <div id="deepScoutStatus" class="terminal-box hidden whitespace-pre-wrap mt-2"></div>
+    </div>
+
+    <!-- INTELIGENCIA DE ACADEMIA -->
+    <div class="mt-8 bg-[#1a1a1a] text-white p-6 funky-border">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+            <div>
+                <h2 class="text-2xl font-bold flex items-center gap-3">
+                    <span class="text-3xl">🧠</span> Inteligencia de Academia
+                </h2>
+                <p class="text-sm text-gray-400 mt-1" id="intelLastUpdated">Cargando registro acumulativo...</p>
+            </div>
+            <button id="btnRefreshIntel"
+                class="text-sm bg-gray-700 hover:bg-gray-600 font-bold py-2 px-4 rounded border border-gray-500 uppercase tracking-wider">
+                ↻ Refrescar
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Herramientas -->
+            <div>
+                <div
+                    class="bg-[#a3e635] text-black px-3 py-1 font-extrabold text-xs uppercase tracking-wider border-2 border-black inline-block mb-3">
+                    🛠️ Top Herramientas</div>
+                <ul id="intelTools" class="space-y-2">
+                    <li class="text-gray-500 text-sm animate-pulse">Cargando...</li>
+                </ul>
+            </div>
+            <!-- Preguntas -->
+            <div>
+                <div
+                    class="bg-[#facc15] text-black px-3 py-1 font-extrabold text-xs uppercase tracking-wider border-2 border-black inline-block mb-3">
+                    ❓ Preguntas Frecuentes</div>
+                <ul id="intelQuestions" class="space-y-2">
+                    <li class="text-gray-500 text-sm animate-pulse">Cargando...</li>
+                </ul>
+            </div>
+            <!-- Referencias -->
+            <div>
+                <div
+                    class="bg-white text-black px-3 py-1 font-extrabold text-xs uppercase tracking-wider border-2 border-black inline-block mb-3">
+                    🔗 Referencias Top</div>
+                <ul id="intelReferences" class="space-y-2">
+                    <li class="text-gray-500 text-sm animate-pulse">Cargando...</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <!-- PERRY EL ORNITORRINCO — PANEL DE RECONOCIMIENTO             -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <div id="perryPanel" class="mt-8 mb-8" style="font-family:'Space Grotesk',sans-serif;">
+
+        <!-- RETRO HEADER -->
+        <div style="background:#0d0d0d;border:3px solid #39ff14;box-shadow:0 0 18px #39ff1466,6px 6px 0 #39ff14;padding:18px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+            <div>
+                <div style="font-size:9px;letter-spacing:4px;color:#39ff14;text-transform:uppercase;margin-bottom:4px;">[ KEIYI INTELLIGENCE · AGENTE DE RECONOCIMIENTO ]</div>
+                <div style="font-size:26px;font-weight:900;color:#fff;text-transform:uppercase;letter-spacing:2px;">🦆 Perry <span style="color:#39ff14;">el Ornitorrinco</span></div>
+                <div style="font-size:10px;color:#555;margin-top:4px;font-family:monospace;letter-spacing:1px;">SCRAPE → ANALYZE → DEBATE → VOTE → CONSOLIDATE → DISCOVER</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+                <div id="perryStatusBadge" style="background:#111;border:2px solid #333;padding:5px 14px;font-size:11px;font-family:monospace;color:#555;letter-spacing:2px;">⬤ IDLE</div>
+                <div id="perryLastRun" style="font-size:10px;color:#444;font-family:monospace;">Sin ejecuciones recientes</div>
+            </div>
+        </div>
+
+        <!-- ZONA OPERACIONAL: Botones + Terminal (lado a lado) -->
+        <div style="display:grid;grid-template-columns:220px 1fr;border:3px solid #39ff14;border-top:none;border-bottom:none;">
+
+            <!-- COLUMNA BOTONES (izquierda, estrecha) -->
+            <div style="background:#080808;border-right:2px solid #1a1a1a;display:flex;flex-direction:column;">
+
+                <!-- Backend selector -->
+                <div style="padding:14px;border-bottom:1px solid #141414;">
+                    <div style="font-size:8px;letter-spacing:3px;color:#444;text-transform:uppercase;margin-bottom:8px;">// MODO</div>
+                    <select id="perryBackend" style="width:100%;background:#0d0d0d;color:#39ff14;border:1px solid #2a2a2a;padding:6px 8px;font-family:monospace;font-size:10px;outline:none;cursor:pointer;">
+                        <option value="auto">⚡ AUTO (RAM adaptativo)</option>
+                        <option value="perry">🌱 ECO — Ollama solo</option>
+                        <option value="claude">🔵 PRO — Claude CLI</option>
+                        <option value="gemini">🟣 PRO — Gemini CLI</option>
+                        <option value="all">🔥 MAX — 3 backends + debate</option>
+                    </select>
+                </div>
+
+                <!-- Botón SCRAPE -->
+                <button id="btnPerryScrape" onclick="perryRun('scrape')"
+                    style="flex:1;background:#0d0d0d;color:#39ff14;border:none;border-bottom:1px solid #141414;padding:20px 12px;font-family:monospace;cursor:pointer;transition:background 0.15s;text-align:left;display:flex;flex-direction:column;gap:6px;">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <span style="font-size:20px;">📡</span>
+                        <span style="font-size:13px;font-weight:900;letter-spacing:2px;">SCRAPE</span>
+                    </div>
+                    <div style="font-size:9px;color:#3a3a3a;line-height:1.4;">Descarga contenido crudo de todas las fuentes aprobadas</div>
+                </button>
+
+                <!-- Botón ANALIZAR -->
+                <button id="btnPerryAnalyze" onclick="perryRun('analyze')"
+                    style="flex:1;background:#0d0d0d;color:#facc15;border:none;border-bottom:1px solid #141414;padding:20px 12px;font-family:monospace;cursor:pointer;transition:background 0.15s;text-align:left;display:flex;flex-direction:column;gap:6px;">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <span style="font-size:20px;">🧠</span>
+                        <span style="font-size:13px;font-weight:900;letter-spacing:2px;">ANALIZAR</span>
+                    </div>
+                    <div style="font-size:9px;color:#3a3a3a;line-height:1.4;">3 IAs analizan en paralelo, debaten y votan la mejor inteligencia</div>
+                </button>
+
+                <!-- Botón DESCUBRIR -->
+                <button id="btnPerryDiscover" onclick="perryRun('discover')"
+                    style="flex:1;background:#0d0d0d;color:#60a5fa;border:none;padding:20px 12px;font-family:monospace;cursor:pointer;transition:background 0.15s;text-align:left;display:flex;flex-direction:column;gap:6px;">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <span style="font-size:20px;">🌐</span>
+                        <span style="font-size:13px;font-weight:900;letter-spacing:2px;">DESCUBRIR</span>
+                    </div>
+                    <div style="font-size:9px;color:#3a3a3a;line-height:1.4;">Busca nuevas comunidades globales en todos los idiomas de forma autónoma</div>
+                </button>
+            </div>
+
+            <!-- TERMINAL EN VIVO (derecha, ancha) -->
+            <div style="background:#000;display:flex;flex-direction:column;">
+                <div style="padding:10px 16px;background:#080808;border-bottom:1px solid #141414;display:flex;justify-content:space-between;align-items:center;">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <span style="font-size:9px;letter-spacing:3px;color:#39ff14;text-transform:uppercase;">// CONSOLA EN VIVO</span>
+                        <div id="perryRunning" style="display:none;font-size:9px;color:#39ff14;font-family:monospace;letter-spacing:1px;">● EJECUTANDO...</div>
+                    </div>
+                    <button onclick="document.getElementById('perryTerminal').innerHTML=''" style="background:transparent;border:1px solid #1a1a1a;color:#333;padding:2px 10px;font-family:monospace;font-size:10px;cursor:pointer;letter-spacing:1px;">CLR</button>
+                </div>
+                <div id="perryTerminal" style="flex:1;padding:16px;min-height:340px;overflow-y:auto;font-family:'Courier New',monospace;font-size:11px;line-height:1.7;color:#555;white-space:pre-wrap;"><span style="color:#222;">┌──────────────────────────────────────────────────────┐
+│  PERRY COMMAND TERMINAL  v1.0                        │
+│  Selecciona un modo y presiona un botón              │
+│  para ver el output en tiempo real →                 │
+└──────────────────────────────────────────────────────┘</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- FILA INFERIOR: Directivas | Fuentes | Storage -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border:3px solid #39ff14;border-top:2px solid #1a1a1a;">
+
+            <!-- DIRECTIVAS DEL CEO -->
+            <div style="background:#09090b;padding:18px;border-right:1px solid #1a1a1a;">
+                <div style="font-size:8px;letter-spacing:3px;color:#facc15;text-transform:uppercase;margin-bottom:8px;">// DIRECTIVAS DEL CEO</div>
+                <div style="font-size:9px;color:#3a3a3a;margin-bottom:10px;font-family:monospace;line-height:1.5;">Perry las lee antes de cada análisis. Prioridades, enfoques, restricciones.</div>
+                <textarea id="perryDirectives" rows="6" placeholder="Ej: Prioriza LatAm. Ignora herramientas pagas. Busca más en portugués..." style="width:100%;background:#111;color:#facc15;border:1px solid #2a2a2a;padding:10px;font-family:monospace;font-size:10px;resize:vertical;outline:none;box-sizing:border-box;line-height:1.6;"></textarea>
+                <div style="display:flex;justify-content:flex-end;margin-top:8px;gap:8px;align-items:center;">
+                    <div id="directivesFeedback" style="display:none;font-size:9px;font-family:monospace;padding:3px 8px;border:1px solid;flex:1;"></div>
+                    <button id="btnSaveDirectives" onclick="saveDirectives()" style="background:#facc15;color:#000;border:none;padding:6px 16px;font-family:monospace;font-size:10px;font-weight:900;text-transform:uppercase;cursor:pointer;letter-spacing:1px;white-space:nowrap;">💾 SAVE</button>
+                </div>
+            </div>
+
+            <!-- FUENTES PENDIENTES -->
+            <div style="background:#09090b;padding:18px;border-right:1px solid #1a1a1a;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                    <div style="font-size:8px;letter-spacing:3px;color:#60a5fa;text-transform:uppercase;">// COLA DE FUENTES</div>
+                    <button onclick="loadPerrySources()" style="background:transparent;border:1px solid #1a1a1a;color:#333;padding:2px 8px;font-family:monospace;font-size:10px;cursor:pointer;">↻</button>
+                </div>
+                <div id="perrySourcesList" style="font-family:monospace;font-size:10px;color:#555;max-height:180px;overflow-y:auto;">
+                    <div style="color:#222;text-align:center;padding:20px;">Cargando...</div>
+                </div>
+            </div>
+
+            <!-- STORAGE GOOGLE DRIVE -->
+            <div style="background:#09090b;padding:18px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                    <div style="font-size:8px;letter-spacing:3px;color:#39ff14;text-transform:uppercase;">// GOOGLE DRIVE</div>
+                    <button onclick="loadPerryStorage()" style="background:transparent;border:1px solid #1a1a1a;color:#333;padding:2px 8px;font-family:monospace;font-size:10px;cursor:pointer;">↻</button>
+                </div>
+                <div id="perryStorageList" style="font-family:monospace;font-size:10px;color:#555;line-height:1.8;">
+                    <div style="color:#222;text-align:center;padding:20px;">Cargando...</div>
+                </div>
+                <div style="margin-top:10px;font-size:8px;color:#222;font-family:monospace;word-break:break-all;line-height:1.4;" id="perryBasePath"></div>
+            </div>
+        </div>
+
+        <!-- ÚLTIMO CONSENSO (ancho completo, oculto hasta que haya datos) -->
+        <div id="perryConsensusPanel" style="border:3px solid #39ff14;border-top:none;background:#050505;padding:20px;display:none;">
+            <div style="font-size:8px;letter-spacing:3px;color:#39ff14;text-transform:uppercase;margin-bottom:12px;">// ÚLTIMO CONSENSO DE INTELIGENCIA</div>
+            <div id="perryConsensusContent" style="font-family:monospace;font-size:11px;color:#888;"></div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <!-- MESA DE REDACCIÓN (WILLIAM / SCRIBE)                        -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <div class="bg-[#f0f9ff] border-4 border-black p-6 rounded-2xl mb-12 shadow-[8px_8px_0px_#000]">
+        <!-- HEADER -->
+        <div
+            class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-6 border-b-2 border-blue-200 pb-4">
+            <div>
+                <h2 class="text-3xl font-bold flex items-center gap-3 text-black">
+                    <span class="bg-blue-500 rounded p-1 text-white shadow">✍️</span> La Mesa de Redacción (William)
+                </h2>
+                <p class="text-sm text-gray-600 mt-2 font-medium max-w-2xl">
+                    Toma la materia prima de Dipper, investiga las URLs referidas y ensambla contenido editorial SEO
+                    y orgánico de alta conversión. Los artículos requieren tu Visto Bueno antes de sincronizarse.
+                </p>
+            </div>
+
+            <div class="w-full lg:w-auto flex flex-col gap-2">
+                <button id="btnRunWilliam"
+                    class="bg-blue-600 text-white border-2 border-black font-black px-8 py-3 rounded shadow-[4px_4px_0px_#000] hover:-translate-y-1 hover:shadow-[6px_6px_0px_#000] transition-all uppercase tracking-wider">
+                    📝 Redactar Borradores (Ollama)
+                </button>
+                <div id="williamStatus"
+                    class="text-xs text-blue-800 bg-blue-100 rounded p-2 text-center hidden border border-blue-300 font-mono">
+                </div>
+            </div>
+        </div>
+
+        <!-- WORKSPACE DUAL -->
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+
+            <!-- COLUMNA 1: Borradores Pendientes -->
+            <div class="flex flex-col h-full bg-white border-2 border-black p-4 shadow-[4px_4px_0px_#64748b]">
+                <div class="flex justify-between items-center mb-4 pb-2 border-b border-gray-200">
+                    <h3 class="font-black text-lg uppercase flex items-center gap-2">
+                        <span class="w-3 h-3 bg-yellow-400 rounded-full animate-pulse"></span>
+                        En Revisión
+                        <span id="williamBadge" class="hidden font-bold opacity-50"></span>
+                    </h3>
+                    <button id="btnRefreshWilliam"
+                        class="text-xs bg-gray-100 hover:bg-gray-200 border border-gray-300 font-bold py-1 px-3 rounded text-gray-600">
+                        ↻ Recargar
+                    </button>
+                </div>
+                <div id="williamDrafts" class="space-y-4 flex-1 max-h-[400px] overflow-y-auto pr-2">
+                    <p class="text-gray-400 text-sm italic">Sin borradores en la bitácora actualmente.</p>
+                </div>
+            </div>
+
+            <!-- COLUMNA 2: Listos para Producción (Módulo SSH) -->
+            <div class="flex flex-col h-full bg-[#f8fafc] border-2 border-dashed border-gray-400 p-4 relative">
+                <div class="flex justify-between items-center mb-4 pb-2 border-b border-gray-200">
+                    <h3 class="font-black text-lg text-green-700 uppercase flex items-center gap-2">
+                        <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+                        Visto Bueno / Ready to Deploy
+                    </h3>
+                    <span id="approvedCount"
+                        class="bg-green-100 text-green-800 font-mono text-xs font-bold px-2 py-1 border border-green-300 rounded">0
+                        POSTS</span>
+                </div>
+
+                <div id="williamApproved" class="space-y-3 flex-1 max-h-[300px] overflow-y-auto pr-2 mb-4">
+                    <!-- Aprobados listados aqui -->
+                    <div class="w-full h-full flex items-center justify-center">
+                        <span class="text-sm font-medium text-gray-400">Aprueba posts en la columna
+                            izquierda.</span>
+                    </div>
+                </div>
+
+                <!-- EL GRAN BOTÓN DE DEPLOY -->
+                <button id="btnSyncHostinger" disabled
+                    class="disabled:opacity-40 disabled:hover:translate-y-0 disabled:hover:shadow-none w-full bg-green-500 text-black border-4 border-black font-black text-xl py-4 flex items-center justify-center gap-3 uppercase shadow-[4px_4px_0px_#000] hover:-translate-y-1 hover:shadow-[6px_6px_0px_#000] transition-all">
+                    <span>🚀 Sincronizar a Keiyi.digital</span>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Modal de Lectura y Rechazo -->
+        <div id="articleModal"
+            class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <!-- Modal dinámico inyectado por JS -->
+        </div>
+    </div>
+    </div>
 
     <!-- PROMPT EDITOR: ahora es página dedicada en /prompt-editor (nueva pestaña) -->
     <!-- <div id="promptModal" ...> ELIMINADO — reemplazado por /prompt-editor </div> -->
@@ -316,31 +732,34 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
-            // ── Scout AI ──────────────────────────────────────────────────
-            const btnRunScout = document.getElementById('btnRunScout');
-            if (btnRunScout) {
-                btnRunScout.addEventListener('click', async () => {
-                    const statusDiv = document.getElementById('scoutStatus');
-                    btnRunScout.innerHTML = '⏳ <span class="animate-pulse">Despertando Modelo IA (Puede tardar minutos)...</span>';
-                    btnRunScout.classList.add('opacity-70', 'pointer-events-none');
+            // ── Scout AI (RADAR ACTIVO DIPPER) ─────────────────────────────
+            const btnRunRadarScout = document.getElementById('btnRunRadarScout');
+            if (btnRunRadarScout) {
+                btnRunRadarScout.addEventListener('click', async () => {
+                    const statusDiv = document.getElementById('radarScoutStatus');
+                    btnRunRadarScout.innerHTML = '⏳ <span class="animate-pulse">Dipper está escaneando las antenas (Puede tardar minutos)...</span>';
+                    btnRunRadarScout.classList.add('opacity-70', 'pointer-events-none');
                     statusDiv.classList.remove('hidden');
-                    statusDiv.innerHTML = '<span class="text-yellow-400">>> INFO:</span> Conectando motor local. Procesando feeds a través de qwen3:8b...\n<span class="text-gray-500">>> Espere, la IA está escribiendo y razonando el mercado...</span>\n\n';
+                    statusDiv.innerHTML = '<span class="text-blue-400">>> INFO:</span> Conectando motores locales. Procesando feeds a través de qwen3:8b...\n<span class="text-gray-500">>> Espere, Dipper está extrayendo información de superficie...</span>\n\n';
                     try {
                         const response = await fetch('/api/run-scout', { method: 'POST' });
                         const data = await response.json();
                         if (data.success) {
-                            statusDiv.innerHTML += '<span class="text-green-400">>> ÉXITO EN OPERACIÓN IA</span>\n\n' + data.logs;
-                            btnRunScout.innerHTML = '✅ Reiniciar Rastreo';
+                            statusDiv.innerHTML += '<span class="text-green-400">>> ÉXITO EN BARRIDO DE RADAR</span>\n\n' + data.logs;
+                            btnRunRadarScout.innerHTML = '✅ Reiniciar Rastreo de Radar';
+                            fetchDipperSuggestions(); // Actualizar las sugerencias a Deep Dive
                         } else {
-                            statusDiv.innerHTML += '<span class="text-red-400">>> FALLO EN PYTHON/OLLAMA</span>\n\n' + data.error + '\n\nLogs:\n' + data.logs;
-                            btnRunScout.innerHTML = '❌ Reintentar Operación';
+                            statusDiv.innerHTML += '<span class="text-red-400">>> FALLO EN OLLAMA / RED</span>\n\n' + data.error + '\n\nLogs:\n' + data.logs;
+                            btnRunRadarScout.innerHTML = '❌ Reintentar Operación';
                         }
                     } catch (error) {
                         statusDiv.innerHTML += '<span class="text-red-400">>> ERROR CRÍTICO NODE SERVER</span>\n' + error.message;
-                        btnRunScout.innerHTML = '❌ Reintentar';
+                        btnRunRadarScout.innerHTML = '❌ Reintentar';
                     } finally {
                         statusDiv.scrollTop = statusDiv.scrollHeight;
-                        btnRunScout.classList.remove('opacity-70', 'pointer-events-none');
+                        btnRunRadarScout.classList.remove('opacity-70', 'pointer-events-none');
+                        const time = new Date().toLocaleTimeString();
+                        document.getElementById('radarLastCheck').textContent = `Hoy a las ${time}`;
                     }
                 });
             }
@@ -437,7 +856,7 @@
             }
 
             // ── Acciones del Radar (Eliminar / Banear) ────────────────────
-            window.deleteSource = async function(id, btn) {
+            window.deleteSource = async function (id, btn) {
                 if (!confirm('¿Eliminar esta fuente permanentemente?')) return;
                 btn.disabled = true; btn.innerHTML = '...';
                 try {
@@ -448,7 +867,7 @@
                 }
             };
 
-            window.banSource = async function(id, btn) {
+            window.banSource = async function (id, btn) {
                 if (!confirm('¿Banear esta fuente? Quedará inactiva permanentemente.')) return;
                 btn.disabled = true; btn.innerHTML = '...';
                 try {
@@ -528,7 +947,7 @@
                 }
             }
 
-            window.updateUserStatus = async function(userId, statusText) {
+            window.updateUserStatus = async function (userId, statusText) {
                 const confirmMsg = statusText === 'approved' ? '¿Aprobar y dar acceso premium?' : '¿Rechazar solicitud y denegar acceso?';
                 if (!confirm(confirmMsg)) return;
                 try {
@@ -548,6 +967,63 @@
             const btnRefreshUsers = document.getElementById('btnRefreshUsers');
             if (btnRefreshUsers) btnRefreshUsers.addEventListener('click', fetchUsers);
             fetchUsers();
+
+            // ── Sugerencias de Dipper (Radar -> Deep Dive) ─────────────────
+            async function fetchDipperSuggestions() {
+                const list = document.getElementById('dipperSuggestionsList');
+                if (!list) return;
+                try {
+                    const res = await fetch('/api/dipper/suggestions');
+                    const suggestions = await res.json();
+
+                    if (!suggestions || suggestions.length === 0) {
+                        list.innerHTML = '<li class="text-center text-gray-600 text-xs italic py-4">Sin nuevas sugerencias valiosas en el Radar.</li>';
+                        return;
+                    }
+
+                    list.innerHTML = suggestions.map(sub => `
+                        <li class="flex items-center justify-between bg-black p-2 rounded border border-gray-700">
+                            <div>
+                                <span class="text-white font-bold text-sm">r/${sub.name}</span>
+                                <p class="text-[10px] text-gray-500 mt-0.5">Motivo: ${sub.reason || 'Tracción inusual detectada'}</p>
+                            </div>
+                            <div class="flex gap-1">
+                                <button onclick="window.approveSuggestion('${sub.name}')" class="bg-[#a3e635] text-black px-2 py-1 rounded text-[10px] font-black hover:bg-lime-400">Aprobar</button>
+                                <button onclick="window.discardSuggestion('${sub.name}')" class="bg-gray-800 text-gray-400 px-2 py-1 rounded text-[10px] font-black hover:bg-gray-700">Omitir</button>
+                            </div>
+                        </li>
+                    `).join('');
+                } catch (e) {
+                    list.innerHTML = '<li class="text-center text-red-500 text-xs py-2">Error al cargar matriz local.</li>';
+                }
+            }
+
+            window.approveSuggestion = async function (subredditName) {
+                try {
+                    // Re-utiliza el endpoint existente para deep-sources
+                    await fetch('/api/deep-sources', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ subreddit: subredditName })
+                    });
+
+                    // Notificar al backend que deseche la sugerencia de la cola (por implementar endpoint dummy /api/dipper/suggestions/:name/discard)
+                    await fetch(`/api/dipper/suggestions/${subredditName}/discard`, { method: 'POST' });
+
+                    fetchDeepSources();
+                    fetchDipperSuggestions();
+                } catch (e) { alert("Error al aprobar sugerencia"); }
+            };
+
+            window.discardSuggestion = async function (subredditName) {
+                try {
+                    await fetch(`/api/dipper/suggestions/${subredditName}/discard`, { method: 'POST' });
+                    fetchDipperSuggestions();
+                } catch (e) { }
+            };
+
+            // Cargar Sugerencias Inicialmente
+            fetchDipperSuggestions();
 
             // ── Prueba de Conexión Hostinger (SSH + SCP) ──────────────────
             const btnCheckHostinger = document.getElementById('btnCheckHostinger');
@@ -582,7 +1058,7 @@
             // Restaurar último estado conocido desde localStorage al cargar la página
             const savedStatus = localStorage.getItem('hostingerStatus');
             if (savedStatus) {
-                try { applyHostingerStatus(JSON.parse(savedStatus)); } catch(e) {}
+                try { applyHostingerStatus(JSON.parse(savedStatus)); } catch (e) { }
             }
 
             if (btnCheckHostinger) {
@@ -665,7 +1141,7 @@
                 });
             }
 
-            window.removeSubreddit = async function(subreddit, btn) {
+            window.removeSubreddit = async function (subreddit, btn) {
                 if (!confirm(`¿Quitar r/${subreddit} de las fuentes profundas?`)) return;
                 btn.disabled = true; btn.innerHTML = '...';
                 try {
@@ -724,15 +1200,15 @@
                     };
 
                     renderList('intelTools', data.tools, t => {
-                        const toolName   = t.display || t.name;
-                        const sub        = t.dominant_source || null;
-                        const subSlug    = sub ? sub.replace(/^r\//, '') : null;
-                        const searchUrl  = subSlug
+                        const toolName = t.display || t.name;
+                        const sub = t.dominant_source || null;
+                        const subSlug = sub ? sub.replace(/^r\//, '') : null;
+                        const searchUrl = subSlug
                             ? `https://www.reddit.com/r/${subSlug}/search/?q=${encodeURIComponent(toolName)}&restrict_sr=1&sort=top`
                             : null;
                         const allSources = (t.sources || []).map(s => {
                             const slug = s.replace(/^r\//, '');
-                            const url  = `https://www.reddit.com/r/${slug}/search/?q=${encodeURIComponent(toolName)}&restrict_sr=1&sort=top`;
+                            const url = `https://www.reddit.com/r/${slug}/search/?q=${encodeURIComponent(toolName)}&restrict_sr=1&sort=top`;
                             return `<a href="${url}" target="_blank" class="text-gray-500 hover:text-[#a3e635] underline">${s}</a>`;
                         }).join(' · ');
                         return `
@@ -781,6 +1257,381 @@
             const btnRefreshIntel = document.getElementById('btnRefreshIntel');
             if (btnRefreshIntel) btnRefreshIntel.addEventListener('click', fetchIntel);
             fetchIntel();
+
+            // ── William — Borradores pendientes y Aprobados ───────────────
+            async function fetchWilliamDrafts() {
+                const draftContainer = document.getElementById('williamDrafts');
+                const badge = document.getElementById('williamBadge');
+                try {
+                    const res = await fetch('/api/william/pending');
+                    const data = await res.json();
+
+                    if (!data.length) {
+                        draftContainer.innerHTML = '<div class="w-full h-full flex items-center justify-center p-6"><p class="text-gray-400 font-medium">Bandeja vacía. William está durmiendo. 💤</p></div>';
+                        if (badge) badge.classList.add('hidden');
+                        return;
+                    }
+
+                    if (badge) {
+                        badge.textContent = data.length;
+                        badge.classList.remove('hidden');
+                    }
+
+                    draftContainer.innerHTML = data.map(post => `
+                        <div class="bg-gray-50 border-2 border-slate-300 p-4 rounded-lg shadow-sm hover:border-blue-400 transition-colors" id="draft-${post.id}">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-blue-100 text-blue-800 text-[10px] font-black px-2 py-0.5 rounded border border-blue-200 uppercase">${post.category || 'NOTICIAS'}</span>
+                                ${post.dominant_subreddit ? `<span class="bg-orange-100 text-orange-800 text-[10px] font-black px-2 py-0.5 rounded border border-orange-200">r/${post.dominant_subreddit}</span>` : ''}
+                                <span class="text-xs text-gray-500 font-mono ml-auto">${Math.round(post.word_count || 800)} pts</span>
+                            </div>
+                            <h3 class="font-black text-lg text-slate-800 mb-1 leading-tight">${post.title}</h3>
+                            <p class="text-sm text-slate-500 line-clamp-2 mb-3 leading-relaxed">${post.excerpt}</p>
+                            
+                            <div class="flex gap-2">
+                                <button onclick="window.approveDraft(${post.id})" class="flex-1 bg-green-500 hover:bg-green-400 text-black font-black text-xs py-2 px-3 rounded border border-green-700 uppercase shadow shadow-green-200 transition-colors tracking-wide">
+                                    ✓ Visto Bueno
+                                </button>
+                                <button onclick="openRejectModal(${post.id})" class="flex-1 bg-white hover:bg-red-50 text-red-600 font-bold text-xs py-2 px-3 rounded border border-red-200 uppercase transition-colors tracking-wide">
+                                    ✕ Rechazar
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                } catch (e) {
+                    draftContainer.innerHTML = '<p class="text-red-500 text-sm font-bold bg-red-50 p-4 border border-red-200 rounded">Error: Laravel (Williams Backend) no responde. ¿php artisan serve?</p>';
+                }
+            }
+
+            async function fetchWilliamApproved() {
+                const approvedContainer = document.getElementById('williamApproved');
+                const btnSync = document.getElementById('btnSyncHostinger');
+                const approvedCount = document.getElementById('approvedCount');
+
+                try {
+                    const res = await fetch('/api/william/approved');
+                    const data = await res.json();
+
+                    approvedCount.textContent = `${data.length} POSTS`;
+
+                    if (!data.length) {
+                        btnSync.disabled = true;
+                        approvedContainer.innerHTML = '<div class="w-full h-full flex flex-col items-center justify-center p-6 text-gray-400"><span class="text-3xl mb-2 grayscale opacity-50">🚀</span><p class="text-sm font-medium">Bandeja de lanzamiento vacía.</p></div>';
+                        return;
+                    }
+
+                    btnSync.disabled = false;
+                    approvedContainer.innerHTML = data.map(post => `
+                        <div class="bg-white border text-left border-gray-200 p-3 rounded-lg flex justify-between items-center group relative overflow-hidden" id="approved-${post.id}">
+                            <div class="absolute inset-0 bg-green-500/5 translate-x-full group-hover:translate-x-0 transition-transform"></div>
+                            <div class="flex-1 min-w-0 pr-2 relative z-10">
+                                <h4 class="font-bold text-slate-800 text-sm truncate">${post.title}</h4>
+                                <div class="text-[10px] text-gray-500 uppercase font-black mt-1">Listo para enviar a la Nube</div>
+                            </div>
+                            <button onclick="window.undoApproval(${post.id})" class="relative z-10 text-gray-400 hover:text-red-500 text-xs px-2" title="Deshacer Visto Bueno">↶</button>
+                        </div>
+                    `).join('');
+                } catch (e) {
+                    approvedContainer.innerHTML = '<p class="text-red-400 text-sm">Error cargando aprobados.</p>';
+                    btnSync.disabled = true;
+                }
+            }
+
+            window.approveDraft = async function (id) {
+                try {
+                    await fetch(`/api/william/${id}/approve`, { method: 'POST' });
+                    fetchWilliamDrafts();
+                    fetchWilliamApproved();
+                } catch (e) { alert("Error al aprobar"); }
+            }
+
+            window.undoApproval = async function (id) {
+                try {
+                    await fetch(`/api/william/${id}/undo`, { method: 'POST' });
+                    fetchWilliamDrafts();
+                    fetchWilliamApproved();
+                } catch (e) { alert("Error al deshacer aprobación"); }
+            }
+
+            let pendingRejectId = null;
+            function openRejectModal(id) {
+                pendingRejectId = id;
+                const existingModal = document.getElementById('articleModal');
+                existingModal.innerHTML = `
+                    <div class="bg-white border-4 border-red-500 p-6 w-full max-w-md rounded-xl shadow-[8px_8px_0px_rgba(239,68,68,0.5)] transform transition-transform scale-100">
+                        <h3 class="font-black text-xl mb-3 text-red-600 flex items-center gap-2"><span>⚠️</span> Motivo del rechazo</h3>
+                        <p class="text-xs text-gray-500 mb-4 font-medium leading-relaxed">Dile a William qué debe cambiar para la próxima vez (o por qué descartarás completamente la pieza).</p>
+                        <textarea id="rejectReasonText" rows="4" placeholder="Ej: Está muy técnico, usa un tono más relajado..."
+                            class="w-full bg-red-50 text-red-900 border-2 border-red-200 p-3 text-sm rounded-lg resize-none mb-5 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200"></textarea>
+                        <div class="flex gap-3">
+                            <button id="btnConfirmRejectScribe" class="bg-red-500 hover:bg-red-600 text-white font-black py-3 px-4 rounded-lg flex-1 border border-red-700 shadow shadow-red-300 transition-colors uppercase tracking-wide">
+                                Descartar
+                            </button>
+                            <button onclick="document.getElementById('articleModal').classList.add('hidden')"
+                                class="bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold py-3 px-4 rounded-lg flex-1 border border-gray-300 transition-colors uppercase tracking-wide">
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                `;
+                existingModal.classList.remove('hidden');
+
+                document.getElementById('btnConfirmRejectScribe').addEventListener('click', async () => {
+                    const reason = document.getElementById('rejectReasonText').value.trim();
+                    if (!reason) return;
+                    try {
+                        await fetch(`/api/william/${pendingRejectId}/reject`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ reason })
+                        });
+                        existingModal.classList.add('hidden');
+                        fetchWilliamDrafts();
+                    } catch (e) { alert("Error al rechazar"); }
+                });
+            }
+
+            // Iniciar Redacción (Comando Dipper -> William)
+            const btnRunWilliam = document.getElementById('btnRunWilliam');
+            if (btnRunWilliam) {
+                btnRunWilliam.addEventListener('click', async () => {
+                    const output = document.getElementById('williamStatus');
+                    btnRunWilliam.disabled = true;
+                    btnRunWilliam.classList.add('opacity-50');
+                    output.classList.remove('hidden');
+                    output.textContent = 'Traduciendo inteligencia local a artículos web usando Ollama (Llama/Deepseek)... Por favor, espere. ☕';
+
+                    try {
+                        const res = await fetch('/api/william/draft', { method: 'POST' });
+                        const data = await res.json();
+                        if (data.success) {
+                            output.textContent = '✅ Borrador generado y entregado para revisión.';
+                            output.className = 'text-xs text-green-800 bg-green-100 rounded p-2 text-center border border-green-300 font-mono mt-2';
+                            fetchWilliamDrafts();
+                        } else {
+                            output.textContent = '❌ Error de Ollama/Backend: ' + data.error;
+                            output.className = 'text-xs text-red-800 bg-red-100 rounded p-2 text-center border border-red-300 font-mono mt-2';
+                        }
+                    } catch (e) {
+                        output.textContent = '❌ Sistema Offline: ' + e.message;
+                    } finally {
+                        btnRunWilliam.disabled = false;
+                        btnRunWilliam.classList.remove('opacity-50');
+                        setTimeout(() => output.classList.add('hidden'), 8000);
+                    }
+                });
+            }
+
+            // El Gran Botón de Sincronización a Producción
+            const btnSyncHostinger = document.getElementById('btnSyncHostinger');
+            if (btnSyncHostinger) {
+                btnSyncHostinger.addEventListener('click', async () => {
+                    if (!confirm("⚠️ ATENCIÓN: Esta acción usará SCP para inyectar los posts en la base de datos de producción (keiyi.digital) en Miami. ¿Proceder?")) return;
+
+                    btnSyncHostinger.disabled = true;
+                    const oldHtml = btnSyncHostinger.innerHTML;
+                    btnSyncHostinger.innerHTML = '<span class="animate-pulse">Sincronizando vía túnel SSH seguro...</span>';
+
+                    try {
+                        const res = await fetch('/api/william/sync', { method: 'POST' });
+                        const data = await res.json();
+                        if (data.success) {
+                            alert("✅ Sincronización completada con éxito. Los artículos ya están vivos en keiyi.digital");
+                            fetchWilliamApproved(); // Refrescará para vaciar la bandeja
+                        } else {
+                            alert("❌ Falló la inyección en Hostinger: " + data.error);
+                        }
+                    } catch (e) {
+                        alert("❌ Falló la comunicación con el Command Center local: " + e.message);
+                    } finally {
+                        btnSyncHostinger.innerHTML = oldHtml;
+                        btnSyncHostinger.disabled = false;
+                    }
+                });
+            }
+
+            document.getElementById('btnRefreshWilliam')?.addEventListener('click', () => {
+                fetchWilliamDrafts();
+                fetchWilliamApproved();
+            });
+
+            // Cargar inicial
+            fetchWilliamDrafts();
+            fetchWilliamApproved();
+
+            // ── PERRY EL ORNITORRINCO ─────────────────────────────────────
+            const perryTerminal = document.getElementById('perryTerminal');
+            const perryRunning  = document.getElementById('perryRunning');
+            let perryEventSource = null;
+
+            const perryColors = { out: '#ccc', err: '#f87171', done: '#39ff14' };
+
+            function terminalAppend(text, type) {
+                const color = perryColors[type] || '#ccc';
+                const span = document.createElement('span');
+                span.style.color = color;
+                // Pequeño prefijo visual por tipo
+                span.textContent = type === 'err' ? `[ERR] ${text}` : text;
+                perryTerminal.appendChild(span);
+                perryTerminal.scrollTop = perryTerminal.scrollHeight;
+            }
+
+            window.perryRun = function(action) {
+                if (perryEventSource) { perryEventSource.close(); perryEventSource = null; }
+
+                const backend = document.getElementById('perryBackend').value;
+                const btns = ['btnPerryScrape', 'btnPerryAnalyze', 'btnPerryDiscover'];
+                btns.forEach(id => { const b = document.getElementById(id); if(b) b.disabled = true; });
+                perryRunning.style.display = 'block';
+
+                // Limpiar terminal y mostrar encabezado de la operación
+                const label = { scrape: '📡 SCRAPE', analyze: '🧠 ANALYZE', discover: '🌐 DISCOVER' }[action];
+                perryTerminal.innerHTML = '';
+                terminalAppend(`${'─'.repeat(43)}\n  ${label}  · ${new Date().toLocaleTimeString('es-MX')}\n  backend: ${backend.toUpperCase()}\n${'─'.repeat(43)}\n`, 'out');
+
+                const url = `/api/perry/run?action=${action}&backend=${backend}`;
+                perryEventSource = new EventSource(url);
+
+                perryEventSource.onmessage = (e) => {
+                    const { type, text } = JSON.parse(e.data);
+                    terminalAppend(text, type);
+                    if (type === 'done') {
+                        perryEventSource.close();
+                        perryEventSource = null;
+                        btns.forEach(id => { const b = document.getElementById(id); if(b) b.disabled = false; });
+                        perryRunning.style.display = 'none';
+                        // Refrescar storage después de cualquier operación
+                        loadPerryStorage();
+                        if (action === 'analyze') loadPerryConsensus();
+                        if (action === 'discover') loadPerrySources();
+                        loadPerryStatus();
+                    }
+                };
+
+                perryEventSource.onerror = () => {
+                    terminalAppend('\n[CONEXIÓN PERDIDA CON EL SERVIDOR]\n', 'err');
+                    perryEventSource.close();
+                    perryEventSource = null;
+                    btns.forEach(id => { const b = document.getElementById(id); if(b) b.disabled = false; });
+                    perryRunning.style.display = 'none';
+                };
+            };
+
+            async function loadPerryStatus() {
+                try {
+                    const d = await fetch('/api/perry/status').then(r => r.json());
+                    const badge = document.getElementById('perryStatusBadge');
+                    const lastRun = document.getElementById('perryLastRun');
+                    if (d.running) {
+                        badge.style.color = '#39ff14'; badge.style.borderColor = '#39ff14';
+                        badge.textContent = '⬤ RUNNING';
+                    } else {
+                        badge.style.color = '#888'; badge.style.borderColor = '#444';
+                        badge.textContent = '⬤ IDLE';
+                    }
+                    if (d.last_update) lastRun.textContent = `Último run: ${d.last_update}`;
+                } catch {}
+            }
+
+            async function loadPerryDirectives() {
+                try {
+                    const d = await fetch('/api/perry/directives').then(r => r.json());
+                    document.getElementById('perryDirectives').value = d.directives || '';
+                } catch {}
+            }
+
+            window.saveDirectives = async function() {
+                const btn = document.getElementById('btnSaveDirectives');
+                const fb  = document.getElementById('directivesFeedback');
+                const text = document.getElementById('perryDirectives').value;
+                btn.textContent = '...';
+                btn.disabled = true;
+                try {
+                    const r = await fetch('/api/perry/directives', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ directives: text })
+                    });
+                    const d = await r.json();
+                    fb.style.display = 'block';
+                    fb.style.color = d.success ? '#39ff14' : '#f87171';
+                    fb.style.borderColor = d.success ? '#39ff14' : '#f87171';
+                    fb.textContent = d.success ? '✓ Directivas guardadas. Perry las leerá en su próximo análisis.' : '✗ Error: ' + d.error;
+                    setTimeout(() => fb.style.display = 'none', 4000);
+                } catch (e) {
+                    fb.style.display = 'block'; fb.style.color = '#f87171'; fb.style.borderColor = '#f87171';
+                    fb.textContent = '✗ Error de conexión.';
+                } finally { btn.textContent = '💾 GUARDAR'; btn.disabled = false; }
+            };
+
+            async function loadPerrySources() {
+                const el = document.getElementById('perrySourcesList');
+                try {
+                    const d = await fetch('/api/perry/sources').then(r => r.json());
+                    const pending = d.pending || [];
+                    if (!pending.length) {
+                        el.innerHTML = '<div style="color:#333;text-align:center;padding:16px;font-size:10px;">Sin fuentes pendientes de aprobación.</div>';
+                        return;
+                    }
+                    el.innerHTML = pending.map(s => `
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #1a1a1a;">
+                            <span style="color:#60a5fa;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${s.url || s.id}">${s.name || s.url || s.id}</span>
+                            <div style="display:flex;gap:6px;margin-left:8px;flex-shrink:0;">
+                                <button onclick="perrySourceAction('${s.id || s.url}','approve')" style="background:#39ff14;color:#000;border:none;padding:3px 8px;font-family:monospace;font-size:10px;font-weight:900;cursor:pointer;">✓</button>
+                                <button onclick="perrySourceAction('${s.id || s.url}','reject')"  style="background:#f87171;color:#000;border:none;padding:3px 8px;font-family:monospace;font-size:10px;font-weight:900;cursor:pointer;">✕</button>
+                            </div>
+                        </div>`).join('');
+                } catch { el.innerHTML = '<div style="color:#f87171;font-size:10px;">Error cargando fuentes.</div>'; }
+            }
+
+            window.perrySourceAction = async function(id, action) {
+                try {
+                    await fetch(`/api/perry/sources/${encodeURIComponent(id)}/${action}`, { method: 'POST' });
+                    loadPerrySources();
+                } catch (e) { alert('Error: ' + e.message); }
+            };
+
+            async function loadPerryStorage() {
+                const el = document.getElementById('perryStorageList');
+                const pathEl = document.getElementById('perryBasePath');
+                try {
+                    const d = await fetch('/api/perry/storage').then(r => r.json());
+                    if (pathEl) pathEl.textContent = d.base_path || '';
+                    const rows = Object.entries(d.files || {}).map(([key, info]) => {
+                        const color = info.exists ? '#39ff14' : '#333';
+                        const sizeStr = info.exists ? `${info.size_kb} KB` : '—';
+                        const modStr  = info.modified ? info.modified : '—';
+                        return `<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #111;">
+                            <span style="color:${color};">${key}</span>
+                            <span style="color:#555;">${sizeStr} &nbsp; ${modStr}</span>
+                        </div>`;
+                    }).join('');
+                    el.innerHTML = rows || '<div style="color:#333;">Sin archivos aún.</div>';
+                } catch { el.innerHTML = '<div style="color:#f87171;">Error.</div>'; }
+            }
+
+            async function loadPerryConsensus() {
+                const panel = document.getElementById('perryConsensusPanel');
+                const content = document.getElementById('perryConsensusContent');
+                try {
+                    const d = await fetch('/api/perry/consensus').then(r => r.json());
+                    if (!d.exists) return;
+                    panel.style.display = 'block';
+                    // Mostrar top_topics + signal_summary si existen
+                    const data = d.data;
+                    const topics = (data.top_topics || []).map(t => `<span style="background:#111;color:#39ff14;border:1px solid #39ff14;padding:2px 8px;margin:2px;display:inline-block;font-size:10px;">${t}</span>`).join('');
+                    const summary = data.signal_summary || data.summary || '';
+                    content.innerHTML = (topics ? `<div style="margin-bottom:10px;">${topics}</div>` : '') +
+                        (summary ? `<div style="color:#facc15;margin-top:8px;">"${summary}"</div>` : '') +
+                        `<div style="color:#333;font-size:10px;margin-top:10px;">${JSON.stringify(data).slice(0,300)}...</div>`;
+                } catch {}
+            }
+
+            // Inicializar panel de Perry
+            loadPerryStatus();
+            loadPerryDirectives();
+            loadPerrySources();
+            loadPerryStorage();
+            loadPerryConsensus();
 
         }); // End of DOMContentLoaded
     </script>

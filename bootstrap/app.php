@@ -13,7 +13,8 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'approved' => \App\Http\Middleware\CheckApproved::class,
+            'approved'   => \App\Http\Middleware\CheckApproved::class,
+            '3d_client'  => \App\Http\Middleware\Check3DClient::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

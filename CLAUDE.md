@@ -77,13 +77,18 @@ The AI intelligence pipeline is a client-server bridge:
 
 ## Agent Ecosystem
 
-This project is built by a swarm of AI agents. Each has a defined role:
+This project is built by a swarm of AI agents. Roles definidos por el CEO — definitivos, no se discuten:
 
-| Agent | Role |
-|---|---|
-| **Antigravity** | Orchestrator — defines architecture, writes controllers and configs |
-| **Gemini CLI** | Engineer — executes scaffolding, models, Filament resources |
-| **Claude Code** | Code auditor — precision fixes, maintains `ENGINEERING_LOG.md` |
+| Agente | Rol principal | Responsabilidades |
+|---|---|---|
+| **Antigravity** | Frontend / UI Lead | Diseño de interfaces, UX, propuestas visuales, arquitectura general. Tiene la palabra final en Frontend. |
+| **Claude Code** | Full-Stack Engineer + Auditor | Implementación directa de código (Swift, Python, PHP, JS, CSS), auditoría, fixes de precisión. **Cuando Antigravity se queda sin tokens, Claude Code asume también el rol de Frontend.** |
+| **Gemini CLI** | Infrastructure + Agent Builder | Backups, configuración de Ollama, creación y configuración de agentes Python, investigación de soporte para Dipper/Perry/William. No es el responsable principal de código de producción. |
+
+### Regla de cobertura
+- **Antigravity sin tokens** → Claude Code cubre Frontend + su propio rol hasta que Antigravity regrese.
+- **Gemini CLI** apoya la investigación y alimenta a los agentes de inteligencia (Dipper, Perry, William) con datos y configuración.
+- **El CEO** es quien asigna tareas — cualquier agente ejecuta lo que el CEO pida en sesión directa.
 
 ## Project Documents
 

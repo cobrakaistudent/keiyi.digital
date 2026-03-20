@@ -1,0 +1,16 @@
+{
+  "storage_path" : "\/Users\/anuarlv\/Library\/CloudStorage\/GoogleDrive-anuarlezama@gmail.com\/My Drive\/gemini\/keiyi_scout_intelligence",
+  "backend" : "gemini",
+  "discovery_interval_days" : 7,
+  "monitor_interval_min" : 30,
+  "analyze_mode" : "auto",
+  "discover_mode" : "auto",
+  "conditions" : {
+    "max_cpu_pct" : 30,
+    "check_ram" : true,
+    "check_cpu" : true,
+    "check_idle" : true,
+    "min_ram_gb" : 5,
+    "min_idle_min" : 10
+  }
+}

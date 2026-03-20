@@ -22,10 +22,14 @@ class User extends Authenticatable implements FilamentUser
      */
     protected $fillable = [
         'name',
+        'apellido_paterno',
+        'apellido_materno',
         'email',
         'password',
         'approval_status',
         'role',
+        'is_3d_client',
+        '3d_client_approved_at',
     ];
 
     /**
@@ -46,8 +50,10 @@ class User extends Authenticatable implements FilamentUser
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'email_verified_at'      => 'datetime',
+            'password'               => 'hashed',
+            'is_3d_client'           => 'boolean',
+            '3d_client_approved_at'  => 'datetime',
         ];
     }
 
@@ -59,5 +65,15 @@ class User extends Authenticatable implements FilamentUser
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->role === 'super-admin';
+    }
+
+    public function lessonCompletions()
+    {
+        return $this->hasMany(LessonCompletion::class);
+    }
+
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class);
     }
 }

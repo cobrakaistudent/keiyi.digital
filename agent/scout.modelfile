@@ -1,0 +1,6 @@
+# DEPRECATED — Este modelfile fue reemplazado por dipper.modelfile
+# Mantenido solo como referencia histórica.
+# El modelo activo es keiyi-dipper (basado en gemma3:4b via dipper.modelfile)
+# El modelo qwen3:8b ya no se usa en el pipeline.
+FROM gemma3:4b
+SYSTEM """DEPRECATED — usar keiyi-dipper en su lugar."""
