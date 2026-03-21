@@ -82,8 +82,13 @@ class BusinessCostResource extends Resource
             ->defaultGroup('category')
             ->columns([
                 TextColumn::make('name')->label('Concepto')->searchable(),
-                TextColumn::make('amount')->label('Monto')
+                TextColumn::make('amount')->label('Monto original')
                     ->formatStateUsing(fn ($state, $record) => '$' . number_format($state, 2) . ' ' . $record->currency),
+                TextColumn::make('amount_mxn')->label('Monto MXN')
+                    ->getStateUsing(fn ($record) => $record->amount_mxn)
+                    ->money('MXN')
+                    ->color(fn ($record) => $record->currency === 'USD' ? 'info' : 'gray')
+                    ->description(fn ($record) => $record->currency === 'USD' ? 'TC: $' . number_format(\App\Models\BusinessCost::getUsdToMxn(), 2) : null),
                 TextColumn::make('frequency')->label('Frecuencia')->badge()
                     ->formatStateUsing(fn ($state) => match($state) {
                         'monthly'  => 'Mensual',
@@ -99,7 +104,7 @@ class BusinessCostResource extends Resource
                         'one_time' => 'gray',
                         default    => 'gray',
                     }),
-                TextColumn::make('monthly_cost')->label('Costo/Mes')
+                TextColumn::make('monthly_cost')->label('Costo/Mes MXN')
                     ->getStateUsing(fn ($record) => $record->monthly_cost)
                     ->money('MXN')
                     ->color('danger'),

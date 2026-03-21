@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 
 class BusinessCost extends Model
 {
@@ -22,19 +24,49 @@ class BusinessCost extends Model
     }
 
     /**
-     * Costo mensual normalizado (convierte yearly y one_time a mensual)
+     * Tipo de cambio USD→MXN (cache 24 hrs)
+     */
+    public static function getUsdToMxn(): float
+    {
+        return Cache::remember('usd_to_mxn', 86400, function () {
+            try {
+                $response = Http::timeout(10)->get('https://open.er-api.com/v6/latest/USD');
+                if ($response->ok()) {
+                    return (float) $response->json('rates.MXN');
+                }
+            } catch (\Exception $e) {
+                // Fallback silencioso
+            }
+            return 20.0; // fallback si falla la API
+        });
+    }
+
+    /**
+     * Monto convertido a MXN
+     */
+    public function getAmountMxnAttribute(): float
+    {
+        if ($this->currency === 'USD') {
+            return $this->amount * self::getUsdToMxn();
+        }
+        return $this->amount;
+    }
+
+    /**
+     * Costo mensual normalizado en MXN
      */
     public function getMonthlyCostAttribute(): float
     {
+        $amountMxn = $this->amount_mxn;
         return match($this->frequency) {
-            'yearly'   => $this->amount / 12,
-            'one_time' => 0, // no se prorratea
-            default    => $this->amount,
+            'yearly'   => $amountMxn / 12,
+            'one_time' => 0,
+            default    => $amountMxn,
         };
     }
 
     /**
-     * Totales por categoría
+     * Totales por categoría en MXN
      */
     public static function monthlyByCategory(): array
     {
