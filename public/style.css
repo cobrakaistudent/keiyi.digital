@@ -616,10 +616,17 @@ h3 {
     stroke-width: 2.5;
 }
 
+/* Nav active link indicator */
+.nav-links a.active {
+    border-bottom: 2px solid var(--color-orange);
+    padding-bottom: 2px;
+}
+
 @media (max-width: 768px) {
     .hamburger {
         display: block;
         cursor: pointer;
+        z-index: 1001;
     }
 
     .bar {
@@ -627,6 +634,14 @@ h3 {
         height: 3px;
         background: var(--color-navy);
         margin: 6px 0;
+        transition: transform 0.3s, opacity 0.3s;
+    }
+
+    .hamburger.open .bar:first-child {
+        transform: translateY(9px) rotate(45deg);
+    }
+    .hamburger.open .bar:last-child {
+        transform: translateY(-9px) rotate(-45deg);
     }
 
     .hero-container {
@@ -636,6 +651,34 @@ h3 {
 
     .nav-right {
         display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: var(--color-bg);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .nav-right.nav-open {
+        display: flex;
+    }
+
+    .nav-right .nav-links {
+        flex-direction: column;
+        gap: 24px;
+        text-align: center;
+    }
+
+    .nav-right .nav-links a {
+        font-size: 1.2rem;
+    }
+
+    .nav-right .btn-nav {
+        margin-top: 24px;
     }
 
     .price-box.featured {

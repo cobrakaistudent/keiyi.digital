@@ -46,21 +46,7 @@
 </head>
 <body>
 
-    {{-- NAV --}}
-    <nav style="border-bottom: 3px solid #000; padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; background: #fff;">
-        <a href="/" style="font-weight: 700; font-size: 20px; text-decoration: none; color: #000; font-family: 'Space Grotesk', sans-serif;">KEIYI DIGITAL</a>
-        <div style="display: flex; gap: 24px; font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 500;">
-            <a href="/" style="color: #000; text-decoration: none;">Inicio</a>
-            <a href="/academy" style="color: #000; text-decoration: none;">Academia</a>
-            <a href="/blog" style="color: #000; text-decoration: none; border-bottom: 2px solid #000;">Blog</a>
-            <a href="/3d-world" style="color: #000; text-decoration: none;">3D World</a>
-            @auth
-                <a href="/academia" style="color: #000; text-decoration: none;">Mi Portal</a>
-            @else
-                <a href="/login" style="color: #000; text-decoration: none;">Entrar</a>
-            @endauth
-        </div>
-    </nav>
+    <x-keiyi-nav />
 
     {{-- ARTICLE --}}
     <article style="max-width: 740px; margin: 0 auto; padding: 48px 32px;">
@@ -111,7 +97,7 @@
             <p style="font-family: 'Space Grotesk', sans-serif; font-size: 14px; color: #555; margin: 0 0 16px;">
                 En Keiyi Digital construimos sistemas de automatización e inteligencia con IA. Sin humo, sin promesas vacías.
             </p>
-            <a href="/"
+            <a href="{{ url('/') }}#contact"
                style="display: inline-block; background: #000; color: #fff; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; padding: 10px 24px; text-decoration: none; letter-spacing: 1px;">
                 HABLEMOS →
             </a>
@@ -119,9 +105,7 @@
 
     </article>
 
-    <footer style="border-top: 3px solid #000; padding: 32px; text-align: center; font-family: 'Space Grotesk', sans-serif; font-size: 13px; color: #555; margin-top: 64px;">
-        © {{ date('Y') }} Keiyi Digital. Todos los derechos reservados.
-    </footer>
+    <x-keiyi-footer />
 
 </body>
 </html>
