@@ -32,7 +32,7 @@
         @if($posts->isEmpty())
             <div style="border: 3px solid #000; padding: 48px; text-align: center; font-family: 'Space Grotesk', sans-serif; box-shadow: 6px 6px 0 #000;">
                 <p style="font-size: 18px; margin: 0 0 8px; font-weight: 700;">Próximamente.</p>
-                <p style="color: #555; margin: 0;">William está preparando los primeros artículos.</p>
+                <p style="color: #555; margin: 0;">Nuestro equipo editorial está preparando los primeros artículos.</p>
             </div>
         @else
             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px;">
