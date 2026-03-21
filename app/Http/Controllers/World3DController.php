@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\DownloadLinkMail;
 use App\Models\DownloadToken;
+use App\Models\PricingConfig;
 use App\Models\PrintCatalog;
 use App\Models\PrintOrder;
 use Illuminate\Http\Request;
@@ -58,6 +59,34 @@ class World3DController extends Controller
         return Storage::download($item->file_path, $item->file_name ?? basename($item->file_path));
     }
 
+    /**
+     * API: Cotización instantánea (llamada desde JS del frontend)
+     */
+    public function quote(Request $request, PrintCatalog $item)
+    {
+        $request->validate([
+            'grams'    => 'required|numeric|min:1|max:10000',
+            'hours'    => 'required|numeric|min:0.1|max:200',
+            'quantity' => 'required|integer|min:1|max:100',
+        ]);
+
+        $quote = PricingConfig::calculatePrintCost(
+            (float) $request->grams,
+            (float) $request->hours
+        );
+
+        $quote['quantity']    = (int) $request->quantity;
+        $quote['unit_price']  = $quote['final_price'];
+        $quote['total_price'] = round($quote['final_price'] * $request->quantity, 2);
+        $quote['total_iva']   = round($quote['total_price'] * 1.16, 2);
+        $quote['item_title']  = $item->title;
+
+        return response()->json($quote);
+    }
+
+    /**
+     * Solicitar cotización / orden de impresión (público, sin login)
+     */
     public function requestOrder(Request $request, PrintCatalog $item)
     {
         $request->validate([
@@ -73,7 +102,15 @@ class World3DController extends Controller
             return back()->with('error', 'Este item no está disponible para cotización.');
         }
 
-        PrintOrder::create([
+        // Calcular cotización automática si tenemos datos del modelo
+        $quotedPrice = null;
+        $quoteDetails = null;
+        if ($item->price) {
+            $quotedPrice = $item->price * $request->quantity;
+            $quoteDetails = "Precio de catálogo: \${$item->price} × {$request->quantity} = \${$quotedPrice}";
+        }
+
+        $order = PrintOrder::create([
             'user_id'         => auth()->id(),
             'type'            => 'catalog',
             'catalog_item_id' => $item->id,
@@ -82,6 +119,8 @@ class World3DController extends Controller
             'quantity'        => $request->quantity,
             'notes'           => "Nombre: {$request->name}\nEmail: {$request->email}\n" . ($request->notes ?? ''),
             'status'          => 'received',
+            'quoted_price'    => $quotedPrice,
+            'quote_details'   => $quoteDetails,
         ]);
 
         return back()->with('order_sent', 'Solicitud de cotización recibida. Te contactaremos a ' . $request->email . ' con el presupuesto.');

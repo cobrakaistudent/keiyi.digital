@@ -88,10 +88,45 @@ class PrintOrderResource extends Resource
                 ]),
             ])
             ->actions([
-                Action::make('quote')
-                    ->label('Cotizar')
-                    ->icon('heroicon-o-currency-dollar')
+                Action::make('auto_quote')
+                    ->label('Cotizar (Auto)')
+                    ->icon('heroicon-o-calculator')
                     ->color('info')
+                    ->visible(fn (PrintOrder $r) => in_array($r->status, ['received', 'quoting']))
+                    ->form([
+                        TextInput::make('grams')->label('Gramos de material')->numeric()->required()->default(50),
+                        TextInput::make('hours')->label('Horas de impresión')->numeric()->required()->default(2),
+                    ])
+                    ->action(function (PrintOrder $record, array $data) {
+                        $calc = \App\Models\PricingConfig::calculatePrintCost(
+                            (float) $data['grams'],
+                            (float) $data['hours']
+                        );
+                        $unitPrice  = $calc['final_price'];
+                        $totalPrice = round($unitPrice * $record->quantity, 2);
+                        $details = "COTIZACIÓN AUTOMÁTICA\n"
+                            . "Material: \${$calc['material']} ({$data['grams']}g × \${$calc['inputs']['cost_per_kg']}/kg)\n"
+                            . "Electricidad: \${$calc['electricity']} ({$data['hours']}h × {$calc['inputs']['watts']}W)\n"
+                            . "Overhead: \${$calc['overhead']}\n"
+                            . "Mano de obra: \${$calc['labor']} ({$data['hours']}h × \${$calc['inputs']['cost_per_kg']}/h)\n"
+                            . "Costo: \${$calc['total_cost']} | Margen {$calc['margin_pct']}%: \${$calc['margin']}\n"
+                            . "Precio unitario: \${$unitPrice}\n"
+                            . "Cantidad: {$record->quantity}\n"
+                            . "TOTAL: \${$totalPrice} MXN (+ IVA: \$" . round($totalPrice * 1.16, 2) . ")";
+
+                        $record->update([
+                            'status'        => 'quoting',
+                            'quoted_price'  => $totalPrice,
+                            'quoted_time'   => round($data['hours']) . ' horas',
+                            'quote_details' => $details,
+                        ]);
+                        Notification::make()->title("Cotizado: \${$totalPrice} MXN")->success()->send();
+                    }),
+
+                Action::make('quote_manual')
+                    ->label('Cotizar (Manual)')
+                    ->icon('heroicon-o-currency-dollar')
+                    ->color('gray')
                     ->visible(fn (PrintOrder $r) => in_array($r->status, ['received', 'quoting']))
                     ->form([
                         TextInput::make('quoted_price')->label('Precio (MXN)')->numeric()->required(),
