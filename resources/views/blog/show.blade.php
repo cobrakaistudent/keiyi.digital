@@ -1,15 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $post->title }} — Keiyi Digital</title>
-    <meta name="description" content="{{ $post->excerpt }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/style.css">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <x-keiyi-head title="{{ $post->title }} — Keiyi Digital" description="{{ $post->excerpt }}" />
     <style>
         .article-content h2 {
             font-family: 'Space Grotesk', sans-serif;

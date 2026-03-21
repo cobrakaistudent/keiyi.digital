@@ -1,14 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog — Keiyi Digital</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/style.css">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <x-keiyi-head title="Blog — Keiyi Digital" description="Estrategia digital con datos reales. Marketing, IA y herramientas para tu negocio en LATAM." />
 </head>
 <body>
 
@@ -23,7 +16,7 @@
             Marketing que funciona.<br>Sin relleno.
         </h1>
         <p style="font-family: 'Space Grotesk', sans-serif; font-size: 18px; color: #555; max-width: 560px;">
-            Análisis de tendencias reales de la comunidad. Cada artículo viene de datos, no de suposiciones.
+            Estrategia digital con datos reales. Cada artículo viene de análisis de nuestro equipo, no de suposiciones.
         </p>
     </section>
 

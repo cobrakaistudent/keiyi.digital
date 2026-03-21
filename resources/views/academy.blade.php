@@ -87,7 +87,7 @@
                 <p class="text-sm text-gray-600 mb-6">De zero a Power User en 7 días.</p>
                 <div class="flex justify-between items-center border-t-2 border-[#0F172A] pt-4">
                     <span class="font-black text-[10px] uppercase text-indigo-600">7 Lecciones</span>
-                    <button class="w-10 h-10 bg-[#FF7F50] border-2 border-[#0F172A] rounded-full text-white shadow-[3px_3px_0_#0F172A]">→</button>
+                    <a href="{{ auth()->check() ? route('academia.dashboard') : route('register') }}" class="w-10 h-10 bg-[#FF7F50] border-2 border-[#0F172A] rounded-full text-white shadow-[3px_3px_0_#0F172A] flex items-center justify-center text-sm font-bold no-underline hover:translate-x-1 transition-transform">→</a>
                 </div>
             </div>
             <!-- Notion Mastery -->
@@ -102,7 +102,7 @@
                 <p class="text-sm text-gray-600 mb-6">Wikis, Proyectos y Agentes IA.</p>
                 <div class="flex justify-between items-center border-t-2 border-[#0F172A] pt-4">
                     <span class="font-black text-[10px] uppercase text-orange-600">7 Lecciones</span>
-                    <button class="w-10 h-10 bg-[#FF7F50] border-2 border-[#0F172A] rounded-full text-white shadow-[3px_3px_0_#0F172A]">→</button>
+                    <a href="{{ auth()->check() ? route('academia.dashboard') : route('register') }}" class="w-10 h-10 bg-[#FF7F50] border-2 border-[#0F172A] rounded-full text-white shadow-[3px_3px_0_#0F172A] flex items-center justify-center text-sm font-bold no-underline hover:translate-x-1 transition-transform">→</a>
                 </div>
             </div>
             <!-- Marketing Elite -->
@@ -114,7 +114,7 @@
                 <p class="text-sm text-gray-600 mb-6">Sistemas de venta con IA.</p>
                 <div class="flex justify-between items-center border-t-2 border-[#0F172A] pt-4">
                     <span class="font-black text-[10px] uppercase text-indigo-600">7 Lecciones</span>
-                    <button class="w-10 h-10 bg-[#FF7F50] border-2 border-[#0F172A] rounded-full text-white shadow-[3px_3px_0_#0F172A]">→</button>
+                    <a href="{{ auth()->check() ? route('academia.dashboard') : route('register') }}" class="w-10 h-10 bg-[#FF7F50] border-2 border-[#0F172A] rounded-full text-white shadow-[3px_3px_0_#0F172A] flex items-center justify-center text-sm font-bold no-underline hover:translate-x-1 transition-transform">→</a>
                 </div>
             </div>
         </div>
@@ -129,7 +129,7 @@
                 <p class="text-sm text-gray-600 mb-6">Reels y TikTok masivos.</p>
                 <div class="flex justify-between items-center border-t-2 border-[#0F172A] pt-4">
                     <span class="font-black text-[10px] uppercase text-pink-600">4 Lecciones</span>
-                    <button class="w-10 h-10 bg-[#FF7F50] border-2 border-[#0F172A] rounded-full text-white shadow-[3px_3px_0_#0F172A]">→</button>
+                    <a href="{{ auth()->check() ? route('academia.dashboard') : route('register') }}" class="w-10 h-10 bg-[#FF7F50] border-2 border-[#0F172A] rounded-full text-white shadow-[3px_3px_0_#0F172A] flex items-center justify-center text-sm font-bold no-underline hover:translate-x-1 transition-transform">→</a>
                 </div>
             </div>
             <!-- 3D World -->
@@ -141,7 +141,7 @@
                 <p class="text-sm text-gray-600 mb-6">IA + Impresión 3D.</p>
                 <div class="flex justify-between items-center border-t-2 border-[#0F172A] pt-4">
                     <span class="font-black text-[10px] uppercase text-blue-600">4 Lecciones</span>
-                    <button class="w-10 h-10 bg-[#FF7F50] border-2 border-[#0F172A] rounded-full text-white shadow-[3px_3px_0_#0F172A]">→</button>
+                    <a href="{{ auth()->check() ? route('academia.dashboard') : route('register') }}" class="w-10 h-10 bg-[#FF7F50] border-2 border-[#0F172A] rounded-full text-white shadow-[3px_3px_0_#0F172A] flex items-center justify-center text-sm font-bold no-underline hover:translate-x-1 transition-transform">→</a>
                 </div>
             </div>
             <!-- Productividad Pro -->
@@ -153,7 +153,7 @@
                 <p class="text-sm text-gray-600 mb-6">Trabaja solo 4 horas.</p>
                 <div class="flex justify-between items-center border-t-2 border-[#0F172A] pt-4">
                     <span class="font-black text-[10px] uppercase text-yellow-600">4 Lecciones</span>
-                    <button class="w-10 h-10 bg-[#FF7F50] border-2 border-[#0F172A] rounded-full text-white shadow-[3px_3px_0_#0F172A]">→</button>
+                    <a href="{{ auth()->check() ? route('academia.dashboard') : route('register') }}" class="w-10 h-10 bg-[#FF7F50] border-2 border-[#0F172A] rounded-full text-white shadow-[3px_3px_0_#0F172A] flex items-center justify-center text-sm font-bold no-underline hover:translate-x-1 transition-transform">→</a>
                 </div>
             </div>
         </div>
