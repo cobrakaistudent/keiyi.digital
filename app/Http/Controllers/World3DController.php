@@ -14,7 +14,7 @@ class World3DController extends Controller
 {
     public function index()
     {
-        $items = PrintCatalog::active()->latest()->get();
+        $items = PrintCatalog::published()->latest()->get();
         return view('world3d.index', compact('items'));
     }
 
@@ -61,6 +61,8 @@ class World3DController extends Controller
     public function requestOrder(Request $request, PrintCatalog $item)
     {
         $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|max:255',
             'material' => 'required|string|max:100',
             'color'    => 'required|string|max:100',
             'quantity' => 'required|integer|min:1|max:100',
@@ -68,19 +70,20 @@ class World3DController extends Controller
         ]);
 
         if (! $item->orderable) {
-            return back()->with('error', 'Este item no está disponible para solicitar impresión.');
+            return back()->with('error', 'Este item no está disponible para cotización.');
         }
 
         PrintOrder::create([
-            'user_id'        => auth()->id(),
-            'type'           => 'catalog',
-            'catalog_item_id'=> $item->id,
-            'material'       => $request->material,
-            'color'          => $request->color,
-            'quantity'       => $request->quantity,
-            'notes'          => $request->notes,
+            'user_id'         => auth()->id(),
+            'type'            => 'catalog',
+            'catalog_item_id' => $item->id,
+            'material'        => $request->material,
+            'color'           => $request->color,
+            'quantity'        => $request->quantity,
+            'notes'           => "Nombre: {$request->name}\nEmail: {$request->email}\n" . ($request->notes ?? ''),
+            'status'          => 'received',
         ]);
 
-        return back()->with('order_sent', 'Solicitud recibida. Te contactaremos con la cotización pronto.');
+        return back()->with('order_sent', 'Solicitud de cotización recibida. Te contactaremos a ' . $request->email . ' con el presupuesto.');
     }
 }

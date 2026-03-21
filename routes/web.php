@@ -27,7 +27,7 @@ Route::prefix('3d-world')->name('world3d.')->group(function () {
     Route::get('/',                   [App\Http\Controllers\World3DController::class, 'index'])->name('index');
     Route::post('/download/{item}',   [App\Http\Controllers\World3DController::class, 'requestDownload'])->name('request_download');
     Route::get('/download/{token}',   [App\Http\Controllers\World3DController::class, 'download'])->name('download');
-    Route::post('/order/{item}',      [App\Http\Controllers\World3DController::class, 'requestOrder'])->middleware('auth')->name('order');
+    Route::post('/order/{item}',      [App\Http\Controllers\World3DController::class, 'requestOrder'])->name('order');
 });
 
 // El Taller — zona privada para clientes 3D aprobados
