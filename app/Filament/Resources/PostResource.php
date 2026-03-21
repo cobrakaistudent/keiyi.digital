@@ -20,7 +20,7 @@ class PostResource extends Resource
 {
     protected static ?string $model = Post::class;
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    protected static ?string $navigationLabel = 'Blog / William';
+    protected static ?string $navigationLabel = 'Blog';
     protected static ?string $navigationGroup = 'Contenido';
     protected static ?int $navigationSort = 1;
 
@@ -117,7 +117,7 @@ class PostResource extends Resource
                     ->visible(fn (Post $record) => in_array($record->status, ['pending', 'approved']))
                     ->form([
                         Textarea::make('rejection_reason')
-                            ->label('Motivo del rechazo (William lo vera)')
+                            ->label('Motivo del rechazo')
                             ->required()
                             ->rows(3),
                     ])
