@@ -39,8 +39,26 @@ class FilamentInventory extends Model
     /**
      * Intenta extraer datos de producto desde una URL de Amazon/MercadoLibre
      */
+    private const ALLOWED_SCRAPE_DOMAINS = [
+        'amazon.com', 'amazon.com.mx', 'amazon.com.br',
+        'mercadolibre.com.mx', 'mercadolibre.com', 'mercadoli.com.mx',
+    ];
+
     public static function scrapeFromUrl(string $url): array
     {
+        // Validar que la URL sea de un dominio permitido (prevención SSRF)
+        $host = parse_url($url, PHP_URL_HOST);
+        $allowed = false;
+        foreach (self::ALLOWED_SCRAPE_DOMAINS as $domain) {
+            if ($host === $domain || str_ends_with($host, '.' . $domain)) {
+                $allowed = true;
+                break;
+            }
+        }
+        if (! $allowed) {
+            return ['purchase_url' => $url, 'source' => 'manual', 'notes' => 'Dominio no soportado para scraping. Solo Amazon y MercadoLibre.'];
+        }
+
         $data = ['purchase_url' => $url, 'source' => 'url_scrape'];
 
         try {

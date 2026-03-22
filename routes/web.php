@@ -27,6 +27,7 @@ Route::prefix('3d-world')->name('world3d.')->group(function () {
     Route::get('/',                   [App\Http\Controllers\World3DController::class, 'index'])->name('index');
     Route::post('/download/{item}',   [App\Http\Controllers\World3DController::class, 'requestDownload'])->name('request_download');
     Route::get('/download/{token}',   [App\Http\Controllers\World3DController::class, 'download'])->name('download');
+    Route::post('/custom-order',      [App\Http\Controllers\World3DController::class, 'customOrder'])->name('custom_order');
     Route::post('/quote/{item}',      [App\Http\Controllers\World3DController::class, 'quote'])->name('quote');
     Route::post('/order/{item}',      [App\Http\Controllers\World3DController::class, 'requestOrder'])->name('order');
 });

@@ -85,6 +85,36 @@ class World3DController extends Controller
     }
 
     /**
+     * Solicitar figura personalizada (público, sin login)
+     */
+    public function customOrder(Request $request)
+    {
+        $request->validate([
+            'name'            => 'required|string|max:255',
+            'email'           => 'required|email|max:255',
+            'reference_photo' => 'required|image|max:10240',
+            'figure_type'     => 'required|string|max:100',
+            'description'     => 'nullable|string|max:2000',
+        ]);
+
+        $photoPath = $request->file('reference_photo')->store('custom-orders', 'local');
+
+        PrintOrder::create([
+            'user_id'  => auth()->id(),
+            'type'     => 'custom',
+            'material' => 'PLA',
+            'color'    => 'A definir',
+            'quantity' => 1,
+            'file_path' => $photoPath,
+            'file_name' => $request->file('reference_photo')->getClientOriginalName(),
+            'notes'    => "FIGURA PERSONALIZADA\nNombre: {$request->name}\nEmail: {$request->email}\nTipo: {$request->figure_type}\nDescripción: " . ($request->description ?? 'Sin descripción'),
+            'status'   => 'received',
+        ]);
+
+        return back()->with('custom_sent', '¡Solicitud recibida! Te contactaremos a ' . $request->email . ' con la cotización de tu figura personalizada.');
+    }
+
+    /**
      * Solicitar cotización / orden de impresión (público, sin login)
      */
     public function requestOrder(Request $request, PrintCatalog $item)

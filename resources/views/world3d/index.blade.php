@@ -112,6 +112,97 @@
         </div>
     </section>
 
+    <!-- FIGURAS PERSONALIZADAS — Hero -->
+    <section class="section" style="background: linear-gradient(135deg, #0F172A 0%, #1e293b 100%); color: white; padding: 4rem 0;">
+        <div class="container">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center;">
+                <div>
+                    <div class="hand-note" style="color: var(--color-orange); margin-bottom: 1rem; font-size: 1.3rem;">Nuevo servicio ✨</div>
+                    <h2 style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; line-height: 1.1; margin: 0 0 1.5rem;">
+                        Tu mascota, tu pareja, tu artista favorito — en 3D.
+                    </h2>
+                    <p style="font-size: 1.1rem; color: #94a3b8; line-height: 1.7; margin-bottom: 1.5rem;">
+                        Envíanos una foto y la convertimos en una figura 3D impresa. Ideal para regalos únicos, decoración, o simplemente porque puedes.
+                    </p>
+                    <ul style="list-style: none; padding: 0; margin: 0 0 2rem; display: flex; flex-direction: column; gap: 0.8rem;">
+                        <li style="display: flex; align-items: center; gap: 0.8rem;">
+                            <span style="background: var(--color-orange); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0;">📸</span>
+                            <span>Sube una foto clara de lo que quieres</span>
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 0.8rem;">
+                            <span style="background: var(--color-blue); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0;">🎨</span>
+                            <span>Nuestro equipo modela la figura en 3D</span>
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 0.8rem;">
+                            <span style="background: var(--color-pink); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0;">🖨️</span>
+                            <span>La imprimimos y te la enviamos a casa</span>
+                        </li>
+                    </ul>
+                    <button onclick="document.getElementById('custom-figure-modal').style.display='flex'" class="btn-primary" style="font-size: 1.1rem; padding: 1rem 2.5rem; cursor: pointer; background: var(--color-orange); border: 3px solid #000; box-shadow: 5px 5px 0 #000;">
+                        Quiero mi figura 3D →
+                    </button>
+                </div>
+                <div style="text-align: center;">
+                    <div style="background: #1a1a2e; border: 3px solid #333; border-radius: 20px; padding: 3rem; box-shadow: 10px 10px 0 rgba(255,127,80,0.3);">
+                        <div style="font-size: 6rem; margin-bottom: 1rem;">🧑‍🎨</div>
+                        <p style="font-size: 1.3rem; font-weight: 700; margin: 0 0 0.5rem;">Desde $499 MXN</p>
+                        <p style="color: #64748b; font-size: 0.9rem; margin: 0;">Figuras de 8-15cm · PLA multicolor</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal: Solicitar figura personalizada -->
+    <div id="custom-figure-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+        <div style="background:white; border:3px solid #000; border-radius:12px; box-shadow:8px 8px 0 #000; max-width:500px; width:100%; padding:2rem; position:relative; max-height:90vh; overflow-y:auto;">
+            <button onclick="document.getElementById('custom-figure-modal').style.display='none'" style="position:absolute;top:12px;right:16px;background:none;border:none;font-size:1.5rem;cursor:pointer;color:#000;">✕</button>
+
+            <h3 style="font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:800;margin:0 0 0.5rem;">Solicitar figura personalizada</h3>
+            <p style="font-family:'Space Grotesk',sans-serif;font-size:0.9rem;color:#555;margin:0 0 1.5rem;">Sube una foto y describe lo que quieres. Te contactamos con la cotización.</p>
+
+            @if(session('custom_sent'))
+                <div style="border:2px solid #000;background:#e8f5e9;padding:1rem;margin-bottom:1rem;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-weight:600;">
+                    {{ session('custom_sent') }}
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('world3d.custom_order') }}" enctype="multipart/form-data" style="display:flex;flex-direction:column;gap:1rem;">
+                @csrf
+                <div>
+                    <label style="font-family:'Space Grotesk',sans-serif;font-size:0.85rem;font-weight:700;display:block;margin-bottom:4px;">Tu nombre *</label>
+                    <input type="text" name="name" required style="width:100%;padding:10px;border:2px solid #000;border-radius:6px;font-family:'Space Grotesk',sans-serif;">
+                </div>
+                <div>
+                    <label style="font-family:'Space Grotesk',sans-serif;font-size:0.85rem;font-weight:700;display:block;margin-bottom:4px;">Email *</label>
+                    <input type="email" name="email" required style="width:100%;padding:10px;border:2px solid #000;border-radius:6px;font-family:'Space Grotesk',sans-serif;">
+                </div>
+                <div>
+                    <label style="font-family:'Space Grotesk',sans-serif;font-size:0.85rem;font-weight:700;display:block;margin-bottom:4px;">Foto de referencia *</label>
+                    <input type="file" name="reference_photo" required accept="image/*" style="width:100%;padding:8px;border:2px solid #000;border-radius:6px;font-family:'Space Grotesk',sans-serif;">
+                    <p style="font-size:0.75rem;color:#888;margin:4px 0 0;">JPG, PNG o WEBP. Máximo 10MB.</p>
+                </div>
+                <div>
+                    <label style="font-family:'Space Grotesk',sans-serif;font-size:0.85rem;font-weight:700;display:block;margin-bottom:4px;">¿Qué quieres? *</label>
+                    <select name="figure_type" required style="width:100%;padding:10px;border:2px solid #000;border-radius:6px;font-family:'Space Grotesk',sans-serif;">
+                        <option value="">Selecciona...</option>
+                        <option value="mascota">Mi mascota</option>
+                        <option value="persona">Una persona (pareja, amigo, familiar)</option>
+                        <option value="artista">Un artista o personaje</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-family:'Space Grotesk',sans-serif;font-size:0.85rem;font-weight:700;display:block;margin-bottom:4px;">Describe cómo lo quieres</label>
+                    <textarea name="description" rows="3" style="width:100%;padding:10px;border:2px solid #000;border-radius:6px;font-family:'Space Grotesk',sans-serif;" placeholder="Ej: Quiero a mi perro sentado, tamaño de 10cm, en color original..."></textarea>
+                </div>
+                <button type="submit" onclick="this.disabled=true;this.textContent='Enviando...';this.form.submit();" style="background:#000;color:#fff;padding:12px;border:none;border-radius:6px;font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:1px;">
+                    SOLICITAR COTIZACIÓN
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- Galería Pública 3D-World -->
     <section class="section" style="background-color: var(--color-bg);">
         <div class="container">
