@@ -25,11 +25,15 @@ Route::get('/academy', function () {
 // 3D World — Galería pública
 Route::prefix('3d-world')->name('world3d.')->group(function () {
     Route::get('/',                   [App\Http\Controllers\World3DController::class, 'index'])->name('index');
-    Route::post('/download/{item}',   [App\Http\Controllers\World3DController::class, 'requestDownload'])->name('request_download');
     Route::get('/download/{token}',   [App\Http\Controllers\World3DController::class, 'download'])->name('download');
-    Route::post('/custom-order',      [App\Http\Controllers\World3DController::class, 'customOrder'])->name('custom_order');
-    Route::post('/quote/{item}',      [App\Http\Controllers\World3DController::class, 'quote'])->name('quote');
-    Route::post('/order/{item}',      [App\Http\Controllers\World3DController::class, 'requestOrder'])->name('order');
+
+    // POST routes with rate limiting (BUG-031 fix)
+    Route::middleware('throttle:10,1')->group(function () {
+        Route::post('/download/{item}',   [App\Http\Controllers\World3DController::class, 'requestDownload'])->name('request_download');
+        Route::post('/custom-order',      [App\Http\Controllers\World3DController::class, 'customOrder'])->name('custom_order');
+        Route::post('/quote/{item}',      [App\Http\Controllers\World3DController::class, 'quote'])->name('quote');
+        Route::post('/order/{item}',      [App\Http\Controllers\World3DController::class, 'requestOrder'])->name('order');
+    });
 });
 
 // El Taller — zona privada para clientes 3D aprobados
@@ -50,7 +54,7 @@ Route::prefix('blog')->name('blog.')->group(function () {
 });
 
 // Portal de Alumnos — protegido por auth + approved
-Route::prefix('academia')->name('academia.')->middleware(['auth', 'approved'])->group(function () {
+Route::prefix('academia')->name('academia.')->middleware(['auth', 'verified', 'approved'])->group(function () {
     Route::get('/',                   [App\Http\Controllers\AcademiaController::class, 'dashboard'])->name('dashboard');
     Route::post('/enroll/{courseId}', [App\Http\Controllers\AcademiaController::class, 'enroll'])->name('enroll');
 
