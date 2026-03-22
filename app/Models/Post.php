@@ -11,11 +11,13 @@ class Post extends Model
         'title', 'slug', 'excerpt', 'content', 'category',
         'status', 'source_topics', 'dominant_subreddit',
         'word_count', 'rejection_reason', 'published_at',
+        'source_file', 'editorial_comments',
     ];
 
     protected $casts = [
-        'source_topics' => 'array',
-        'published_at'  => 'datetime',
+        'source_topics'      => 'array',
+        'editorial_comments' => 'array',
+        'published_at'       => 'datetime',
     ];
 
     protected static function booted(): void
@@ -30,6 +32,23 @@ class Post extends Model
         static::updating(function (Post $post) {
             $post->word_count = str_word_count(strip_tags($post->content ?? ''));
         });
+    }
+
+    public function addComment(string $text, string $type = 'correction'): void
+    {
+        $comments = $this->editorial_comments ?? [];
+        $comments[] = [
+            'id'         => Str::random(8),
+            'text'       => $text,
+            'type'       => $type, // correction, suggestion, approval
+            'created_at' => now()->toISOString(),
+        ];
+        $this->update(['editorial_comments' => $comments]);
+    }
+
+    public function clearComments(): void
+    {
+        $this->update(['editorial_comments' => []]);
     }
 
     public function approve(): void
@@ -55,5 +74,10 @@ class Post extends Model
     public function scopePublished($query)
     {
         return $query->where('status', 'published')->orderByDesc('published_at');
+    }
+
+    public function scopeNeedsReview($query)
+    {
+        return $query->whereIn('status', ['pending', 'draft']);
     }
 }
