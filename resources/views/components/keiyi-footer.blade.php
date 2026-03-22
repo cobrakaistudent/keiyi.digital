@@ -26,6 +26,10 @@
         </div>
         <div class="footer-copy">
             <p>&copy; {{ date('Y') }} Keiyi Digital. Todos los derechos reservados.</p>
+            <p style="margin-top: 6px;">
+                <a href="{{ route('privacidad') }}" style="color: inherit; font-size: 11px; text-decoration: underline; margin-right: 12px;">Aviso de Privacidad</a>
+                <a href="{{ route('terminos') }}" style="color: inherit; font-size: 11px; text-decoration: underline;">Términos y Condiciones</a>
+            </p>
         </div>
     </div>
 </footer>

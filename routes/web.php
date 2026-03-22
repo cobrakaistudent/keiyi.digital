@@ -60,6 +60,10 @@ Route::prefix('academia')->name('academia.')->middleware(['auth', 'approved'])->
     Route::post('/curso/{courseSlug}/{lessonSlug}/quiz',        [App\Http\Controllers\CourseController::class, 'submitQuiz'])->name('curso.quiz');
 });
 
+// Legal — páginas públicas
+Route::get('/privacidad', fn () => view('legal.privacidad'))->name('privacidad');
+Route::get('/terminos', fn () => view('legal.terminos'))->name('terminos');
+
 // Formulario de contacto / cotizacion (publico)
 Route::post('/contacto', [App\Http\Controllers\ContactController::class, 'store'])->name('contacto.store');
 

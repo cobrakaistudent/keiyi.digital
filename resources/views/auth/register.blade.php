@@ -53,13 +53,27 @@
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
+        <!-- Aceptación legal -->
+        <div class="mt-4">
+            <label class="flex items-start gap-2">
+                <input type="checkbox" name="accepts_terms" value="1" class="mt-1 rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" required>
+                <span class="text-sm text-gray-600">
+                    He leído y acepto el
+                    <a href="{{ route('privacidad') }}" target="_blank" class="underline text-indigo-600 hover:text-indigo-800">Aviso de Privacidad</a>
+                    y los
+                    <a href="{{ route('terminos') }}" target="_blank" class="underline text-indigo-600 hover:text-indigo-800">Términos y Condiciones</a>.
+                </span>
+            </label>
+            <x-input-error :messages="$errors->get('accepts_terms')" class="mt-2" />
+        </div>
+
         <div class="flex items-center justify-end mt-4">
             <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
+                ¿Ya tienes cuenta?
             </a>
 
             <x-primary-button class="ms-4">
-                {{ __('Register') }}
+                Crear cuenta
             </x-primary-button>
         </div>
     </form>
