@@ -78,7 +78,7 @@
 
         {{-- Content --}}
         <div class="article-content">
-            {!! $post->content !!}
+            {!! \App\Models\Post::sanitizeHtml($post->content) !!}
         </div>
 
         {{-- CTA --}}

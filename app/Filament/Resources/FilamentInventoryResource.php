@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Models\FilamentInventory;
+use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
@@ -38,6 +39,7 @@ class FilamentInventoryResource extends Resource
                         'Nylon' => 'Nylon', 'Otro' => 'Otro',
                     ]),
                     TextInput::make('color')->label('Color')->required()->placeholder('Negro, Blanco, Rojo...'),
+                ColorPicker::make('color_hex')->label('Color visual'),
                 ]),
                 Grid::make(3)->schema([
                     TextInput::make('weight_grams')->label('Peso spool (g)')->numeric()->default(1000),
@@ -81,6 +83,13 @@ class FilamentInventoryResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('color_hex')->label('')
+                    ->formatStateUsing(fn ($state) => '')
+                    ->html()
+                    ->getStateUsing(fn ($record) => $record->color_hex
+                        ? '<div style="width:24px;height:24px;border-radius:50%;background:' . e($record->color_hex) . ';border:2px solid #333;"></div>'
+                        : '<div style="width:24px;height:24px;border-radius:50%;background:#ddd;border:2px solid #333;"></div>'
+                    ),
                 TextColumn::make('brand')->label('Marca')->searchable(),
                 TextColumn::make('material')->label('Material')->badge()
                     ->color(fn (string $state) => match($state) {
@@ -90,7 +99,7 @@ class FilamentInventoryResource extends Resource
                         'Resina' => 'danger',
                         default  => 'gray',
                     }),
-                TextColumn::make('color')->label('Color'),
+                TextColumn::make('color')->label('Color')->description(fn ($record) => $record->color_hex),
                 TextColumn::make('remaining_grams')
                     ->label('Restante')
                     ->formatStateUsing(fn ($state, $record) => "{$state}g / {$record->weight_grams}g ({$record->remaining_percent}%)")

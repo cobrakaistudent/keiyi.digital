@@ -10,7 +10,7 @@ class FilamentInventory extends Model
     protected $table = 'filament_inventory';
 
     protected $fillable = [
-        'brand', 'material', 'color', 'weight_grams', 'remaining_grams',
+        'brand', 'material', 'color', 'color_hex', 'weight_grams', 'remaining_grams',
         'cost_per_kg', 'diameter', 'status', 'purchased_at', 'notes',
         'purchase_url', 'store', 'source',
     ];

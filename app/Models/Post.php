@@ -7,6 +7,27 @@ use Illuminate\Support\Str;
 
 class Post extends Model
 {
+    private const ALLOWED_TAGS = '<p><h1><h2><h3><h4><ul><ol><li><strong><em><a><br><blockquote><code><pre><img><table><thead><tbody><tr><th><td>';
+
+    public static function sanitizeHtml(?string $html): string
+    {
+        if (empty($html)) {
+            return '';
+        }
+
+        // Strip dangerous tags, keep structural HTML
+        $clean = strip_tags($html, self::ALLOWED_TAGS);
+
+        // Remove on* event attributes (onclick, onerror, etc.)
+        $clean = preg_replace('/\s+on\w+\s*=\s*["\'][^"\']*["\']/i', '', $clean);
+        $clean = preg_replace('/\s+on\w+\s*=\s*\S+/i', '', $clean);
+
+        // Remove javascript: URLs
+        $clean = preg_replace('/href\s*=\s*["\']javascript:[^"\']*["\']/i', 'href="#"', $clean);
+        $clean = preg_replace('/src\s*=\s*["\']javascript:[^"\']*["\']/i', 'src=""', $clean);
+
+        return $clean;
+    }
     protected $fillable = [
         'title', 'slug', 'excerpt', 'content', 'category',
         'status', 'source_topics', 'dominant_subreddit',
@@ -26,10 +47,14 @@ class Post extends Model
             if (empty($post->slug)) {
                 $post->slug = Str::slug($post->title);
             }
+            $post->content = self::sanitizeHtml($post->content);
             $post->word_count = str_word_count(strip_tags($post->content ?? ''));
         });
 
         static::updating(function (Post $post) {
+            if ($post->isDirty('content')) {
+                $post->content = self::sanitizeHtml($post->content);
+            }
             $post->word_count = str_word_count(strip_tags($post->content ?? ''));
         });
     }
