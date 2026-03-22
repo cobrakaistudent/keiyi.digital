@@ -72,6 +72,8 @@ class CourseController extends Controller
         $lesson = Lesson::where('course_id', $course->id)->where('slug', $lessonSlug)->firstOrFail();
         $user = Auth::user();
 
+        $this->ensureEnrolled($user->id, $courseSlug);
+
         LessonCompletion::updateOrCreate(
             ['user_id' => $user->id, 'lesson_id' => $lesson->id],
             ['completed_at' => now()]
@@ -98,7 +100,9 @@ class CourseController extends Controller
         $lesson = Lesson::where('course_id', $course->id)->where('slug', $lessonSlug)->firstOrFail();
         $user = Auth::user();
 
-        if (! $lesson->quiz_data) {
+        $this->ensureEnrolled($user->id, $courseSlug);
+
+        if (! $lesson->quiz_data || ! is_array($lesson->quiz_data)) {
             abort(404);
         }
 
@@ -108,6 +112,9 @@ class CourseController extends Controller
         $results = [];
 
         foreach ($questions as $i => $q) {
+            if (! is_array($q) || ! isset($q['question'], $q['options'], $q['correct'])) {
+                continue;
+            }
             $userAnswer = $answers[$i] ?? null;
             $isCorrect = (int) $userAnswer === (int) $q['correct'];
             if ($isCorrect) {
@@ -157,5 +164,16 @@ class CourseController extends Controller
             ->where('user_id', $userId)
             ->where('course_id', $course->slug)
             ->update(['progress_percent' => $progress, 'updated_at' => now()]);
+    }
+
+    private function ensureEnrolled(int $userId, string $courseSlug): void
+    {
+        $enrolled = Enrollment::where('user_id', $userId)
+            ->where('course_id', $courseSlug)
+            ->exists();
+
+        if (! $enrolled) {
+            abort(403, 'Debes estar inscrito en este curso.');
+        }
     }
 }

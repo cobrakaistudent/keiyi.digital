@@ -19,6 +19,7 @@ class PostApiController extends Controller
 
     public function approve($id)
     {
+        $this->authorizeAdmin();
         $post = Post::findOrFail($id);
         $post->approve();
         return response()->json(['success' => true, 'status' => 'approved']);
@@ -26,6 +27,7 @@ class PostApiController extends Controller
 
     public function publish($id)
     {
+        $this->authorizeAdmin();
         $post = Post::findOrFail($id);
         $post->publish();
         return response()->json(['success' => true, 'status' => 'published']);
@@ -33,9 +35,17 @@ class PostApiController extends Controller
 
     public function reject(Request $request, $id)
     {
+        $this->authorizeAdmin();
         $request->validate(['reason' => 'required|string|max:500']);
         $post = Post::findOrFail($id);
         $post->reject($request->reason);
         return response()->json(['success' => true, 'status' => 'rejected']);
+    }
+
+    private function authorizeAdmin(): void
+    {
+        if (auth()->user()?->role !== 'super-admin') {
+            abort(403, 'Solo administradores pueden gestionar posts.');
+        }
     }
 }

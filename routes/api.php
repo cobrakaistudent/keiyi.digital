@@ -9,7 +9,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 // William / Blog — Command Center (Sanctum token local)
-Route::middleware('auth:sanctum')->prefix('posts')->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:60,1'])->prefix('posts')->group(function () {
     Route::get('/pending',          [App\Http\Controllers\Api\PostApiController::class, 'pending']);
     Route::post('/{id}/approve',    [App\Http\Controllers\Api\PostApiController::class, 'approve']);
     Route::post('/{id}/publish',    [App\Http\Controllers\Api\PostApiController::class, 'publish']);

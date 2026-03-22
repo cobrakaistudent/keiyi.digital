@@ -89,9 +89,12 @@ app.post('/api/scout-sources', async (req, res) => {
 
         console.log(`[Keiyi CC] Procesando fuente: ${name} (${type}) -> ${url}`);
 
-        const safeName = name.replace(/'/g, "\\'");
-        const safeUrl = url.replace(/'/g, "\\'");
         const safeType = type === 'rss' ? 'rss' : 'web';
+
+        // Escapar para interpolación segura en PHP: backslashes primero, luego comillas
+        const phpEscape = (str) => str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\$/g, '\\$');
+        const safeName = phpEscape(name);
+        const safeUrl = phpEscape(url);
 
         const code = `
             \\$s = new \\App\\Models\\ScoutSource();
@@ -101,7 +104,7 @@ app.post('/api/scout-sources', async (req, res) => {
             \\$s->is_active = true;
             \\$s->relevance_score = 90;
             if (\\$s->save()) {
-                echo json_encode(['success' => true, 'name' => '${safeName}']);
+                echo json_encode(['success' => true, 'name' => \\$s->name]);
             } else {
                 echo json_encode(['success' => false, 'error' => 'Error al guardar en BD Eloquent']);
             }
@@ -130,7 +133,12 @@ app.get('/api/proxy/users/pending', async (req, res) => {
 app.post('/api/proxy/users/:id/status', async (req, res) => {
     try {
         const { status } = req.body;
-        const id = parseInt(req.params.id);
+        const id = parseInt(req.params.id, 10);
+
+        if (isNaN(id) || id <= 0) {
+            return res.status(400).json({ success: false, error: 'ID de usuario inválido.' });
+        }
+
         const cleanStatus = status === 'approved' ? 'approved' : 'rejected';
 
         const code = `\\$u = \\App\\Models\\User::find(${id}); if(\\$u){ \\$u->approval_status = '${cleanStatus}'; \\$u->save(); echo json_encode(['success'=>true]); } else { echo json_encode(['success'=>false, 'error'=>'User not found']); }`;
@@ -157,10 +165,18 @@ app.post('/api/run-scout', (req, res) => {
 // === PERRY THE DEEP SCOUT — INDAGACIÓN PROFUNDA ===
 app.post('/api/deep-dive/:subreddit', (req, res) => {
     const sub = req.params.subreddit;
+
+    // Validar que el subreddit solo contenga caracteres seguros (alfanuméricos, guiones bajos)
+    if (!/^[a-zA-Z0-9_]+$/.test(sub)) {
+        return res.status(400).json({ success: false, error: 'Nombre de subreddit inválido. Solo alfanuméricos y guiones bajos.' });
+    }
+
     const scriptPath = path.resolve(__dirname, '../agent/deep_scout.py');
     console.log(`🕵️‍♂️ Perry iniciando Deep Dive en r/${sub}...`);
 
-    exec(`python3 ${scriptPath} ${sub}`, (error, stdout, stderr) => {
+    // execFile previene inyección de comandos shell — argumentos como array
+    const { execFile } = require('child_process');
+    execFile('python3', [scriptPath, sub], (error, stdout, stderr) => {
         if (error) return res.status(500).json({ success: false, error: stderr });
         res.json({ success: true, output: stdout });
     });
@@ -204,7 +220,10 @@ app.get('/api/generate-report', async (req, res) => {
 // 6. Eliminar fuente del radar
 app.delete('/api/scout-sources/:id', async (req, res) => {
     try {
-        const id = parseInt(req.params.id);
+        const id = parseInt(req.params.id, 10);
+        if (isNaN(id) || id <= 0) {
+            return res.status(400).json({ success: false, error: 'ID inválido.' });
+        }
         const code = `\\$s = \\App\\Models\\ScoutSource::find(${id}); if(\\$s){ \\$s->delete(); echo json_encode(['success'=>true]); } else { echo json_encode(['success'=>false,'error'=>'Not found']); }`;
         const data = await runPHP(code);
         res.json(data);

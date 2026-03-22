@@ -890,3 +890,268 @@ const healthIcon = source.relevance_score < 50
 ---
 
 *Siguiente sesión: Fase 6 — contenido real de los talleres + migración `last_scrape_status` + experimento T3 Deep Scout.*
+
+---
+
+## AUDITORÍA #7 — 2026-03-21
+
+**Auditor:** Claude Code
+**Disparador:** Revisión completa del proyecto — código Laravel, agentes Python, Command Center Node.js, scripts de deploy.
+**Resultado:** 42 issues encontrados (4 críticos, 5 altos, 7 medios, resto bajos). 6 fixes aplicados directamente.
+
+---
+
+### BUG-019 — XSS en blog: contenido HTML sin sanitizar
+
+- **Fecha:** 2026-03-21
+- **Severidad:** Crítico
+- **Origen probable:** Diseño original del blog pipeline
+- **Archivo(s):** `resources/views/blog/show.blade.php:81`, `app/Models/Post.php`
+- **Detectado por:** Claude Code (Auditoría #7)
+- **Resuelto por:** Claude Code en 2026-03-21
+- **Tiempo del fix:** ~5 min
+
+**Problema:** `{!! $post->content !!}` renderizaba HTML crudo sin sanitizar. El contenido viene de William (IA) y del editor admin, pero si cualquiera de esas fuentes inyectara `<script>`, se ejecutaría en el navegador del visitante.
+
+**Fix:** Sanitización en dos capas:
+1. **Modelo:** `Post::sanitizeHtml()` — strip_tags con whitelist de tags seguros + eliminación de atributos `on*` y URLs `javascript:`. Se ejecuta automáticamente en `creating` y `updating`.
+2. **Vista:** Doble protección con `Post::sanitizeHtml($post->content)` en la plantilla para contenido existente en BD.
+
+---
+
+### BUG-020 — Command injection en /api/deep-dive/:subreddit
+
+- **Fecha:** 2026-03-21
+- **Severidad:** Crítico
+- **Origen probable:** Claude Code (Feature-006, Deep Scout)
+- **Archivo(s):** `command-center/server.js:158-167`
+- **Detectado por:** Claude Code (Auditoría #7)
+- **Resuelto por:** Claude Code en 2026-03-21
+- **Tiempo del fix:** ~3 min
+
+**Problema:** El parámetro `:subreddit` de la URL se pasaba directamente a `exec()` sin validación ni escapeo. Un atacante podía inyectar comandos shell.
+
+**Fix:** Validación regex `[a-zA-Z0-9_]` + reemplazo de `exec()` por `execFile()` con argumentos como array.
+
+---
+
+### BUG-021 — PHP injection en runPHP (escapeo insuficiente)
+
+- **Fecha:** 2026-03-21
+- **Severidad:** Crítico
+- **Origen probable:** Diseño original del Command Center
+- **Archivo(s):** `command-center/server.js:92-108`
+- **Detectado por:** Claude Code (Auditoría #7)
+- **Resuelto por:** Claude Code en 2026-03-21
+- **Tiempo del fix:** ~3 min
+
+**Problema:** El escapeo de input para interpolación PHP solo reemplazaba `'` con `\'`. Un atacante podía inyectar backslashes para escapar el escapeo y ejecutar código PHP arbitrario.
+
+**Fix:** Función `phpEscape()` que escapa backslashes, comillas simples, comillas dobles y signos `$` en el orden correcto. Response usa valor del modelo en vez de re-interpolar input del usuario.
+
+---
+
+### BUG-022 — API de posts sin autorización por rol
+
+- **Fecha:** 2026-03-21
+- **Severidad:** Alto
+- **Origen probable:** Diseño original del blog editorial pipeline
+- **Archivo(s):** `app/Http/Controllers/Api/PostApiController.php:20-39`
+- **Detectado por:** Claude Code (Auditoría #7)
+- **Resuelto por:** Claude Code en 2026-03-21
+- **Tiempo del fix:** ~2 min
+
+**Problema:** Los endpoints `approve`, `publish` y `reject` solo requerían un token Sanctum válido. Cualquier usuario autenticado podía gestionar posts del blog.
+
+**Fix:** Método privado `authorizeAdmin()` que verifica `role === 'super-admin'` antes de cada acción mutativa. Devuelve 403 si no es admin.
+
+---
+
+### BUG-023 — Quiz data sin validación de estructura
+
+- **Fecha:** 2026-03-21
+- **Severidad:** Medio
+- **Origen probable:** Diseño original del LMS
+- **Archivo(s):** `app/Http/Controllers/CourseController.php:101-123`
+- **Detectado por:** Claude Code (Auditoría #7)
+- **Resuelto por:** Claude Code en 2026-03-21
+- **Tiempo del fix:** ~2 min
+
+**Problema:** El campo `quiz_data` (JSON) se iteraba sin verificar que fuera un array ni que cada pregunta tuviera las keys requeridas (`question`, `options`, `correct`). JSON malformado causaba error 500.
+
+**Fix:** Validación `is_array()` en guard clause + `continue` para preguntas con estructura incompleta.
+
+---
+
+### BUG-024 — API sin rate limiting
+
+- **Fecha:** 2026-03-21
+- **Severidad:** Medio
+- **Origen probable:** Omisión en diseño de rutas API
+- **Archivo(s):** `routes/api.php:12`
+- **Detectado por:** Claude Code (Auditoría #7)
+- **Resuelto por:** Claude Code en 2026-03-21
+- **Tiempo del fix:** ~1 min
+
+**Problema:** Los endpoints de gestión de posts (`/api/posts/*`) no tenían rate limiting.
+
+**Fix:** Middleware `throttle:60,1` (60 requests/minuto) agregado al grupo de rutas.
+
+---
+
+### Resumen Auditoría #7
+
+| Bug | Severidad | Origen | Archivo | Resuelto |
+|-----|-----------|--------|---------|----------|
+| BUG-019 | Crítico | Blog pipeline | Post.php, show.blade.php | 2026-03-21 |
+| BUG-020 | Crítico | Feature-006 | server.js:158-167 | 2026-03-21 |
+| BUG-021 | Crítico | Command Center | server.js:92-108 | 2026-03-21 |
+| BUG-022 | Alto | Blog API | PostApiController.php | 2026-03-21 |
+| BUG-023 | Medio | LMS | CourseController.php | 2026-03-21 |
+| BUG-024 | Medio | API routes | api.php:12 | 2026-03-21 |
+
+**Issues pendientes documentados (no aplicados):**
+- Credenciales SSH hardcodeadas en `deploy.sh` y `server.js` — mover a env vars
+- Sin soft deletes en modelo `User` — hard delete huerfanea enrollments
+- Modelo `BlogPost.php` duplicado/sin uso — eliminar
+- Tabla `clients` vacía — eliminar o poblar
+- Filament Resources sin autorización granular por recurso
+- `AcademiaController` usa `DB::table()` en vez de Eloquent
+- Input sin sanitizar en `World3DController::requestOrder` (concatenación directa)
+
+### BUG-025 — Test de registro desactualizado tras agregar campos
+
+- **Fecha:** 2026-03-21
+- **Severidad:** Menor
+- **Origen probable:** Commit `a24366e` (privacy policy + registration consent)
+- **Archivo(s):** `tests/Feature/Auth/RegistrationTest.php:21-26`
+- **Detectado por:** Claude Code (Auditoría #7)
+- **Resuelto por:** Claude Code en 2026-03-21
+- **Tiempo del fix:** ~2 min
+
+**Problema:** El test `new users can register` enviaba el payload original de Breeze sin los campos `apellido_paterno` y `accepts_terms` que se agregaron al formulario de registro. La validación rechazaba el request y el usuario nunca se autenticaba → `assertAuthenticated()` fallaba.
+
+**Fix:** Agregados los campos faltantes al payload del test:
+
+```php
+// Antes:
+'name' => 'Test User',
+'email' => 'test@example.com',
+'password' => 'password',
+'password_confirmation' => 'password',
+
+// Después:
+'name' => 'Test',
+'apellido_paterno' => 'User',
+'email' => 'test@example.com',
+'password' => 'password',
+'password_confirmation' => 'password',
+'accepts_terms' => '1',
+```
+
+**Suite completo:** 25/25 tests pasan (61 assertions).
+
+---
+
+### BUG-026 — Usuarios pueden completar lecciones sin estar inscritos
+
+- **Fecha:** 2026-03-21
+- **Severidad:** Medio
+- **Origen probable:** Diseño original del LMS
+- **Archivo(s):** `app/Http/Controllers/CourseController.php:69-93, 95-141`
+- **Detectado por:** Claude Code (Auditoría #7, segunda pasada)
+- **Resuelto por:** Claude Code en 2026-03-21
+- **Tiempo del fix:** ~3 min
+
+**Problema:** Los métodos `markComplete()` y `submitQuiz()` no verificaban que el usuario estuviera inscrito en el curso. Un usuario autenticado podía POST a cualquier lección y marcarla como completada o enviar quiz sin estar inscrito.
+
+**Fix:** Método privado `ensureEnrolled()` que verifica enrollment y aborta con 403 si no existe. Agregado a ambos métodos antes de la lógica de completado.
+
+---
+
+### BUG-027 — PrintOrder permite user_id NULL en ruta pública
+
+- **Fecha:** 2026-03-21
+- **Severidad:** Medio
+- **Origen probable:** Diseño original de 3D World
+- **Archivo(s):** `routes/web.php:31`, `database/migrations/2026_03_07_053358_create_3d_world_tables.php:31`
+- **Detectado por:** Claude Code (Auditoría #7, segunda pasada)
+- **Resuelto por:** Claude Code en 2026-03-21
+- **Tiempo del fix:** ~3 min
+
+**Problema:** La ruta `POST /3d-world/order/{item}` es pública (sin middleware `auth`) — por diseño, para que visitantes puedan solicitar cotización. Pero `auth()->id()` retorna `null` y la columna `user_id` tenía constraint `NOT NULL` con foreign key, causando error SQL en producción.
+
+**Fix:** Migración `2026_03_22_041927_make_print_orders_user_id_nullable.php` — hace `user_id` nullable para aceptar órdenes de usuarios no autenticados.
+
+---
+
+### BUG-028 — Lesson content_html sin sanitización XSS
+
+- **Fecha:** 2026-03-21
+- **Severidad:** Medio
+- **Origen probable:** Diseño original del LMS
+- **Archivo(s):** `app/Models/Lesson.php`, `resources/views/academia/course/lesson.blade.php:810`
+- **Detectado por:** Claude Code (Auditoría #7, segunda pasada)
+- **Resuelto por:** Claude Code en 2026-03-21
+- **Tiempo del fix:** ~2 min
+
+**Problema:** `{!! $lesson->content_html !!}` renderizaba HTML sin sanitizar. Aunque el contenido viene del admin vía Filament RichEditor, si la fuente se contaminaba, se ejecutaría JavaScript arbitrario.
+
+**Fix:** Hooks `creating` y `updating` en el modelo `Lesson` que llaman a `Post::sanitizeHtml()` para limpiar `content_html` antes de guardar. Reutiliza el sanitizador centralizado del modelo Post.
+
+---
+
+### BUG-029 — SSRF en FilamentInventory::scrapeFromUrl()
+
+- **Fecha:** 2026-03-21
+- **Severidad:** Medio
+- **Origen probable:** Feature de auto-scraping de precios
+- **Archivo(s):** `app/Models/FilamentInventory.php:42-49`
+- **Detectado por:** Claude Code (Auditoría #7, segunda pasada)
+- **Resuelto por:** Claude Code en 2026-03-21
+- **Tiempo del fix:** ~3 min
+
+**Problema:** `scrapeFromUrl()` aceptaba cualquier URL y hacía request HTTP sin restricciones. Un admin (o atacante con acceso al panel) podía pasar URLs internas como `http://localhost:9200` o `http://169.254.169.254` (AWS metadata) para explorar la red interna.
+
+**Fix:** Constante `ALLOWED_SCRAPE_DOMAINS` con whitelist de dominios permitidos (Amazon, MercadoLibre). Validación por dominio antes de hacer request. URLs no permitidas retornan datos vacíos con nota explicativa.
+
+---
+
+### CLEANUP-001 — Eliminación de modelo y controlador muertos
+
+- **Fecha:** 2026-03-21
+- **Archivo(s) eliminados:** `app/Models/BlogPost.php`, `app/Http/Controllers/BlogPostController.php`
+- **Detectado por:** Claude Code (Auditoría #7, segunda pasada)
+
+**Descripción:** `BlogPost.php` era un modelo legacy que referenciaba la tabla `blog_posts`, pero el sistema de blog actual usa el modelo `Post.php` con la tabla `posts`. El controlador `BlogPostController.php` estaba completamente vacío (solo la clase sin métodos). Ninguno tenía rutas activas.
+
+---
+
+### Resumen final Auditoría #7
+
+| Bug | Severidad | Archivo | Resuelto |
+|-----|-----------|---------|----------|
+| BUG-019 | Crítico | Post.php, show.blade.php | 2026-03-21 |
+| BUG-020 | Crítico | server.js:158-167 | 2026-03-21 |
+| BUG-021 | Crítico | server.js:92-108 | 2026-03-21 |
+| BUG-022 | Alto | PostApiController.php | 2026-03-21 |
+| BUG-023 | Medio | CourseController.php | 2026-03-21 |
+| BUG-024 | Medio | api.php:12 | 2026-03-21 |
+| BUG-025 | Menor | RegistrationTest.php | 2026-03-21 |
+| BUG-026 | Medio | CourseController.php | 2026-03-21 |
+| BUG-027 | Medio | print_orders migration | 2026-03-21 |
+| BUG-028 | Medio | Lesson.php | 2026-03-21 |
+| BUG-029 | Medio | FilamentInventory.php | 2026-03-21 |
+| CLEANUP-001 | — | BlogPost.php, BlogPostController.php | 2026-03-21 |
+
+**Issues pendientes documentados (no aplicados):**
+- Credenciales SSH hardcodeadas en `deploy.sh` y `server.js` — mover a env vars
+- Sin soft deletes en modelo `User` — hard delete huerfanea enrollments
+- Tabla `clients` vacía — eliminar o poblar
+- Filament Resources sin autorización granular por recurso
+- `AcademiaController` usa `DB::table()` en vez de Eloquent
+- Enrollment usa slug como FK en vez de ID numérico — fragilidad si cambia slug
+- `TallerController` auto-marca `is_3d_client = true` sin verificación
+
+**Total bugs resueltos esta sesión:** 12 | **Pendientes:** 7
+**Suite de tests:** 25/25 (61 assertions)

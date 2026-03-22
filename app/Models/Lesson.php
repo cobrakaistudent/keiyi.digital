@@ -30,6 +30,21 @@ class Lesson extends Model
         'is_published' => 'boolean',
     ];
 
+    protected static function booted(): void
+    {
+        static::creating(function (Lesson $lesson) {
+            if (! empty($lesson->content_html)) {
+                $lesson->content_html = Post::sanitizeHtml($lesson->content_html);
+            }
+        });
+
+        static::updating(function (Lesson $lesson) {
+            if ($lesson->isDirty('content_html') && ! empty($lesson->content_html)) {
+                $lesson->content_html = Post::sanitizeHtml($lesson->content_html);
+            }
+        });
+    }
+
     public function course()
     {
         return $this->belongsTo(Course::class);
