@@ -90,9 +90,27 @@ php artisan filament:upgrade
 - **SSH:** `ssh -p 65002 -i ~/.ssh/id_rsa u129237724@185.212.70.24`
 - **Python on Mac:** `/Library/Frameworks/Python.framework/Versions/3.11/bin/python3` (NOT `/usr/bin/python3`)
 
+### Git Branching & Deploy Flow
+```
+feature/xxx → staging → main → deploy.sh → producción
+```
+- **`main`** = producción. Solo código probado y estable.
+- **`staging`** = testing. Merge features aquí para probar antes de producción.
+- **`feature/xxx`** = desarrollo. Una branch por feature/fix.
+- **`deploy.sh` solo ejecuta desde `main`** — si estás en otra branch, te bloquea.
+
+**Flujo:**
+1. Crea branch: `git checkout -b feature/mi-cambio staging`
+2. Desarrolla y prueba local (`composer dev`, `php artisan test`)
+3. Merge a staging: `git checkout staging && git merge feature/mi-cambio`
+4. Prueba en staging (local con datos de prueba)
+5. Cuando esté listo: `git checkout main && git merge staging`
+6. Deploy: `bash agent/deploy.sh`
+
 ### Deploy Rules (CRITICAL)
 - **NEVER rsync `public/index.php` to `public_html/`** — production index.php has different paths (`../laravel_app/` vs `../`)
 - **Always use `bash agent/deploy.sh`** — excludes index.php/.htaccess, includes pre/post health checks
+- **`deploy.sh` verifica que estés en `main`** — bloquea deploy desde otras branches
 - **Watchdog:** `agent/watchdog.sh` runs daily 5 AM via cron — checks 5 URLs, SSL expiry, response times
 - **After deploy:** Always run `php artisan migrate --force` + clear caches on server
 

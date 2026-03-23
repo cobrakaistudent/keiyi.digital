@@ -54,11 +54,54 @@
             </div>
         </div>
 
+        {{-- Tutorial: solo se muestra cuando no hay alumnos --}}
         @if($students->isEmpty())
-            <div style="border: 3px solid #000; padding: 40px; text-align: center; box-shadow: 4px 4px 0 #000; background: #fff;">
-                <p style="font-size: 18px; font-weight: 700; margin-bottom: 8px;">Aún no tienes alumnos</p>
-                <p style="color: #555; margin-bottom: 20px;">Empieza inscribiendo a tu primer grupo de alumnos.</p>
-                <a href="{{ route('profesor.students') }}" class="btn-primary">Agregar Alumnos</a>
+            <div style="border: 3px solid #000; box-shadow: 6px 6px 0 #a3e635; background: #fff; margin-bottom: 32px; overflow: hidden;">
+                <div style="background: #1a1a1a; padding: 20px 28px;">
+                    <h2 style="color: #a3e635; font-size: 18px; font-weight: 800; margin: 0; text-transform: uppercase; letter-spacing: 1px;">Bienvenido a tu panel de profesor</h2>
+                    <p style="color: #aaa; font-size: 13px; margin: 6px 0 0;">Sigue estos pasos para empezar con tus cursos grupales</p>
+                </div>
+                <div style="padding: 28px;">
+                    <div style="display: flex; gap: 16px; align-items: flex-start; margin-bottom: 24px;">
+                        <div style="min-width: 36px; height: 36px; background: #000; color: #a3e635; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px;">1</div>
+                        <div>
+                            <h3 style="font-size: 15px; font-weight: 800; margin: 0 0 4px;">Agrega a tus alumnos</h3>
+                            <p style="font-size: 13px; color: #555; margin: 0; line-height: 1.5;">
+                                Haz clic en <strong>"Gestionar Alumnos"</strong> arriba. Selecciona un curso, y agrega a tus alumnos escribiendo su <strong>nombre y correo</strong>. Puedes agregar varios a la vez.
+                            </p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 16px; align-items: flex-start; margin-bottom: 24px;">
+                        <div style="min-width: 36px; height: 36px; background: #000; color: #a3e635; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px;">2</div>
+                        <div>
+                            <h3 style="font-size: 15px; font-weight: 800; margin: 0 0 4px;">Ellos reciben un correo</h3>
+                            <p style="font-size: 13px; color: #555; margin: 0; line-height: 1.5;">
+                                Cada alumno nuevo recibe un correo automatico con sus <strong>credenciales de acceso</strong> (email + contraseña temporal) y un enlace directo para entrar al curso.
+                            </p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 16px; align-items: flex-start; margin-bottom: 24px;">
+                        <div style="min-width: 36px; height: 36px; background: #000; color: #a3e635; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px;">3</div>
+                        <div>
+                            <h3 style="font-size: 15px; font-weight: 800; margin: 0 0 4px;">Monitorea su avance</h3>
+                            <p style="font-size: 13px; color: #555; margin: 0; line-height: 1.5;">
+                                Regresa a este panel para ver el <strong>progreso de cada alumno</strong> por curso. Veras badges de color con su porcentaje de avance: gris (sin comenzar), amarillo (en progreso) y verde (completado).
+                            </p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 16px; align-items: flex-start; padding-top: 16px; border-top: 2px dashed #eee;">
+                        <div style="min-width: 36px; height: 36px; background: #f3f4f6; color: #555; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px;">?</div>
+                        <div>
+                            <h3 style="font-size: 15px; font-weight: 800; margin: 0 0 4px;">Tu plan actual</h3>
+                            <p style="font-size: 13px; color: #555; margin: 0; line-height: 1.5;">
+                                Tienes espacio para <strong>{{ $user->student_limit }} alumnos</strong>. Si necesitas mas, contactanos en <a href="mailto:hola@keiyi.digital" style="color: #000; font-weight: 700;">hola@keiyi.digital</a> para ampliar tu plan.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div style="padding: 0 28px 28px; text-align: center;">
+                    <a href="{{ route('profesor.students') }}" class="btn-primary" style="padding: 16px 40px; font-size: 15px;">Agregar mis primeros alumnos</a>
+                </div>
             </div>
         @else
             <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 16px;">Avance de tus alumnos</h2>
