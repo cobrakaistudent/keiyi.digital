@@ -132,4 +132,27 @@ else
     echo "[$METRIC_ENTRY]" | python3 -c "import sys,json;print(json.dumps(json.load(sys.stdin),indent=2))" > "$METRICS_FILE" 2>/dev/null
 fi
 
+# ── Check for new William drafts pending review ──
+AGENT_DIR="$(dirname "$0")"
+DRAFTS_DIR="$AGENT_DIR/william_drafts"
+DRAFTS_SEEN="$AGENT_DIR/watchdog_drafts_seen.txt"
+
+if [ -d "$DRAFTS_DIR" ]; then
+    touch "$DRAFTS_SEEN"
+    NEW_DRAFTS=0
+    for f in "$DRAFTS_DIR"/*.md; do
+        [ -f "$f" ] || continue
+        fname=$(basename "$f")
+        if ! grep -q "$fname" "$DRAFTS_SEEN" 2>/dev/null; then
+            NEW_DRAFTS=$((NEW_DRAFTS + 1))
+            echo "$fname" >> "$DRAFTS_SEEN"
+        fi
+    done
+
+    if [ "$NEW_DRAFTS" -gt 0 ]; then
+        echo "  📝 $NEW_DRAFTS nuevos borradores de William pendientes de revisión" >> "$LOG_FILE"
+        osascript -e "display notification \"$NEW_DRAFTS nuevos artículos por revisar en la mesa de edición\" with title \"Keiyi Blog\" subtitle \"William generó contenido nuevo\" sound name \"Glass\"" 2>/dev/null
+    fi
+fi
+
 echo "" >> "$LOG_FILE"
