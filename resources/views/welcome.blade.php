@@ -274,10 +274,17 @@
                     style="width: 100%; padding: 14px 16px; border: 3px solid #fff; background: transparent; color: #fff; font-family: inherit; font-size: 14px; font-weight: 600; outline: none; resize: vertical;">{{ old('message') }}</textarea>
                 @error('message')<p style="color: #f87171; font-size: 12px; margin-top: -12px;">{{ $message }}</p>@enderror
 
-                <button type="submit" onclick="this.disabled=true;this.textContent='Enviando...';this.form.submit();"
+                <button type="submit" id="contact-submit"
                     style="background: #a3e635; color: #1a1a1a; border: 3px solid #a3e635; padding: 16px; font-family: inherit; font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; box-shadow: 4px 4px 0 #000; transition: all 0.15s;">
                     Enviar Mensaje
                 </button>
+                <script>
+                    document.currentScript.closest('form').addEventListener('submit', function() {
+                        var btn = document.getElementById('contact-submit');
+                        btn.disabled = true;
+                        btn.textContent = 'Enviando...';
+                    });
+                </script>
             </form>
         </div>
     </section>

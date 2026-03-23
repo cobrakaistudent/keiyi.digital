@@ -15,6 +15,15 @@ echo "Local:  $LOCAL"
 echo "Remote: $HOST:$REMOTE"
 echo ""
 
+# 0. Safety: only deploy from main branch
+CURRENT_BRANCH=$(git -C "$LOCAL" branch --show-current)
+if [ "$CURRENT_BRANCH" != "main" ]; then
+    echo "ERROR: Solo se puede deployar desde la branch 'main'."
+    echo "Estás en: $CURRENT_BRANCH"
+    echo "Haz merge a main primero: git checkout main && git merge $CURRENT_BRANCH"
+    exit 1
+fi
+
 # 1. Pre-check: site is currently up?
 echo "→ Pre-check..."
 HTTP_PRE=$(curl -so /dev/null -w '%{http_code}' --max-time 10 https://keiyi.digital 2>/dev/null)

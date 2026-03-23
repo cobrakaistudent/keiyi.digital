@@ -1,0 +1,132 @@
+{
+  "date": "2026-03-21T02:08:29.118350",
+  "models": [
+    "gemma3:4b",
+    "qwen3:4b"
+  ],
+  "tests": [
+    {
+      "name": "Dipper: Extracción Reddit",
+      "agent": "dipper",
+      "results": {
+        "gemma3:4b": {
+          "score": 30,
+          "time_s": 5.77,
+          "tokens": 1,
+          "tokens_per_sec": 0.2,
+          "notes": [
+            "JSON válido",
+            "Falta 'tools'"
+          ],
+          "response_preview": "{}"
+        },
+        "qwen3:4b": {
+          "score": 0,
+          "time_s": 49.51,
+          "tokens": 0,
+          "tokens_per_sec": 0.0,
+          "notes": [
+            "JSON INVÁLIDO"
+          ],
+          "response_preview": ""
+        }
+      }
+    },
+    {
+      "name": "Dipper: Extracción Hacker News",
+      "agent": "dipper",
+      "results": {
+        "gemma3:4b": {
+          "score": 100,
+          "time_s": 6.9,
+          "tokens": 10,
+          "tokens_per_sec": 1.4,
+          "notes": [
+            "JSON válido",
+            "2 herramientas detectadas",
+            "Schema correcto (name+mentions)",
+            "2 preguntas",
+            "2 referencias"
+          ],
+          "response_preview": "{\"tools\":[{\"name\":\"Notional\",\"mentions\":5}, {\"name\":\"Claude\",\"mentions\":4}],\"questions\":[{\"text\":\"AI-powered alternatives to Notion\",\"mentions\":3}, {\"text\":\"Conversational AI replacing landing pages\",\"mentions\":3}],\"references\":[\"https://github.com/example/notional\",\"https://blog.example.com/convers"
+        },
+        "qwen3:4b": {
+          "score": 0,
+          "time_s": 50.79,
+          "tokens": 0,
+          "tokens_per_sec": 0.0,
+          "notes": [
+            "JSON INVÁLIDO"
+          ],
+          "response_preview": ""
+        }
+      }
+    },
+    {
+      "name": "William: Blog sobre Make.com",
+      "agent": "william",
+      "results": {
+        "gemma3:4b": {
+          "score": 100,
+          "time_s": 28.18,
+          "tokens": 745,
+          "tokens_per_sec": 26.4,
+          "notes": [
+            "745 palabras (OK)",
+            "Tiene título",
+            "5 secciones",
+            "Sin Reddit",
+            "Sin stats inventadas",
+            "Sin infra expuesta",
+            "CTA Keiyi presente",
+            "Usa analogías/explicaciones"
+          ],
+          "response_preview": "¡Absolutamente! Aquí tienes un artículo de blog que cumple con tus requisitos, diseñado para un empresario latinoamericano sin conocimientos técnicos:\n\n---\n\n# Deja de Hacerlo a Mano: Automatiza Tu Marketing con Make.com\n\n¿Te sientes abrumado por la cantidad de tareas de marketing que tienes que hace"
+        },
+        "qwen3:4b": {
+          "score": 0,
+          "time_s": 300.01,
+          "tokens": 0,
+          "tokens_per_sec": 0,
+          "notes": [
+            "ERROR: HTTPConnectionPool(host='localhost', port=11434): Read timed out. (read timeout=300)"
+          ],
+          "response_preview": ""
+        }
+      }
+    },
+    {
+      "name": "William: Blog sobre GEO",
+      "agent": "william",
+      "results": {
+        "gemma3:4b": {
+          "score": 100,
+          "time_s": 28.46,
+          "tokens": 780,
+          "tokens_per_sec": 27.4,
+          "notes": [
+            "780 palabras (OK)",
+            "Tiene título",
+            "5 secciones",
+            "Sin Reddit",
+            "Sin stats inventadas",
+            "Sin infra expuesta",
+            "CTA Keiyi presente",
+            "Usa analogías/explicaciones"
+          ],
+          "response_preview": "# GEO: El Nuevo Arma Secreta para que Tu Negocio Crezca en Latinoamérica\n\n¿Cansado de campañas de publicidad que te cuestan un ojo de la cara y no te dan los resultados que esperas? ¿Te sientes perdido en un mar de algoritmos y “keywords” que no entiendes? La respuesta podría estar más cerca de lo q"
+        },
+        "qwen3:4b": {
+          "score": 0,
+          "time_s": 300.04,
+          "tokens": 0,
+          "tokens_per_sec": 0,
+          "notes": [
+            "ERROR: HTTPConnectionPool(host='localhost', port=11434): Read timed out. (read timeout=300)"
+          ],
+          "response_preview": ""
+        }
+      }
+    }
+  ]
+}

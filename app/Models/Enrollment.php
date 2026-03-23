@@ -14,6 +14,7 @@ class Enrollment extends Model
         'course_id',
         'progress_percent',
         'enrolled_at',
+        'enrolled_by',
     ];
 
     protected $casts = [
@@ -28,5 +29,10 @@ class Enrollment extends Model
     public function course()
     {
         return $this->belongsTo(Course::class, 'course_id', 'slug');
+    }
+
+    public function enrolledBy()
+    {
+        return $this->belongsTo(User::class, 'enrolled_by');
     }
 }

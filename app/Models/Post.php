@@ -22,12 +22,15 @@ class Post extends Model
         $clean = preg_replace('/\s+on\w+\s*=\s*["\'][^"\']*["\']/i', '', $clean);
         $clean = preg_replace('/\s+on\w+\s*=\s*\S+/i', '', $clean);
 
-        // Remove javascript: URLs
-        $clean = preg_replace('/href\s*=\s*["\']javascript:[^"\']*["\']/i', 'href="#"', $clean);
-        $clean = preg_replace('/src\s*=\s*["\']javascript:[^"\']*["\']/i', 'src=""', $clean);
+        // Remove javascript: and data: URLs from href/src
+        $clean = preg_replace('/href\s*=\s*["\']?\s*javascript:[^"\'>\s]*/i', 'href="#"', $clean);
+        $clean = preg_replace('/src\s*=\s*["\']?\s*javascript:[^"\'>\s]*/i', 'src=""', $clean);
+        $clean = preg_replace('/href\s*=\s*["\']?\s*data:[^"\'>\s]*/i', 'href="#"', $clean);
+        $clean = preg_replace('/src\s*=\s*["\']?\s*data:(?!image\/)[^"\'>\s]*/i', 'src=""', $clean);
 
         return $clean;
     }
+
     protected $fillable = [
         'title', 'slug', 'excerpt', 'content', 'category',
         'status', 'source_topics', 'dominant_subreddit',
@@ -36,9 +39,9 @@ class Post extends Model
     ];
 
     protected $casts = [
-        'source_topics'      => 'array',
+        'source_topics' => 'array',
         'editorial_comments' => 'array',
-        'published_at'       => 'datetime',
+        'published_at' => 'datetime',
     ];
 
     protected static function booted(): void
@@ -63,9 +66,9 @@ class Post extends Model
     {
         $comments = $this->editorial_comments ?? [];
         $comments[] = [
-            'id'         => Str::random(8),
-            'text'       => $text,
-            'type'       => $type, // correction, suggestion, approval
+            'id' => Str::random(8),
+            'text' => $text,
+            'type' => $type, // correction, suggestion, approval
             'created_at' => now()->toISOString(),
         ];
         $this->update(['editorial_comments' => $comments]);

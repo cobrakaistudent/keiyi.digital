@@ -19,19 +19,23 @@ use Filament\Tables\Table;
 class PrintOrderResource extends Resource
 {
     protected static ?string $model = PrintOrder::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-printer';
+
     protected static ?string $navigationLabel = 'Órdenes';
+
     protected static ?string $navigationGroup = '3D World';
+
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
         return $form->schema([
             Select::make('status')->label('Estado')->options([
-                'received'  => 'Recibida',
-                'quoting'   => 'En cotización',
-                'approved'  => 'Aprobada',
-                'printing'  => 'Imprimiendo',
+                'received' => 'Recibida',
+                'quoting' => 'En cotización',
+                'approved' => 'Aprobada',
+                'printing' => 'Imprimiendo',
                 'delivered' => 'Entregada',
                 'cancelled' => 'Cancelada',
             ])->required(),
@@ -45,7 +49,9 @@ class PrintOrderResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('user.name')->label('Cliente')->searchable(),
+                TextColumn::make('customer_name')->label('Cliente')->searchable()
+                    ->default(fn (PrintOrder $r) => $r->user?->name ?? '—'),
+                TextColumn::make('customer_email')->label('Email')->searchable()->toggleable(),
                 TextColumn::make('type')->label('Tipo')->badge()
                     ->formatStateUsing(fn ($state) => $state === 'catalog' ? 'Catálogo' : 'Custom'),
                 TextColumn::make('catalogItem.title')->label('Item')->limit(30)->default('—'),
@@ -54,18 +60,18 @@ class PrintOrderResource extends Resource
                 TextColumn::make('quantity')->label('Cant.'),
                 TextColumn::make('status')->label('Estado')->badge()
                     ->color(fn ($state) => match ($state) {
-                        'received'  => 'warning',
-                        'quoting'   => 'info',
-                        'approved'  => 'success',
-                        'printing'  => 'primary',
+                        'received' => 'warning',
+                        'quoting' => 'info',
+                        'approved' => 'success',
+                        'printing' => 'primary',
                         'delivered' => 'gray',
                         'cancelled' => 'danger',
                     })
                     ->formatStateUsing(fn ($state) => match ($state) {
-                        'received'  => 'Recibida',
-                        'quoting'   => 'En cotización',
-                        'approved'  => 'Aprobada',
-                        'printing'  => 'Imprimiendo',
+                        'received' => 'Recibida',
+                        'quoting' => 'En cotización',
+                        'approved' => 'Aprobada',
+                        'printing' => 'Imprimiendo',
                         'delivered' => 'Entregada',
                         'cancelled' => 'Cancelada',
                     }),
@@ -75,16 +81,16 @@ class PrintOrderResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->filters([
                 SelectFilter::make('status')->label('Estado')->options([
-                    'received'  => 'Recibida',
-                    'quoting'   => 'En cotización',
-                    'approved'  => 'Aprobada',
-                    'printing'  => 'Imprimiendo',
+                    'received' => 'Recibida',
+                    'quoting' => 'En cotización',
+                    'approved' => 'Aprobada',
+                    'printing' => 'Imprimiendo',
                     'delivered' => 'Entregada',
                     'cancelled' => 'Cancelada',
                 ]),
                 SelectFilter::make('type')->label('Tipo')->options([
                     'catalog' => 'Catálogo',
-                    'custom'  => 'Custom',
+                    'custom' => 'Custom',
                 ]),
             ])
             ->actions([
@@ -102,22 +108,22 @@ class PrintOrderResource extends Resource
                             (float) $data['grams'],
                             (float) $data['hours']
                         );
-                        $unitPrice  = $calc['final_price'];
+                        $unitPrice = $calc['final_price'];
                         $totalPrice = round($unitPrice * $record->quantity, 2);
                         $details = "COTIZACIÓN AUTOMÁTICA\n"
-                            . "Material: \${$calc['material']} ({$data['grams']}g × \${$calc['inputs']['cost_per_kg']}/kg)\n"
-                            . "Electricidad: \${$calc['electricity']} ({$data['hours']}h × {$calc['inputs']['watts']}W)\n"
-                            . "Overhead: \${$calc['overhead']}\n"
-                            . "Mano de obra: \${$calc['labor']} ({$data['hours']}h × \${$calc['inputs']['cost_per_kg']}/h)\n"
-                            . "Costo: \${$calc['total_cost']} | Margen {$calc['margin_pct']}%: \${$calc['margin']}\n"
-                            . "Precio unitario: \${$unitPrice}\n"
-                            . "Cantidad: {$record->quantity}\n"
-                            . "TOTAL: \${$totalPrice} MXN (+ IVA: \$" . round($totalPrice * 1.16, 2) . ")";
+                            ."Material: \${$calc['material']} ({$data['grams']}g × \${$calc['inputs']['cost_per_kg']}/kg)\n"
+                            ."Electricidad: \${$calc['electricity']} ({$data['hours']}h × {$calc['inputs']['watts']}W)\n"
+                            ."Overhead: \${$calc['overhead']}\n"
+                            ."Mano de obra: \${$calc['labor']} ({$data['hours']}h × \${$calc['inputs']['cost_per_kg']}/h)\n"
+                            ."Costo: \${$calc['total_cost']} | Margen {$calc['margin_pct']}%: \${$calc['margin']}\n"
+                            ."Precio unitario: \${$unitPrice}\n"
+                            ."Cantidad: {$record->quantity}\n"
+                            ."TOTAL: \${$totalPrice} MXN (+ IVA: \$".round($totalPrice * 1.16, 2).')';
 
                         $record->update([
-                            'status'        => 'quoting',
-                            'quoted_price'  => $totalPrice,
-                            'quoted_time'   => round($data['hours']) . ' horas',
+                            'status' => 'quoting',
+                            'quoted_price' => $totalPrice,
+                            'quoted_time' => round($data['hours']).' horas',
                             'quote_details' => $details,
                         ]);
                         Notification::make()->title("Cotizado: \${$totalPrice} MXN")->success()->send();
@@ -135,9 +141,9 @@ class PrintOrderResource extends Resource
                     ])
                     ->action(function (PrintOrder $record, array $data) {
                         $record->update([
-                            'status'        => 'quoting',
-                            'quoted_price'  => $data['quoted_price'],
-                            'quoted_time'   => $data['quoted_time'],
+                            'status' => 'quoting',
+                            'quoted_price' => $data['quoted_price'],
+                            'quoted_time' => $data['quoted_time'],
                             'quote_details' => $data['quote_details'] ?? null,
                         ]);
                         Notification::make()->title('Cotización enviada')->success()->send();
@@ -172,8 +178,8 @@ class PrintOrderResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListPrintOrders::route('/'),
-            'edit'   => Pages\EditPrintOrder::route('/{record}/edit'),
+            'index' => Pages\ListPrintOrders::route('/'),
+            'edit' => Pages\EditPrintOrder::route('/{record}/edit'),
         ];
     }
 

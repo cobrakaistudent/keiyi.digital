@@ -9,6 +9,8 @@ class PrintOrder extends Model
 {
     protected $fillable = [
         'user_id',
+        'customer_name',
+        'customer_email',
         'type',
         'catalog_item_id',
         'file_path',

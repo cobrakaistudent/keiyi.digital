@@ -16,6 +16,7 @@ class World3DController extends Controller
     public function index()
     {
         $items = PrintCatalog::published()->latest()->get();
+
         return view('world3d.index', compact('items'));
     }
 
@@ -33,11 +34,11 @@ class World3DController extends Controller
 
         try {
             Mail::to($request->email)->send(new DownloadLinkMail($token, $item));
-        } catch (\Exception) {
-            // Fallo silencioso — el link igual se genera
+        } catch (\Exception $e) {
+            \Log::warning("Download link mail failed: {$e->getMessage()}");
         }
 
-        return back()->with('download_sent', 'Te enviamos el link de descarga a ' . $request->email . '. Válido por 24 horas.');
+        return back()->with('download_sent', 'Te enviamos el link de descarga a '.$request->email.'. Válido por 24 horas.');
     }
 
     public function download(string $token)
@@ -65,8 +66,8 @@ class World3DController extends Controller
     public function quote(Request $request, PrintCatalog $item)
     {
         $request->validate([
-            'grams'    => 'required|numeric|min:1|max:10000',
-            'hours'    => 'required|numeric|min:0.1|max:200',
+            'grams' => 'required|numeric|min:1|max:10000',
+            'hours' => 'required|numeric|min:0.1|max:200',
             'quantity' => 'required|integer|min:1|max:100',
         ]);
 
@@ -75,11 +76,11 @@ class World3DController extends Controller
             (float) $request->hours
         );
 
-        $quote['quantity']    = (int) $request->quantity;
-        $quote['unit_price']  = $quote['final_price'];
+        $quote['quantity'] = (int) $request->quantity;
+        $quote['unit_price'] = $quote['final_price'];
         $quote['total_price'] = round($quote['final_price'] * $request->quantity, 2);
-        $quote['total_iva']   = round($quote['total_price'] * 1.16, 2);
-        $quote['item_title']  = $item->title;
+        $quote['total_iva'] = round($quote['total_price'] * 1.16, 2);
+        $quote['item_title'] = $item->title;
 
         return response()->json($quote);
     }
@@ -90,28 +91,30 @@ class World3DController extends Controller
     public function customOrder(Request $request)
     {
         $request->validate([
-            'name'            => 'required|string|max:255',
-            'email'           => 'required|email|max:255',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
             'reference_photo' => 'required|image|max:10240',
-            'figure_type'     => 'required|string|max:100',
-            'description'     => 'nullable|string|max:2000',
+            'figure_type' => 'required|string|max:100',
+            'description' => 'nullable|string|max:2000',
         ]);
 
         $photoPath = $request->file('reference_photo')->store('custom-orders', 'local');
 
         PrintOrder::create([
-            'user_id'  => auth()->id(),
-            'type'     => 'custom',
+            'user_id' => auth()->id(),
+            'customer_name' => $request->name,
+            'customer_email' => $request->email,
+            'type' => 'custom',
             'material' => 'PLA',
-            'color'    => 'A definir',
+            'color' => 'A definir',
             'quantity' => 1,
             'file_path' => $photoPath,
             'file_name' => $request->file('reference_photo')->getClientOriginalName(),
-            'notes'    => "FIGURA PERSONALIZADA\nNombre: {$request->name}\nEmail: {$request->email}\nTipo: {$request->figure_type}\nDescripción: " . ($request->description ?? 'Sin descripción'),
-            'status'   => 'received',
+            'notes' => "FIGURA PERSONALIZADA\nTipo: {$request->figure_type}\nDescripción: ".($request->description ?? 'Sin descripción'),
+            'status' => 'received',
         ]);
 
-        return back()->with('custom_sent', '¡Solicitud recibida! Te contactaremos a ' . $request->email . ' con la cotización de tu figura personalizada.');
+        return back()->with('custom_sent', '¡Solicitud recibida! Te contactaremos a '.$request->email.' con la cotización de tu figura personalizada.');
     }
 
     /**
@@ -120,12 +123,12 @@ class World3DController extends Controller
     public function requestOrder(Request $request, PrintCatalog $item)
     {
         $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|max:255',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
             'material' => 'required|string|max:100',
-            'color'    => 'required|string|max:100',
+            'color' => 'required|string|max:100',
             'quantity' => 'required|integer|min:1|max:100',
-            'notes'    => 'nullable|string|max:1000',
+            'notes' => 'nullable|string|max:1000',
         ]);
 
         if (! $item->orderable) {
@@ -141,18 +144,20 @@ class World3DController extends Controller
         }
 
         $order = PrintOrder::create([
-            'user_id'         => auth()->id(),
-            'type'            => 'catalog',
+            'user_id' => auth()->id(),
+            'customer_name' => $request->name,
+            'customer_email' => $request->email,
+            'type' => 'catalog',
             'catalog_item_id' => $item->id,
-            'material'        => $request->material,
-            'color'           => $request->color,
-            'quantity'        => $request->quantity,
-            'notes'           => "Nombre: {$request->name}\nEmail: {$request->email}\n" . ($request->notes ?? ''),
-            'status'          => 'received',
-            'quoted_price'    => $quotedPrice,
-            'quote_details'   => $quoteDetails,
+            'material' => $request->material,
+            'color' => $request->color,
+            'quantity' => $request->quantity,
+            'notes' => $request->notes ?? '',
+            'status' => 'received',
+            'quoted_price' => $quotedPrice,
+            'quote_details' => $quoteDetails,
         ]);
 
-        return back()->with('order_sent', 'Solicitud de cotización recibida. Te contactaremos a ' . $request->email . ' con el presupuesto.');
+        return back()->with('order_sent', 'Solicitud de cotización recibida. Te contactaremos a '.$request->email.' con el presupuesto.');
     }
 }

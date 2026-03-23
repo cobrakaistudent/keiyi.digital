@@ -12,8 +12,8 @@ class Expense extends Model
     ];
 
     protected $casts = [
-        'date'       => 'date',
-        'amount'     => 'decimal:2',
+        'date' => 'date',
+        'amount' => 'decimal:2',
         'amount_mxn' => 'decimal:2',
     ];
 
@@ -30,7 +30,12 @@ class Expense extends Model
 
     public static function totalByMonth(): array
     {
-        return self::selectRaw("strftime('%Y-%m', date) as month, SUM(amount_mxn) as total")
+        $driver = config('database.default');
+        $expr = $driver === 'sqlite'
+            ? "strftime('%Y-%m', date) as month"
+            : "DATE_FORMAT(date, '%Y-%m') as month";
+
+        return self::selectRaw("{$expr}, SUM(amount_mxn) as total")
             ->groupBy('month')
             ->orderBy('month')
             ->pluck('total', 'month')
@@ -39,7 +44,7 @@ class Expense extends Model
 
     public static function totalByCategory(): array
     {
-        return self::selectRaw("category, SUM(amount_mxn) as total")
+        return self::selectRaw('category, SUM(amount_mxn) as total')
             ->groupBy('category')
             ->orderByDesc('total')
             ->pluck('total', 'category')

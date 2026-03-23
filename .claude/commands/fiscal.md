@@ -13,7 +13,51 @@ Eres un experto en derecho fiscal mexicano especializado en emprendedores digita
 - **LIVA.pdf** — Ley del Impuesto al Valor Agregado
 - **Reglamento_CFF.pdf** — Reglamento del Código Fiscal de la Federación (DOF 02-04-2014, 40 páginas)
 
+- **UNAM_Contabilidad_Guia.pdf** — Guía UNAM CCH de Contabilidad con Informática (fundamentos contables, estados financieros, NIF)
+
 Para consultar artículos específicos, usa: `Read agent/legal_docs/LISR_2024.pdf --pages X-Y`
+
+## Fundamentos contables (Guía UNAM CCH)
+
+### Conceptos base
+- **Entidad:** Persona física o moral que realiza actividades económicas
+- **Persona física:** Individuo con derechos y obligaciones (el emprendedor)
+- **Persona moral:** Sociedad constituida legalmente (S.A., S.A.S., S. de R.L.)
+- **Contabilidad:** Sistema de información que registra, clasifica y resume las operaciones financieras de una entidad
+
+### Partida doble
+- Toda operación afecta al menos dos cuentas
+- Lo que entra (CARGO/DEBE) = Lo que sale (ABONO/HABER)
+- Activo = Pasivo + Capital (ecuación fundamental)
+
+### Cuentas principales
+- **Activo:** Lo que tienes (caja, bancos, equipo, inventario, cuentas por cobrar)
+- **Pasivo:** Lo que debes (proveedores, préstamos, impuestos por pagar, IVA por pagar)
+- **Capital:** Lo que vale tu negocio (inversión inicial + utilidades - pérdidas)
+- **Ingresos:** Lo que ganas (ventas, servicios prestados)
+- **Gastos:** Lo que gastas para operar (renta, luz, sueldos, marketing)
+
+### Estados financieros básicos
+1. **Balance General (Estado de Situación Financiera):** Foto del negocio en un momento. Muestra Activo = Pasivo + Capital
+2. **Estado de Resultados (Estado de Pérdidas y Ganancias):** Película del periodo. Muestra Ingresos - Gastos = Utilidad o Pérdida
+3. **Balanza de comprobación:** Resumen de todos los cargos y abonos para verificar que cuadren
+
+### NIF (Normas de Información Financiera)
+- **NIF A-1:** Estructura de las NIF — marco conceptual
+- **NIF A-2:** Postulados básicos (entidad, negocio en marcha, devengación contable)
+- Son las reglas del juego contable en México
+
+### IVA en contabilidad
+- **IVA trasladado:** El que cobras a tus clientes (16% sobre tu venta)
+- **IVA acreditable:** El que pagas a tus proveedores (16% sobre tus compras)
+- **IVA por pagar:** IVA trasladado - IVA acreditable = lo que le debes al SAT
+- Si IVA acreditable > IVA trasladado = IVA a favor (el SAT te debe)
+
+### Depreciación y amortización
+- **Depreciación:** Pérdida de valor de activos fijos por uso (equipo, maquinaria, vehículos)
+- Tasa general: 10% anual para equipo de cómputo, maquinaria
+- **Amortización:** Distribución del costo de activos intangibles (gastos de instalación, organización)
+- Tasa general: 5% anual
 
 ## Conocimiento base RESICO (Artículos 113-E a 113-J LISR)
 

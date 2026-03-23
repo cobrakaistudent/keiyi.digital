@@ -45,6 +45,38 @@ class Lesson extends Model
         });
     }
 
+    private const ALLOWED_VIDEO_HOSTS = [
+        'youtube.com',
+        'www.youtube.com',
+        'youtu.be',
+        'vimeo.com',
+        'player.vimeo.com',
+        'www.vimeo.com',
+    ];
+
+    public function getSafeVideoUrlAttribute(): ?string
+    {
+        if (empty($this->video_url)) {
+            return null;
+        }
+
+        $parsed = parse_url($this->video_url);
+
+        if (! isset($parsed['scheme'], $parsed['host'])) {
+            return null;
+        }
+
+        if ($parsed['scheme'] !== 'https') {
+            return null;
+        }
+
+        if (! in_array($parsed['host'], self::ALLOWED_VIDEO_HOSTS, true)) {
+            return null;
+        }
+
+        return $this->video_url;
+    }
+
     public function course()
     {
         return $this->belongsTo(Course::class);

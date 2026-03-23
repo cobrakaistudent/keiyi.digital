@@ -1,0 +1,131 @@
+[
+  {
+    "date": "2026-03-20",
+    "state": "up",
+    "avg_ms": 1325,
+    "ssl_days": 55,
+    "links": [
+      {
+        "path": "/",
+        "http": 200,
+        "time_ms": 3695,
+        "ttfb_ms": 0,
+        "size_kb": 16.8
+      },
+      {
+        "path": "/blog",
+        "http": 200,
+        "time_ms": 646,
+        "ttfb_ms": 0,
+        "size_kb": 3.3
+      },
+      {
+        "path": "/academy",
+        "http": 200,
+        "time_ms": 755,
+        "ttfb_ms": 0,
+        "size_kb": 12.5
+      },
+      {
+        "path": "/login",
+        "http": 200,
+        "time_ms": 819,
+        "ttfb_ms": 0,
+        "size_kb": 6.5
+      },
+      {
+        "path": "/admin",
+        "http": 302,
+        "time_ms": 713,
+        "ttfb_ms": 0,
+        "size_kb": 0.4
+      }
+    ]
+  },
+  {
+    "date": "2026-03-21",
+    "state": "up",
+    "avg_ms": 766,
+    "ssl_days": 55,
+    "links": [
+      {
+        "path": "/",
+        "http": 200,
+        "time_ms": 1308,
+        "ttfb_ms": 0,
+        "size_kb": 16.8
+      },
+      {
+        "path": "/blog",
+        "http": 200,
+        "time_ms": 463,
+        "ttfb_ms": 0,
+        "size_kb": 3.3
+      },
+      {
+        "path": "/academy",
+        "http": 200,
+        "time_ms": 650,
+        "ttfb_ms": 0,
+        "size_kb": 12.5
+      },
+      {
+        "path": "/login",
+        "http": 200,
+        "time_ms": 781,
+        "ttfb_ms": 0,
+        "size_kb": 6.5
+      },
+      {
+        "path": "/admin",
+        "http": 302,
+        "time_ms": 629,
+        "ttfb_ms": 0,
+        "size_kb": 0.4
+      }
+    ]
+  },
+  {
+    "date": "2026-03-22",
+    "state": "up",
+    "avg_ms": 1477,
+    "ssl_days": 54,
+    "links": [
+      {
+        "path": "/",
+        "http": 200,
+        "time_ms": 3300,
+        "ttfb_ms": 0,
+        "size_kb": 17.8
+      },
+      {
+        "path": "/blog",
+        "http": 200,
+        "time_ms": 1698,
+        "ttfb_ms": 0,
+        "size_kb": 6.1
+      },
+      {
+        "path": "/academy",
+        "http": 200,
+        "time_ms": 743,
+        "ttfb_ms": 0,
+        "size_kb": 13.3
+      },
+      {
+        "path": "/login",
+        "http": 200,
+        "time_ms": 836,
+        "ttfb_ms": 0,
+        "size_kb": 6.5
+      },
+      {
+        "path": "/admin",
+        "http": 302,
+        "time_ms": 808,
+        "ttfb_ms": 0,
+        "size_kb": 0.4
+      }
+    ]
+  }
+]

@@ -788,9 +788,9 @@
                 </div>
 
                 {{-- VIDEO --}}
-                @if ($lesson->video_url)
+                @if ($lesson->safe_video_url)
                     <div class="video-wrap">
-                        <iframe src="{{ $lesson->video_url }}" allowfullscreen></iframe>
+                        <iframe src="{{ $lesson->safe_video_url }}" allowfullscreen></iframe>
                     </div>
                 @endif
 

@@ -14,10 +14,14 @@ use Illuminate\Validation\Rules;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    protected static ?string $navigationLabel = 'Alumnos (Academia)';
-    protected static ?string $modelLabel = 'Alumno';
-    protected static ?string $pluralModelLabel = 'Alumnos';
+
+    protected static ?string $navigationLabel = 'Usuarios';
+
+    protected static ?string $modelLabel = 'Usuario';
+
+    protected static ?string $pluralModelLabel = 'Usuarios';
 
     public static function form(Form $form): Form
     {
@@ -33,18 +37,40 @@ class UserResource extends Resource
                             ->dehydrated(fn ($state) => filled($state))
                             ->required(fn (string $context): bool => $context === 'create')
                             ->rule(Rules\Password::defaults()),
+                        Forms\Components\TextInput::make('phone')->label('Teléfono')->tel(),
+                        Forms\Components\TextInput::make('company_name')->label('Empresa / Institución'),
                     ])->columns(2),
 
-                Forms\Components\Section::make('Autorización')
+                Forms\Components\Section::make('Autorización y Rol')
                     ->schema([
                         Forms\Components\Select::make('approval_status')->label('Estatus')->options([
-                            'pending' => 'Pendiente', 'approved' => 'Aprobado', 'rejected' => 'Rechazado',
+                            'pending' => 'Pendiente',
+                            'approved' => 'Aprobado',
+                            'rejected' => 'Rechazado',
                         ])->default('pending')->required(),
                         Forms\Components\Select::make('role')->label('Rol')->options([
-                            'student' => 'Alumno', 'instructor' => 'Instructor', 'super-admin' => 'Admin',
-                        ])->default('student')->required(),
+                            'student' => 'Alumno',
+                            'teacher' => 'Profesor',
+                            'client' => 'Cliente',
+                            'super-admin' => 'Admin',
+                        ])->default('student')->required()->reactive(),
                         Forms\Components\Toggle::make('is_3d_client')->label('Cliente 3D'),
                     ])->columns(3),
+
+                Forms\Components\Section::make('Configuración de Profesor')
+                    ->schema([
+                        Forms\Components\Select::make('student_limit')->label('Límite de alumnos')->options([
+                            5 => '5 alumnos',
+                            10 => '10 alumnos',
+                            15 => '15 alumnos',
+                            20 => '20 alumnos',
+                            25 => '25 alumnos',
+                        ]),
+                        Forms\Components\Placeholder::make('students_count')
+                            ->label('Alumnos inscritos')
+                            ->content(fn (?User $record) => $record ? $record->students()->count() : 0),
+                    ])->columns(2)
+                    ->visible(fn (Forms\Get $get) => $get('role') === 'teacher'),
             ]);
     }
 
@@ -53,7 +79,7 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')->label('Nombre')
-                    ->formatStateUsing(fn ($state, $record) => $state . ' ' . ($record->apellido_paterno ?? ''))
+                    ->formatStateUsing(fn ($state, $record) => $record->fullName())
                     ->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('email')->label('Email')->searchable()->copyable(),
                 Tables\Columns\TextColumn::make('approval_status')->label('Estatus')->badge()
@@ -64,24 +90,27 @@ class UserResource extends Resource
                         'pending' => 'Pendiente', 'approved' => 'Aprobado', 'rejected' => 'Rechazado', default => $state,
                     }),
                 Tables\Columns\TextColumn::make('role')->label('Rol')->badge()
-                    ->color(fn (string $state) => match($state) {
-                        'super-admin' => 'danger', 'instructor' => 'warning', default => 'info',
+                    ->color(fn (string $state) => match ($state) {
+                        'super-admin' => 'danger',
+                        'teacher' => 'warning',
+                        'client' => 'info',
+                        default => 'success',
                     })
-                    ->formatStateUsing(fn ($state) => match($state) {
-                        'super-admin' => 'Admin', 'instructor' => 'Instructor', default => 'Alumno',
+                    ->formatStateUsing(fn ($state) => match ($state) {
+                        'super-admin' => 'Admin',
+                        'teacher' => 'Profesor',
+                        'client' => 'Cliente',
+                        default => 'Alumno',
                     }),
-                Tables\Columns\TextColumn::make('enrollments_count')->label('Cursos')
-                    ->counts('enrollments')->sortable()
-                    ->badge()->color('info'),
-                Tables\Columns\TextColumn::make('avg_progress')->label('Progreso')
-                    ->getStateUsing(function ($record) {
-                        $enrollments = $record->enrollments;
-                        if ($enrollments->isEmpty()) return '—';
-                        $avg = $enrollments->avg('progress_percent');
-                        return round($avg) . '%';
-                    })
-                    ->color(fn ($state) => $state === '—' ? 'gray' : ($state === '100%' ? 'success' : 'warning')),
-                Tables\Columns\IconColumn::make('is_3d_client')->label('3D')->boolean(),
+                Tables\Columns\TextColumn::make('company_name')->label('Empresa')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('student_limit')->label('Límite')
+                    ->formatStateUsing(fn ($state, $record) => $record->isTeacher() && $state
+                        ? $record->students()->count().'/'.$state
+                        : '—')
+                    ->toggleable(),
+                Tables\Columns\IconColumn::make('is_3d_client')->label('3D')->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')->label('Registro')
                     ->date('d/m/Y')->sortable(),
             ])
@@ -90,7 +119,10 @@ class UserResource extends Resource
                     'pending' => 'Pendientes', 'approved' => 'Aprobados', 'rejected' => 'Rechazados',
                 ]),
                 Tables\Filters\SelectFilter::make('role')->label('Rol')->options([
-                    'student' => 'Alumno', 'super-admin' => 'Admin',
+                    'student' => 'Alumno',
+                    'teacher' => 'Profesor',
+                    'client' => 'Cliente',
+                    'super-admin' => 'Admin',
                 ]),
             ])
             ->actions([
@@ -101,16 +133,10 @@ class UserResource extends Resource
                     ->requiresConfirmation()
                     ->action(fn (User $r) => $r->update(['approval_status' => 'approved']))
                     ->visible(fn (User $r) => $r->approval_status !== 'approved'),
-                Tables\Actions\Action::make('aprobar_3d')
-                    ->label('Aprobar 3D')
-                    ->icon('heroicon-o-cube')
-                    ->color('info')
-                    ->requiresConfirmation()
-                    ->action(fn (User $r) => $r->update(['is_3d_client' => true, '3d_client_approved_at' => now()]))
-                    ->visible(fn (User $r) => !$r->is_3d_client),
                 Tables\Actions\EditAction::make(),
             ])
-            ->bulkActions([Tables\Actions\DeleteBulkAction::make()]);
+            ->bulkActions([Tables\Actions\DeleteBulkAction::make()])
+            ->defaultSort('created_at', 'desc');
     }
 
     public static function getPages(): array
@@ -124,7 +150,9 @@ class UserResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return (string) User::where('approval_status', 'pending')->count() ?: null;
+        $pending = User::where('approval_status', 'pending')->count();
+
+        return $pending > 0 ? (string) $pending : null;
     }
 
     public static function getNavigationBadgeColor(): ?string

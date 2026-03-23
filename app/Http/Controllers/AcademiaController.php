@@ -2,19 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\EnrollmentConfirmation;
 use App\Models\Course;
-use App\Models\Enrollment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\EnrollmentConfirmation;
 
 class AcademiaController extends Controller
 {
     public function dashboard()
     {
-        $user        = Auth::user();
+        $user = Auth::user();
         $enrollments = DB::table('enrollments')->where('user_id', $user->id)->get()->keyBy('course_id');
 
         $courses = Course::published()->orderBy('sort_order')->get();
@@ -23,9 +22,9 @@ class AcademiaController extends Controller
         $legacyCourses = Course::where('is_published', false)->orderBy('sort_order')->get();
 
         return view('academia.dashboard', [
-            'user'          => $user,
-            'enrollments'   => $enrollments,
-            'courses'       => $courses,
+            'user' => $user,
+            'enrollments' => $enrollments,
+            'courses' => $courses,
             'legacyCourses' => $legacyCourses,
         ]);
     }
@@ -51,12 +50,12 @@ class AcademiaController extends Controller
         }
 
         DB::table('enrollments')->insert([
-            'user_id'          => $user->id,
-            'course_id'        => $courseId,
+            'user_id' => $user->id,
+            'course_id' => $courseId,
             'progress_percent' => 0,
-            'enrolled_at'      => now(),
-            'created_at'       => now(),
-            'updated_at'       => now(),
+            'enrolled_at' => now(),
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         // Email de confirmacion (silencioso si mail no esta configurado)
@@ -65,7 +64,7 @@ class AcademiaController extends Controller
                 new EnrollmentConfirmation($user->name, $course->title, $courseId)
             );
         } catch (\Throwable $e) {
-            // Mail no configurado en este entorno
+            \Log::warning("Enrollment confirmation mail failed: {$e->getMessage()}");
         }
 
         return back()->with('enrolled', $course->title);

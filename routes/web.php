@@ -7,9 +7,24 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Dashboard — redirige según rol del usuario
 Route::get('/dashboard', function () {
-    return redirect()->route('academia.dashboard');
+    $user = auth()->user();
+
+    return match ($user->role) {
+        'super-admin' => redirect('/admin'),
+        'teacher' => redirect()->route('profesor.dashboard'),
+        'client' => redirect()->route('cliente.dashboard'),
+        default => redirect()->route('academia.dashboard'),
+    };
 })->middleware(['auth', 'verified', 'approved'])->name('dashboard');
+
+// Registro — landing page con opciones por tipo
+Route::get('/registro', fn () => view('auth.registro'))->name('registro');
+Route::get('/registro/profesor', [App\Http\Controllers\Auth\ProfesorRegistrationController::class, 'create'])->name('registro.profesor');
+Route::post('/registro/profesor', [App\Http\Controllers\Auth\ProfesorRegistrationController::class, 'store'])->name('registro.profesor.store');
+Route::get('/registro/cliente', [App\Http\Controllers\Auth\ClientRegistrationController::class, 'create'])->name('registro.cliente');
+Route::post('/registro/cliente', [App\Http\Controllers\Auth\ClientRegistrationController::class, 'store'])->name('registro.cliente.store');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -65,6 +80,18 @@ Route::prefix('academia')->name('academia.')->middleware(['auth', 'verified', 'a
     Route::post('/curso/{courseSlug}/{lessonSlug}/quiz', [App\Http\Controllers\CourseController::class, 'submitQuiz'])->name('curso.quiz');
 });
 
+// Portal de Profesores
+Route::prefix('profesor')->name('profesor.')->middleware(['auth', 'verified', 'approved', 'role:teacher'])->group(function () {
+    Route::get('/', [App\Http\Controllers\ProfesorController::class, 'dashboard'])->name('dashboard');
+    Route::get('/alumnos', [App\Http\Controllers\ProfesorController::class, 'students'])->name('students');
+    Route::post('/alumnos/agregar', [App\Http\Controllers\ProfesorController::class, 'addStudents'])->name('students.add');
+});
+
+// Portal de Clientes
+Route::prefix('cliente')->name('cliente.')->middleware(['auth', 'verified', 'approved', 'role:client'])->group(function () {
+    Route::get('/', [App\Http\Controllers\ClientController::class, 'dashboard'])->name('dashboard');
+});
+
 // Legal — páginas públicas
 Route::get('/privacidad', fn () => view('legal.privacidad'))->name('privacidad');
 Route::get('/terminos', fn () => view('legal.terminos'))->name('terminos');
@@ -75,6 +102,7 @@ Route::get('/verificar', function () {
     if (request('code')) {
         $certificate = \App\Models\Certificate::verify(request('code'));
     }
+
     return view('legal.verificar', compact('certificate'));
 })->name('verificar');
 
