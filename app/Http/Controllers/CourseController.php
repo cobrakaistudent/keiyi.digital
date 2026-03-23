@@ -164,6 +164,16 @@ class CourseController extends Controller
             ->where('user_id', $userId)
             ->where('course_id', $course->slug)
             ->update(['progress_percent' => $progress, 'updated_at' => now()]);
+
+        // Auto-issue certificate when course is 100% complete
+        if ($progress >= 100) {
+            $user = \App\Models\User::find($userId);
+            $alreadyHas = \App\Models\Certificate::where('user_id', $userId)
+                ->where('course_id', $course->id)->exists();
+            if (!$alreadyHas && $user) {
+                \App\Models\Certificate::issue($user, $course);
+            }
+        }
     }
 
     private function ensureEnrolled(int $userId, string $courseSlug): void

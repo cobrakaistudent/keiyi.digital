@@ -41,7 +41,7 @@ class UserResource extends Resource
                             'pending' => 'Pendiente', 'approved' => 'Aprobado', 'rejected' => 'Rechazado',
                         ])->default('pending')->required(),
                         Forms\Components\Select::make('role')->label('Rol')->options([
-                            'student' => 'Alumno', 'super-admin' => 'Admin',
+                            'student' => 'Alumno', 'instructor' => 'Instructor', 'super-admin' => 'Admin',
                         ])->default('student')->required(),
                         Forms\Components\Toggle::make('is_3d_client')->label('Cliente 3D'),
                     ])->columns(3),
@@ -64,8 +64,12 @@ class UserResource extends Resource
                         'pending' => 'Pendiente', 'approved' => 'Aprobado', 'rejected' => 'Rechazado', default => $state,
                     }),
                 Tables\Columns\TextColumn::make('role')->label('Rol')->badge()
-                    ->color(fn (string $state) => $state === 'super-admin' ? 'danger' : 'info')
-                    ->formatStateUsing(fn ($state) => $state === 'super-admin' ? 'Admin' : 'Alumno'),
+                    ->color(fn (string $state) => match($state) {
+                        'super-admin' => 'danger', 'instructor' => 'warning', default => 'info',
+                    })
+                    ->formatStateUsing(fn ($state) => match($state) {
+                        'super-admin' => 'Admin', 'instructor' => 'Instructor', default => 'Alumno',
+                    }),
                 Tables\Columns\TextColumn::make('enrollments_count')->label('Cursos')
                     ->counts('enrollments')->sortable()
                     ->badge()->color('info'),
